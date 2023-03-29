@@ -1,0 +1,15 @@
+{
+	"trailingComma": "es5",
+	"tabWidth": 4,
+	"semi": false,
+	"printWidth": 100,
+	"singleQuote": true,
+	"importOrder": [
+		"^react",
+		"^@(.*)$",
+		"^../",
+		"^./"
+	],
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true
+}
