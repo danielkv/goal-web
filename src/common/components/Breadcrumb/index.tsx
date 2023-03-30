@@ -4,7 +4,9 @@ import BreadcrumbItem from './item'
 import { BreadcrumbProps } from './types'
 
 const Breadcrumb: Component<BreadcrumbProps> = ({ items, onClick }) => {
-    const handleItemClick = (key: string) => {}
+    const handleItemClick = (key: string) => {
+        return onClick?.(key)
+    }
 
     return (
         <div class="flex gap-1 items-center">
