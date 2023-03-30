@@ -40,13 +40,13 @@ export type EventBlock = {
     event_type: EventType
 } & (EventBlockEMOM | EventBlockTimecap)
 
-export interface RestBlock {
+export type RestBlock = {
     type: 'rest'
     time: number
     text?: string
 }
 
-export interface TextBlock {
+export type TextBlock = {
     type: 'text'
     text: string
 }

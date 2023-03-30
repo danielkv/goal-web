@@ -4,6 +4,7 @@ import Breadcrumb from '../../../../common/components/Breadcrumb'
 import DayForm from '../DayForm'
 import EventBlockForm from '../EventBlockForm'
 import GroupForm from '../GroupForm'
+import RestBlockForm from '../RestBlockForm'
 import RoundForm from '../RoundForm'
 
 const Form: Component = () => {
@@ -19,7 +20,9 @@ const Form: Component = () => {
 
                     {/* <EventBlockForm onClickNext={() => {}} /> */}
 
-                    <RoundForm onClickNext={() => {}} />
+                    {/* <RoundForm onClickNext={() => {}} /> */}
+
+                    <RestBlockForm onClickNext={() => {}} />
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">
