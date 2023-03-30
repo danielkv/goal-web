@@ -1,3 +1,6 @@
+import { Day } from 'src/common/models/day'
+import { Paths } from 'src/common/types/app'
+
 import { Component } from 'solid-js'
 
 import Breadcrumb from '../../../../common/components/Breadcrumb'
@@ -7,6 +10,8 @@ import GroupForm from '../GroupForm'
 import RestBlockForm from '../RestBlockForm'
 import RoundForm from '../RoundForm'
 import TextBlockForm from '../TextBlockForm'
+
+type T = Paths<Day>
 
 const Form: Component = () => {
     return (
