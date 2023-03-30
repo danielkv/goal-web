@@ -4,11 +4,11 @@ import { textBlockInitialValues, restBlockBlockFormSchema, TRestBlockForm } from
 
 import TextInput from '../../../../common/components/TextInput'
 
-export interface RestBlockFormProps {
+export interface TextBlockFormProps {
     onClickNext(data: TRestBlockForm): void
 }
 
-const RestBlockForm: Component<RestBlockFormProps> = ({ onClickNext }) => {
+const TextBlockForm: Component<TextBlockFormProps> = ({ onClickNext }) => {
     const form = createForm<TRestBlockForm>({
         validate: zodForm(restBlockBlockFormSchema),
         initialValues: textBlockInitialValues,
@@ -45,4 +45,4 @@ const RestBlockForm: Component<RestBlockFormProps> = ({ onClickNext }) => {
     )
 }
 
-export default RestBlockForm
+export default TextBlockForm

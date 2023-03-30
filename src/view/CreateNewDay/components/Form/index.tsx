@@ -6,6 +6,7 @@ import EventBlockForm from '../EventBlockForm'
 import GroupForm from '../GroupForm'
 import RestBlockForm from '../RestBlockForm'
 import RoundForm from '../RoundForm'
+import TextBlockForm from '../TextBlockForm'
 
 const Form: Component = () => {
     return (
@@ -22,7 +23,8 @@ const Form: Component = () => {
 
                     {/* <RoundForm onClickNext={() => {}} /> */}
 
-                    <RestBlockForm onClickNext={() => {}} />
+                    {/* <RestBlockForm onClickNext={() => {}} /> */}
+                    <TextBlockForm onClickNext={() => {}} />
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">
