@@ -7,6 +7,9 @@ dependencies:
   prettier:
     specifier: ^2.8.7
     version: 2.8.7
+  solid-icons:
+    specifier: ^1.0.4
+    version: 1.0.4(solid-js@1.6.10)
   solid-js:
     specifier: ^1.6.10
     version: 1.6.10
@@ -1337,6 +1340,15 @@ packages:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
     hasBin: true
     dev: true
+
+  /solid-icons@1.0.4(solid-js@1.6.10):
+    resolution: {integrity: sha512-gJTp4in3+OYCs9WvDkSLt4Los2unR3Uoder8wjh15GsfP20xiNOLfPTJllXmn+fI8+k3x7bRYtLGIgWd9fUQug==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      solid-js: '*'
+    dependencies:
+      solid-js: 1.6.10
+    dev: false
 
   /solid-js@1.6.10:
     resolution: {integrity: sha512-Sf0e6PQCEFkFtbPq0L+93Ua81YQOefBEbvDJ0YXT92b6Lzw0k7UvzSd2l1BbYM+yzE3UmepU1tyMDc/3nIByjA==}

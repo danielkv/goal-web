@@ -15,9 +15,62 @@
     }
 
     body,
-    html,
-    #root {
+    html {
         height: 100%;
+    }
+
+    #root {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+}
+
+@layer components {
+    .input {
+        @apply font-sans;
+        @apply text-lg;
+        @apply text-gray-500;
+        @apply rounded-md;
+        padding: 10px 15px;
+    }
+    .input:focus {
+        outline: 3px solid;
+        @apply outline-red-700 outline-offset-2;
+    }
+    .input.input-full {
+        width: 100%;
+    }
+
+    .paper {
+        @apply p-6 bg-gray-100 rounded-lg;
+    }
+
+    .btn {
+        @apply px-6 py-2 bg-gray-100 rounded-md text-lg;
+    }
+    .btn:hover {
+        @apply bg-gray-300;
+    }
+    .btn.btn-light {
+        @apply bg-gray-500;
+    }
+    .btn.btn-light:hover {
+        @apply bg-gray-600;
+    }
+
+    .section-title {
+        @apply text-xl pb-1;
+        border-bottom: 2px solid theme('colors.gray.100');
+        color: theme('colors.gray.700');
+        font-weight: bold;
+    }
+
+    .btn.btn-main {
+        @apply bg-red-500;
+    }
+    .btn.btn-main:hover {
+        @apply bg-red-700;
     }
 }
 
