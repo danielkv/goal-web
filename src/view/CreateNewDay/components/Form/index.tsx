@@ -12,9 +12,10 @@ const Form: Component = () => {
                 <div class="flex flex-col p-8 gap-6">
                     <Breadcrumb items={[{ key: 'day', label: 'Dia', buttonDisabled: true }]} />
 
-                    <DayForm onClickNext={() => {}} />
+                    {/* <DayForm onClickNext={() => {}} />
 
-                    <GroupForm onClickNext={() => {}} />
+                    <GroupForm onClickNext={() => {}} /> */}
+
                     <EventBlockForm onClickNext={() => {}} />
 
                     <div class="section-title">Rounds</div>

@@ -1,7 +1,7 @@
 import { Component } from 'solid-js'
 import { createForm, Field, Form, zodForm, SubmitHandler } from '@modular-forms/solid'
 import { dayForemInitialValues, dayFormSchema, TDayForm } from './config'
-import InputError from '../../../../common/components/InputError'
+import TextInput from '../../../../common/components/TextInput'
 
 export interface DayFormProps {
     onClickNext(data: TDayForm): void
@@ -26,43 +26,38 @@ const DayForm: Component<DayFormProps> = ({ onClickNext }) => {
         >
             <div class="flex gap-6 items-start ">
                 <Field of={loginForm} name="period">
-                    {({ error, props, value }) => (
-                        <InputError error={error}>
-                            <input
-                                placeholder="Período"
-                                type="number"
-                                class="input input-full"
-                                value={value}
-                                {...props}
-                            />
-                        </InputError>
+                    {(field) => (
+                        <TextInput
+                            class="flex-1"
+                            label="Período"
+                            value={field.value}
+                            error={field.error}
+                            {...field.props}
+                        />
                     )}
                 </Field>
                 <Field of={loginForm} name="date">
-                    {({ error, props, value }) => (
-                        <InputError class="flex-1" error={error}>
-                            <input
-                                placeholder="Data"
-                                type="date"
-                                class="input input-full"
-                                value={value}
-                                {...props}
-                            />
-                        </InputError>
+                    {(field) => (
+                        <TextInput
+                            class="flex-1"
+                            label="Data"
+                            value={field.value}
+                            error={field.error}
+                            {...field.props}
+                        />
                     )}
                 </Field>
             </div>
 
             <Field of={loginForm} name="name">
-                {({ error, props, value }) => (
-                    <InputError class="flex-1" error={error}>
-                        <input
-                            placeholder="Nome"
-                            class="input input-full"
-                            value={value}
-                            {...props}
-                        />
-                    </InputError>
+                {(field) => (
+                    <TextInput
+                        class="flex-1"
+                        label="Nome"
+                        value={field.value}
+                        error={field.error}
+                        {...field.props}
+                    />
                 )}
             </Field>
             <button class="btn btn-main self-end" type="submit">
