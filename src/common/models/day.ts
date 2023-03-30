@@ -8,6 +8,6 @@ export interface Group {
 export interface Day {
     name: string
     period: number
-    date: Date
+    date: string // YYYY-MM-DD
     groups: Group[]
 }

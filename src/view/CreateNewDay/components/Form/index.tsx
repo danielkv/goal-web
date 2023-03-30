@@ -1,47 +1,31 @@
-import { Component, createEffect, createMemo, createSignal, on } from 'solid-js'
-import { createStore } from 'solid-js/store'
-import Breadcrumb from '../../../../common/components/Breadcrumb'
+import { Component } from 'solid-js'
 
-const [items, setItems] = createStore([
-    { key: 'day', label: 'Dia' },
-    { key: 'group', label: 'Grupo' },
-])
+import Breadcrumb from '../../../../common/components/Breadcrumb'
+import DayForm from '../DayForm'
+import EventBlockForm from '../EventBlockForm'
+import GroupForm from '../GroupForm'
 
 const Form: Component = () => {
     return (
         <>
             <div class="flex flex-1 flex-col overflow-auto">
                 <div class="flex flex-col p-8 gap-6">
-                    <Breadcrumb items={items} />
+                    <Breadcrumb items={[{ key: 'day', label: 'Dia', buttonDisabled: true }]} />
 
-                    <form class="flex flex-col gap-6">
+                    <DayForm onClickNext={() => {}} />
+
+                    <GroupForm onClickNext={() => {}} />
+                    <EventBlockForm onClickNext={() => {}} />
+
+                    <div class="section-title">Rounds</div>
+                    <div class="paper flex flex-col gap-6">
                         <input placeholder="Nome" class="input input-full" />
-                        <select class="input">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                        </select>
-                        <div class="section-title">Rounds</div>
-                        <div class="paper flex flex-col gap-6">
+                        <div class="flex gap-6">
                             <input placeholder="Nome" class="input input-full" />
-                            <div class="flex gap-6">
-                                <input placeholder="Nome" class="input input-full" />
-                                <input placeholder="Nome" class="input w-32" />
-                            </div>
-                            <button
-                                class="btn btn-light self-end"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    setItems((current) => [
-                                        ...current,
-                                        { key: 'day', label: 'Dia' },
-                                    ])
-                                }}
-                            >
-                                Remover
-                            </button>
+                            <input placeholder="Nome" class="input w-32" />
                         </div>
-                    </form>
+                        <button class="btn btn-light self-end">Remover</button>
+                    </div>
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">

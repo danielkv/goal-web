@@ -19,9 +19,12 @@
 		"vite-plugin-solid-svg": "^0.6.1"
 	},
 	"dependencies": {
+		"@modular-forms/solid": "^0.11.0",
 		"@solidjs/router": "^0.8.2",
 		"prettier": "^2.8.7",
+		"radash": "^10.8.1",
 		"solid-icons": "^1.0.4",
-		"solid-js": "^1.6.10"
+		"solid-js": "^1.6.10",
+		"zod": "^3.21.4"
 	}
 }

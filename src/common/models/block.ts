@@ -8,7 +8,7 @@ export interface MovementWeight {
 export interface EventMovement {
     name: string
     reps: number
-    weight: MovementWeight
+    weight?: MovementWeight
     videoUrl?: string
 }
 
@@ -18,29 +18,44 @@ export interface EventRound {
     movements: EventMovement[]
 }
 
-export interface Event {
-    name?: string
-    timecap?: number // seconds
-    type: EventType
-    rounds: EventRound[]
+export type BlockType = 'event' | 'rest' | 'text' | ''
+
+export interface EventBlockEMOM {
+    event_type: 'emom'
+    each: number
+    for: number
 }
 
-export type BlockType = 'event' | 'rest' | 'text'
+export interface EventBlockTimecap {
+    event_type: Exclude<EventType, 'emom'>
+    timecap: number // seconds
+}
 
-interface EventBlock {
+export type EventBlock = {
     type: 'event'
-    event: Event
-}
+    name?: string
+    rounds: EventRound[]
+    event_type: EventType
+} & (EventBlockEMOM | EventBlockTimecap)
 
-interface RestBlock {
+export interface RestBlock {
     type: 'rest'
     time: number
     text?: string
 }
 
-interface TextBlock {
+export interface TextBlock {
     type: 'text'
-    text: number
+    text: string
 }
 
-export type Block = { info?: string } & (EventBlock | RestBlock | TextBlock)
+interface EmptyBlock {
+    type: ''
+}
+
+export type Block = { info?: string; type: BlockType } & (
+    | EventBlock
+    | RestBlock
+    | TextBlock
+    | EmptyBlock
+)
