@@ -1,13 +1,15 @@
 import { Component, For, Show } from 'solid-js'
-import { createForm, Field, Form, zodForm, SubmitHandler, getValue } from '@modular-forms/solid'
-import {
-    eventBlockInitialValues,
-    eventBlockFormSchema,
-    TEventBlockForm,
-    eventTypes,
-} from './config'
+
+import { Field, Form, SubmitHandler, createForm, getValue, zodForm } from '@modular-forms/solid'
 
 import TextInput from '../../../../common/components/TextInput'
+
+import {
+    TEventBlockForm,
+    eventBlockFormSchema,
+    eventBlockInitialValues,
+    eventTypes,
+} from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TEventBlockForm): void

@@ -1,18 +1,20 @@
 import { Component, For, JSX } from 'solid-js'
+
 import {
-    createForm,
     Field,
-    Form,
-    zodForm,
-    SubmitHandler,
     FieldArray,
+    Form,
+    SubmitHandler,
+    createForm,
     insert,
     remove,
+    zodForm,
 } from '@modular-forms/solid'
-import { roundInitialValues, eventBlockFormSchema, TRoundForm, weightTypes } from './config'
 
 import TextInput from '../../../../common/components/TextInput'
 import { initialRoundMovementValues } from '../../config'
+
+import { TRoundForm, eventBlockFormSchema, roundInitialValues, weightTypes } from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TRoundForm): void

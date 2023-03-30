@@ -1,8 +1,10 @@
-import { Component, For, JSX, Show } from 'solid-js'
-import { createForm, Field, Form, zodForm, SubmitHandler, FieldArray } from '@modular-forms/solid'
-import { restBlockInitialValues, restBlockBlockFormSchema, TRestBlockForm } from './config'
+import { Component } from 'solid-js'
+
+import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
 
 import TextInput from '../../../../common/components/TextInput'
+
+import { TRestBlockForm, restBlockBlockFormSchema, restBlockInitialValues } from './config'
 
 export interface RestBlockFormProps {
     onClickNext(data: TRestBlockForm): void

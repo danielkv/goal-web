@@ -1,4 +1,5 @@
 import { Component } from 'solid-js'
+
 import Form from './components/Form'
 
 const CreateNewDay: Component = () => {

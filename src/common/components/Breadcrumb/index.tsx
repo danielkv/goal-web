@@ -1,5 +1,7 @@
 import { FiChevronsRight } from 'solid-icons/fi'
+
 import { Component, For } from 'solid-js'
+
 import BreadcrumbItem from './item'
 import { BreadcrumbProps } from './types'
 

@@ -1,8 +1,7 @@
-import { value } from '@modular-forms/solid'
 import { omit } from 'radash'
 import { z } from 'zod'
-import { EventBlock, EventType } from '../../../../common/models/block'
 
+import { EventBlock, EventType } from '../../../../common/models/block'
 import { ZodShape } from '../../../../common/types/app'
 import { initialEventBlockValues } from '../../config'
 

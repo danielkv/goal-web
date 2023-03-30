@@ -1,7 +1,10 @@
 import { Component } from 'solid-js'
-import { createForm, Field, Form, zodForm, SubmitHandler } from '@modular-forms/solid'
-import { dayForemInitialValues, dayFormSchema, TDayForm } from './config'
+
+import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
+
 import TextInput from '../../../../common/components/TextInput'
+
+import { TDayForm, dayForemInitialValues, dayFormSchema } from './config'
 
 export interface DayFormProps {
     onClickNext(data: TDayForm): void

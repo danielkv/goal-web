@@ -1,7 +1,10 @@
 import { Component } from 'solid-js'
-import { createForm, Field, Form, zodForm, SubmitHandler } from '@modular-forms/solid'
-import { groupInitialValues, groupFormSchema, TGroupForm } from './config'
+
+import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
+
 import TextInput from '../../../../common/components/TextInput'
+
+import { TGroupForm, groupFormSchema, groupInitialValues } from './config'
 
 export interface GroupFormProps {
     onClickNext(data: TGroupForm): void

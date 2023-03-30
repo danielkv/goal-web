@@ -1,12 +1,11 @@
-import { A } from '@solidjs/router'
 import { z } from 'zod'
+
 import {
     EventMovement,
     EventRound,
     MovementWeight,
     WeightTypes,
 } from '../../../../common/models/block'
-
 import { ZodShape } from '../../../../common/types/app'
 import { initialEventRoundValues } from '../../config'
 

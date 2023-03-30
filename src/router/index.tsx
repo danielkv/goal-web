@@ -1,5 +1,7 @@
-import { Routes, Route } from '@solidjs/router'
 import { Component } from 'solid-js'
+
+import { Route, Routes } from '@solidjs/router'
+
 import Header from '../common/components/Header'
 import CreateNewDay from '../view/CreateNewDay'
 

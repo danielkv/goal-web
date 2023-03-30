@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { TextBlock } from '../../../../common/models/block'
 
+import { TextBlock } from '../../../../common/models/block'
 import { ZodShape } from '../../../../common/types/app'
 import { initialTextBlockValues } from '../../config'
 

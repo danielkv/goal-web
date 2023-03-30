@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { RestBlock } from '../../../../common/models/block'
 
+import { RestBlock } from '../../../../common/models/block'
 import { ZodShape } from '../../../../common/types/app'
 import { initialRestBlockValues } from '../../config'
 

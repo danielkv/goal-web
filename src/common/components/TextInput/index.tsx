@@ -1,4 +1,4 @@
-import { Component, JSX, ParentComponent, Show, splitProps } from 'solid-js'
+import { Component, JSX, splitProps } from 'solid-js'
 
 export interface TextInputProps {
     name: string

@@ -1,4 +1,5 @@
 import { Component } from 'solid-js'
+
 import { BreadcrumbItemProps } from './types'
 
 const BreadcrumbItem: Component<BreadcrumbItemProps> = ({ item, onClick }) => {
