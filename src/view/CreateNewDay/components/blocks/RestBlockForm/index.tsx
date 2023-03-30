@@ -32,7 +32,7 @@ const RestBlockForm: Component<RestBlockFormProps> = ({ onClickNext }) => {
                     <TextInput
                         {...field.props}
                         class="flex-1"
-                        label="repetir"
+                        label="Tempo"
                         type="number"
                         value={field.value}
                         error={field.error}

@@ -46,7 +46,7 @@ const EventBlockForm: Component<BlockFormProps> = ({ onClickNext }) => {
             <div class="flex gap-6">
                 <Field of={form} name="event_type">
                     {(field) => (
-                        <select class="input input-full" {...field.props}>
+                        <select class="input w-40" {...field.props}>
                             <For each={eventTypes}>
                                 {(item) => (
                                     <option value={item.key} selected={field.value === item.key}>

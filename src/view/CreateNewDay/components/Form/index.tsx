@@ -7,9 +7,7 @@ import { Day } from '@models/day'
 import DayForm from '../DayForm'
 import GroupForm from '../GroupForm'
 import RoundForm from '../RoundForm'
-import EventBlockForm from '../blocks/EventBlockForm'
-import RestBlockForm from '../blocks/RestBlockForm'
-import TextBlockForm from '../blocks/TextBlockForm'
+import BlockForm from '../blocks'
 
 type T = Paths<Day>
 
@@ -29,7 +27,7 @@ const Form: Component = () => {
                     {/* <RoundForm onClickNext={() => {}} /> */}
 
                     {/* <RestBlockForm onClickNext={() => {}} /> */}
-                    <TextBlockForm onClickNext={() => {}} />
+                    <BlockForm block={{ type: '' }} onClickNext={() => {}} />
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">
