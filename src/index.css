@@ -29,10 +29,10 @@
 @layer components {
     .input {
         @apply font-sans;
-        @apply text-lg;
+        @apply text-base;
         @apply text-gray-500;
         @apply rounded-md;
-        padding: 10px 15px;
+        padding: 8px 15px;
     }
     .input:focus {
         outline: 3px solid;
