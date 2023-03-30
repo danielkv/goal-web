@@ -1,8 +1,7 @@
 import { Component } from 'solid-js'
 
+import TextInput from '@components/TextInput'
 import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
-
-import TextInput from '../../../../common/components/TextInput'
 
 import { TGroupForm, groupFormSchema, groupInitialValues } from './config'
 

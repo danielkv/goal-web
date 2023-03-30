@@ -1,8 +1,9 @@
 import { omit } from 'radash'
 import { z } from 'zod'
 
-import { Day } from '../../../../common/models/day'
-import { ZodShape } from '../../../../common/types/app'
+import { ZodShape } from '@interfaces/app'
+import { Day } from '@models/day'
+
 import { initialDayValues } from '../../config'
 
 export type TDayForm = Omit<Day, 'groups'>

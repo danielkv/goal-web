@@ -6,8 +6,8 @@ import {
     MovementWeight,
     RestBlock,
     TextBlock,
-} from '../../common/models/block'
-import { Day, Group } from '../../common/models/day'
+} from '@models/block'
+import { Day, Group } from '@models/day'
 
 export const initialMovementWeightValues: MovementWeight = {
     type: 'kg',

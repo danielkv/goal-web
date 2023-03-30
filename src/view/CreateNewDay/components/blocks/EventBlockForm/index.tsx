@@ -1,8 +1,7 @@
 import { Component, For, Show } from 'solid-js'
 
+import TextInput from '@components/TextInput'
 import { Field, Form, SubmitHandler, createForm, getValue, zodForm } from '@modular-forms/solid'
-
-import TextInput from '../../../../common/components/TextInput'
 
 import {
     TEventBlockForm,

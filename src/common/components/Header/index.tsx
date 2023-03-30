@@ -1,6 +1,6 @@
 import { Component } from 'solid-js'
 
-import LogoSvg from '../../../assets/logo.svg?component-solid'
+import LogoSvg from '@assets/logo.svg?component-solid'
 
 const Header: Component = () => {
     return (

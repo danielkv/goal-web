@@ -1,15 +1,15 @@
-import { Day } from 'src/common/models/day'
-import { Paths } from 'src/common/types/app'
-
 import { Component } from 'solid-js'
 
-import Breadcrumb from '../../../../common/components/Breadcrumb'
+import Breadcrumb from '@components/Breadcrumb'
+import { Paths } from '@interfaces/app'
+import { Day } from '@models/day'
+
 import DayForm from '../DayForm'
-import EventBlockForm from '../EventBlockForm'
 import GroupForm from '../GroupForm'
-import RestBlockForm from '../RestBlockForm'
 import RoundForm from '../RoundForm'
-import TextBlockForm from '../TextBlockForm'
+import EventBlockForm from '../blocks/EventBlockForm'
+import RestBlockForm from '../blocks/RestBlockForm'
+import TextBlockForm from '../blocks/TextBlockForm'
 
 type T = Paths<Day>
 

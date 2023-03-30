@@ -1,8 +1,9 @@
 import { omit } from 'radash'
 import { z } from 'zod'
 
-import { Group } from '../../../../common/models/day'
-import { ZodShape } from '../../../../common/types/app'
+import { ZodShape } from '@interfaces/app'
+import { Group } from '@models/day'
+
 import { initialGroupValues } from '../../config'
 
 export type TGroupForm = Omit<Group, 'blocks'>

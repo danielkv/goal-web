@@ -1,12 +1,8 @@
 import { z } from 'zod'
 
-import {
-    EventMovement,
-    EventRound,
-    MovementWeight,
-    WeightTypes,
-} from '../../../../common/models/block'
-import { ZodShape } from '../../../../common/types/app'
+import { ZodShape } from '@interfaces/app'
+import { EventMovement, EventRound, MovementWeight, WeightTypes } from '@models/block'
+
 import { initialEventRoundValues } from '../../config'
 
 export type TRoundForm = Omit<EventRound, ''>

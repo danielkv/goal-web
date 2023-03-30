@@ -1,8 +1,9 @@
 import { z } from 'zod'
 
-import { TextBlock } from '../../../../common/models/block'
-import { ZodShape } from '../../../../common/types/app'
-import { initialTextBlockValues } from '../../config'
+import { ZodShape } from '@interfaces/app'
+import { TextBlock } from '@models/block'
+
+import { initialTextBlockValues } from '../../../config'
 
 export type TRestBlockForm = Omit<TextBlock, 'type'>
 

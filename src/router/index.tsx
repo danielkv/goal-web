@@ -1,8 +1,8 @@
 import { Component } from 'solid-js'
 
+import Header from '@components/Header'
 import { Route, Routes } from '@solidjs/router'
 
-import Header from '../common/components/Header'
 import CreateNewDay from '../view/CreateNewDay'
 
 const AppRouter: Component = () => {

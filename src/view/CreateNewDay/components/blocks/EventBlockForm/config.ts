@@ -1,9 +1,10 @@
 import { omit } from 'radash'
 import { z } from 'zod'
 
-import { EventBlock, EventType } from '../../../../common/models/block'
-import { ZodShape } from '../../../../common/types/app'
-import { initialEventBlockValues } from '../../config'
+import { ZodShape } from '@interfaces/app'
+import { EventBlock, EventType } from '@models/block'
+
+import { initialEventBlockValues } from '../../../config'
 
 export type TEventBlockForm = Omit<EventBlock, 'rounds' | 'type'> & {
     each?: number

@@ -1,5 +1,6 @@
 import { Component, For, JSX } from 'solid-js'
 
+import TextInput from '@components/TextInput'
 import {
     Field,
     FieldArray,
@@ -11,7 +12,6 @@ import {
     zodForm,
 } from '@modular-forms/solid'
 
-import TextInput from '../../../../common/components/TextInput'
 import { initialRoundMovementValues } from '../../config'
 
 import { TRoundForm, eventBlockFormSchema, roundInitialValues, weightTypes } from './config'

@@ -1,7 +1,8 @@
 import { z } from 'zod'
 
-import { RestBlock } from '../../../../common/models/block'
-import { ZodShape } from '../../../../common/types/app'
+import { ZodShape } from '@interfaces/app'
+import { RestBlock } from '@models/block'
+
 import { initialRestBlockValues } from '../../config'
 
 export type TRestBlockForm = Omit<RestBlock, 'type'>
