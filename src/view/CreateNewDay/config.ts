@@ -11,10 +11,10 @@ import { Day, Group } from '../../common/models/day'
 
 export const initialMovementWeightValues: MovementWeight = {
     type: 'kg',
-    value: 0,
+    value: 100,
 }
 
-export const initialRoundMovementvalues: EventMovement = {
+export const initialRoundMovementValues: EventMovement = {
     name: '',
     reps: 0,
 }
@@ -26,6 +26,7 @@ export const initialEventBlockValues: EventBlock = {
     type: 'event',
     name: '',
     event_type: 'for_time',
+    timecap: 600,
     rounds: [],
 }
 

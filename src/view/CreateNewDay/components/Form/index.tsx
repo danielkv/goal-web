@@ -4,6 +4,7 @@ import Breadcrumb from '../../../../common/components/Breadcrumb'
 import DayForm from '../DayForm'
 import EventBlockForm from '../EventBlockForm'
 import GroupForm from '../GroupForm'
+import RoundForm from '../RoundForm'
 
 const Form: Component = () => {
     return (
@@ -12,21 +13,13 @@ const Form: Component = () => {
                 <div class="flex flex-col p-8 gap-6">
                     <Breadcrumb items={[{ key: 'day', label: 'Dia', buttonDisabled: true }]} />
 
-                    {/* <DayForm onClickNext={() => {}} />
+                    {/* <DayForm onClickNext={() => {}} /> */}
 
-                    <GroupForm onClickNext={() => {}} /> */}
+                    {/* <GroupForm onClickNext={() => {}} />  */}
 
-                    <EventBlockForm onClickNext={() => {}} />
+                    {/* <EventBlockForm onClickNext={() => {}} /> */}
 
-                    <div class="section-title">Rounds</div>
-                    <div class="paper flex flex-col gap-6">
-                        <input placeholder="Nome" class="input input-full" />
-                        <div class="flex gap-6">
-                            <input placeholder="Nome" class="input input-full" />
-                            <input placeholder="Nome" class="input w-32" />
-                        </div>
-                        <button class="btn btn-light self-end">Remover</button>
-                    </div>
+                    <RoundForm onClickNext={() => {}} />
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">

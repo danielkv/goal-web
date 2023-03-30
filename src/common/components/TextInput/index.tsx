@@ -5,7 +5,7 @@ export interface TextInputProps {
     type?: 'text' | 'email' | 'tel' | 'password' | 'url' | 'number' | 'date'
     label?: string
     placeholder?: string
-    value: string | number | undefined
+    value?: string | number | undefined
     error: string
     required?: boolean
     class?: JSX.HTMLAttributes<HTMLDivElement>['class']
@@ -20,7 +20,13 @@ const TextInput: Component<TextInputProps> = (props) => {
 
     return (
         <div class={props.class}>
-            <input placeholder={props.label} class="input input-full" {...inputProps} />
+            <input
+                {...inputProps}
+                id={props.name}
+                placeholder={props.label}
+                class="input input-full"
+                value={props.value}
+            />
             {props.error && <div class="text-red-300">{props.error}</div>}
         </div>
     )

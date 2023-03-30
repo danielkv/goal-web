@@ -1,18 +1,20 @@
 export type EventType = 'for_time' | 'max_weight' | 'emom' | 'amrap'
 
-export interface MovementWeight {
-    type: 'kg' | 'lb' | '%'
-    value: number
+export type WeightTypes = 'kg' | 'lb' | '%' | 'none'
+
+export type MovementWeight = {
+    type: WeightTypes
+    value?: number
 }
 
-export interface EventMovement {
+export type EventMovement = {
     name: string
     reps: number
     weight?: MovementWeight
     videoUrl?: string
 }
 
-export interface EventRound {
+export type EventRound = {
     name?: string
     repeat?: number
     movements: EventMovement[]
