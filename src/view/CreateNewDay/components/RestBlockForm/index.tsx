@@ -52,7 +52,7 @@ const RestBlockForm: Component<RestBlockFormProps> = ({ onClickNext }) => {
             </Field>
 
             <button class="btn btn-main self-end" type="submit">
-                Adicionar 1 Round
+                Confirmar
             </button>
         </Form>
     )

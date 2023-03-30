@@ -36,7 +36,7 @@ const GroupForm: Component<GroupFormProps> = ({ onClickNext }) => {
                 )}
             </Field>
             <button class="btn btn-main self-end" type="submit">
-                Adicionar 1 bloco
+                Confirmar
             </button>
         </Form>
     )

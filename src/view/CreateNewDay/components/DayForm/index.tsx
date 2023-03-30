@@ -60,8 +60,9 @@ const DayForm: Component<DayFormProps> = ({ onClickNext }) => {
                     />
                 )}
             </Field>
+
             <button class="btn btn-main self-end" type="submit">
-                Adicionar 1 grupo
+                Confirmar
             </button>
         </Form>
     )

@@ -1,4 +1,4 @@
-import { Component, For, JSX, Show } from 'solid-js'
+import { Component, For, JSX } from 'solid-js'
 import {
     createForm,
     Field,
@@ -151,7 +151,7 @@ const RoundForm: Component<BlockFormProps> = ({ onClickNext }) => {
             </button>
 
             <button class="btn btn-main self-end" type="submit">
-                Adicionar 1 Round
+                Confirmar
             </button>
         </Form>
     )

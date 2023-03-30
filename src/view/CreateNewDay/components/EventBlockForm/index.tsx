@@ -99,7 +99,7 @@ const EventBlockForm: Component<BlockFormProps> = ({ onClickNext }) => {
             </div>
 
             <button class="btn btn-main self-end" type="submit">
-                Adicionar 1 Round
+                Confirmar
             </button>
         </Form>
     )

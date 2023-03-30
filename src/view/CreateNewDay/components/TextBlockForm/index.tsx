@@ -1,5 +1,5 @@
 import { Component, For, JSX, Show } from 'solid-js'
-import { createForm, Field, Form, zodForm, SubmitHandler, FieldArray } from '@modular-forms/solid'
+import { createForm, Field, Form, zodForm, SubmitHandler } from '@modular-forms/solid'
 import { textBlockInitialValues, restBlockBlockFormSchema, TRestBlockForm } from './config'
 
 import TextInput from '../../../../common/components/TextInput'
