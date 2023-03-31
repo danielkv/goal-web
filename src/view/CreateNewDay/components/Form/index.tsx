@@ -1,10 +1,11 @@
-import { get, isNumber } from 'radash'
-
-import { Component, createMemo, createSignal, onMount } from 'solid-js'
+import { Component, Match, Switch, createMemo, createSignal } from 'solid-js'
 
 import Breadcrumb from '@components/Breadcrumb'
-import { NestedKeyOf, Paths } from '@interfaces/app'
+import { IBreadcrumbItem } from '@components/Breadcrumb/types'
+import { NestedKeyOf } from '@interfaces/app'
 import { Day } from '@models/day'
+import { breadCrumbLabelMaps } from '@view/CreateNewDay/config'
+import { buildTree, getCurrentForm } from '@view/CreateNewDay/utils'
 
 import DayForm from '../DayForm'
 import GroupForm from '../GroupForm'
@@ -13,43 +14,50 @@ import BlockForm from '../blocks'
 
 type CurrentPath = `day.${NestedKeyOf<Day>}` | 'day'
 
-const [currentPath, setCurrentPath] = createSignal<CurrentPath>('day.groups.0.name')
-
-function extract(path: string) {
-    const regex = /([\w\-]+)/gm
-    const paths = [...path.matchAll(regex)].map((item) => Number(item[0]) || item[0])
-    return paths
-}
-
-const currentForm = createMemo(() => {
-    const extractedPaths = extract(currentPath())
-    let lastPath = ''
-
-    extractedPaths.forEach((item, index) => {
-        if (!isNumber(item)) lastPath = item
-    })
-
-    return lastPath
-})
+const [currentPath, setCurrentPath] = createSignal<CurrentPath>('day.groups.0.blocks.1')
 
 const Form: Component = () => {
+    const currentForm = createMemo(() => getCurrentForm(currentPath()))
+    const breadcrumbItems = createMemo<IBreadcrumbItem[]>(() => {
+        const tree = buildTree(currentPath())
+
+        return tree.map((item, treeIndex) => {
+            const [form, formIndex] = getCurrentForm(item)
+
+            const formLabel = breadCrumbLabelMaps[form] || form
+            const label = formIndex !== undefined ? `${formLabel} - ${formIndex}` : formLabel
+
+            return {
+                key: item,
+                label,
+                buttonDisabled: treeIndex + 1 >= tree.length,
+            }
+        })
+    })
+
     return (
         <>
             <div class="flex flex-1 flex-col overflow-auto">
                 <div class="flex flex-col p-8 gap-6">
-                    <Breadcrumb items={[{ key: 'day', label: 'Dia', buttonDisabled: true }]} />
+                    <Breadcrumb
+                        onClick={(key) => setCurrentPath(key as CurrentPath)}
+                        items={breadcrumbItems()}
+                    />
 
-                    {/* <DayForm onClickNext={() => {}} /> */}
-
-                    {/* <GroupForm onClickNext={() => {}} />  */}
-
-                    {/* <EventBlockForm onClickNext={() => {}} /> */}
-
-                    {/* <RoundForm onClickNext={() => {}} /> */}
-
-                    {/* <RestBlockForm onClickNext={() => {}} /> */}
-
-                    <BlockForm block={{ type: '' }} onClickNext={() => {}} />
+                    <Switch>
+                        <Match when={currentForm()[0] === 'day'}>
+                            <DayForm onClickNext={() => {}} />
+                        </Match>
+                        <Match when={currentForm()[0] === 'groups'}>
+                            <GroupForm onClickNext={() => {}} />
+                        </Match>
+                        <Match when={currentForm()[0] === 'blocks'}>
+                            <BlockForm block={{ type: '' }} onClickNext={() => {}} />
+                        </Match>
+                        <Match when={currentForm()[0] === 'rounds'}>
+                            <RoundForm onClickNext={() => {}} />
+                        </Match>
+                    </Switch>
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">

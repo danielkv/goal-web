@@ -5,14 +5,14 @@ import { Component, For } from 'solid-js'
 import BreadcrumbItem from './item'
 import { BreadcrumbProps } from './types'
 
-const Breadcrumb: Component<BreadcrumbProps> = ({ items, onClick }) => {
+const Breadcrumb: Component<BreadcrumbProps> = (props) => {
     const handleItemClick = (key: string) => {
-        return onClick?.(key)
+        return props.onClick?.(key)
     }
 
     return (
         <div class="flex gap-1 items-center">
-            <For each={items}>
+            <For each={props.items}>
                 {(item, index) => (
                     <>
                         {index() > 0 && <FiChevronsRight color="black" />}

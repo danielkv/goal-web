@@ -50,3 +50,10 @@ export const initialDayValues: Day = {
     period: 1,
     groups: [],
 }
+
+export const breadCrumbLabelMaps: Record<string, string> = {
+    day: 'Dia',
+    groups: 'Grupo',
+    blocks: 'Bloco',
+    round: 'Round',
+}
