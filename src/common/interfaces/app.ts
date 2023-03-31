@@ -23,3 +23,15 @@ export type Paths<T> = T extends Array<infer V>
     : {
           [K in keyof T]-?: ValuePath<K & string, T[K]>
       }[keyof T]
+
+export type NestedKeyOf<ObjectType extends object> = ObjectType extends Array<infer T>
+    ? T extends object
+        ? number | `${number}.${NestedKeyOf<T>}`
+        : number
+    : {
+          [Key in keyof ObjectType]: ObjectType[Key] extends object
+              ? Key | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
+              : Key
+      }[keyof ObjectType & (string | number)]
+
+type Type = NestedKeyOf<{ abc: string; dfg: string; obj: [{ abc: string }]; oi: [1] }>
