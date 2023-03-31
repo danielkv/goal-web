@@ -61,20 +61,33 @@ export const breadCrumbLabelMaps: Record<string, string> = {
 }
 
 export const [dayStore, setDayStore] = createStore<Day>({
-    name: 'teste',
+    name: 'Semana deload',
     date: '2023-03-07',
     period: 1,
     groups: [
         {
             name: 'Aquecimento',
             blocks: [
+                { type: 'rest', time: 600, text: 'ola bloco rest' },
+                { type: 'text', text: 'ola bloco de texto' },
                 {
                     type: 'event',
                     event_type: 'for_time',
+                    rounds: [
+                        {
+                            name: '',
+                            repeat: 2,
+                            movements: [
+                                {
+                                    name: '1233',
+                                    reps: 0,
+                                },
+                            ],
+                        },
+                    ],
                     timecap: 600,
                     info: '',
                     name: '',
-                    rounds: [],
                 },
             ],
         },

@@ -1,0 +1,57 @@
+Arguments: 
+  /home/daniel/.nvm/versions/node/v18.12.1/bin/node /home/daniel/.nvm/versions/node/v18.12.1/bin/yarn add dayjs
+
+PATH: 
+  /opt/gradle/gradle-7.4.2/bin:/home/daniel/.vscode-server/bin/7f329fe6c66b0f86ae1574c2911b681ad5a45d63/bin/remote-cli:/home/daniel/.local/share/pnpm:/opt/gradle/gradle-7.4.2/bin:/home/daniel/.nvm/versions/node/v18.12.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/OpenJDK/jdk-8.0.352.08-hotspot/bin:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/dev/JDK/bin:/mnt/c/dev/Android/cmdline-tools/8.0/bin:/mnt/c/dev/Android/platform-tools:/mnt/c/dev/Android/platforms:/mnt/c/dev/Android/emulator:/mnt/c/Users/danie/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/danie/AppData/Local/Programs/Microsoft VS Code/bin:/usr/lib/jvm/java-11-openjdk-amd64/bin:/home/daniel/Android/emulator:/home/daniel/Android/tools:/home/daniel/Android/tools/bin:/home/daniel/Android/platform-tools:/usr/lib/jvm/java-11-openjdk-amd64/bin:/home/daniel/Android/emulator:/home/daniel/Android/tools:/home/daniel/Android/tools/bin:/home/daniel/Android/platform-tools
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.12.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: EEXIST: file already exists, mkdir '/home/daniel/projects/goal-web/node_modules/@trivago/prettier-plugin-sort-imports/node_modules/@babel'
+
+npm manifest: 
+  {
+  	"name": "vite-template-solid",
+  	"version": "0.0.0",
+  	"description": "",
+  	"scripts": {
+  		"start": "vite",
+  		"dev": "vite --open",
+  		"build": "vite build",
+  		"serve": "vite preview"
+  	},
+  	"license": "MIT",
+  	"devDependencies": {
+  		"@trivago/prettier-plugin-sort-imports": "^4.1.1",
+  		"autoprefixer": "^10.4.14",
+  		"postcss": "^8.4.21",
+  		"tailwindcss": "^3.3.0",
+  		"typescript": "^4.9.5",
+  		"vite": "^4.1.1",
+  		"vite-plugin-solid": "^2.5.0",
+  		"vite-plugin-solid-svg": "^0.6.1"
+  	},
+  	"dependencies": {
+  		"@modular-forms/solid": "^0.11.0",
+  		"@solidjs/router": "^0.8.2",
+  		"prettier": "^2.8.7",
+  		"radash": "^10.8.1",
+  		"solid-icons": "^1.0.4",
+  		"solid-js": "^1.6.10",
+  		"vite-tsconfig-paths": "^4.0.7",
+  		"zod": "^3.21.4"
+  	}
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

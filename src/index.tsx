@@ -1,10 +1,15 @@
 /* @refresh reload */
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+
 import { render } from 'solid-js/web'
 
 import { Router } from '@solidjs/router'
 
 import App from './App'
 import './index.css'
+
+dayjs.extend(duration)
 
 const root = document.getElementById('root')
 

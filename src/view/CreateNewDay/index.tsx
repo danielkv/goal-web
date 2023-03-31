@@ -1,6 +1,7 @@
 import { Component } from 'solid-js'
 
 import Form from './components/Form'
+import WorksheetPreview from './components/WorksheetPreview'
 import { dayStore } from './config'
 
 const CreateNewDay: Component = () => {
@@ -13,7 +14,8 @@ const CreateNewDay: Component = () => {
                 height: 'calc(100% - 80px)',
             }}
         >
-            <div class="">
+            <div class="flex flex-1 flex-col basis-auto overflow-auto">
+                <WorksheetPreview day={dayStore} />
                 <pre>{JSON.stringify(dayStore, null, 4)}</pre>
             </div>
             <div class="bg-gray-500 flex flex-col basis-auto">
