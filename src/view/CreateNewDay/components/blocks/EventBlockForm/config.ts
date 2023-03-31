@@ -5,8 +5,9 @@ import { ZodShape } from '@interfaces/app'
 import { EventBlock, EventType } from '@models/block'
 
 import { initialEventBlockValues } from '../../../config'
+import { eventRoundFormSchema } from '../../RoundForm/config'
 
-export type TEventBlockForm = Omit<EventBlock, 'rounds' | 'type'> & {
+export type TEventBlockForm = Omit<EventBlock, 'type'> & {
     each?: number
     for?: number
     timecap?: number
@@ -19,10 +20,7 @@ export const eventTypes: { key: EventType; label: string }[] = [
     { key: 'max_weight', label: 'Carga máxima' },
 ]
 
-export const eventBlockInitialValues: TEventBlockForm = omit(initialEventBlockValues, [
-    'rounds',
-    'type',
-])
+export const eventBlockInitialValues: TEventBlockForm = omit(initialEventBlockValues, ['type'])
 
 export const eventBlockFormSchema = z
     .object<ZodShape<TEventBlockForm>>({
@@ -31,9 +29,9 @@ export const eventBlockFormSchema = z
         timecap: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
         each: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
         for: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
+        rounds: z.array(eventRoundFormSchema),
     })
     .superRefine((values, ctx) => {
-        console.log(values)
         if (values.event_type === 'emom') {
             if (!values.each)
                 ctx.addIssue({

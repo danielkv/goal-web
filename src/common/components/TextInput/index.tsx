@@ -6,13 +6,13 @@ export interface TextInputProps {
     label?: string
     placeholder?: string
     value?: string | number | undefined
-    error: string
+    error?: string
     required?: boolean
     class?: JSX.HTMLAttributes<HTMLDivElement>['class']
-    ref: (element: HTMLInputElement) => void
-    onInput: JSX.EventHandler<HTMLInputElement, InputEvent>
-    onChange: JSX.EventHandler<HTMLInputElement, Event>
-    onBlur: JSX.EventHandler<HTMLInputElement, FocusEvent>
+    ref?: (element: HTMLInputElement) => void
+    onInput?: JSX.EventHandler<HTMLInputElement, InputEvent>
+    onChange?: JSX.EventHandler<HTMLInputElement, Event>
+    onBlur?: JSX.EventHandler<HTMLInputElement, FocusEvent>
 }
 
 const TextInput: Component<TextInputProps> = (props) => {

@@ -5,7 +5,7 @@ import { EventMovement, EventRound, MovementWeight, WeightTypes } from '@models/
 
 import { initialEventRoundValues } from '../../config'
 
-export type TRoundForm = Omit<EventRound, ''>
+export type TRoundForm = EventRound
 
 export const roundInitialValues: TRoundForm = initialEventRoundValues
 
@@ -16,7 +16,7 @@ export const weightTypes: { key: WeightTypes; label: string }[] = [
     { key: 'lb', label: 'Libras' },
 ]
 
-export const eventBlockFormSchema = z.object<ZodShape<TRoundForm>>({
+export const eventRoundFormSchema = z.object<ZodShape<TRoundForm>>({
     name: z.string(),
     repeat: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
     movements: z.array(

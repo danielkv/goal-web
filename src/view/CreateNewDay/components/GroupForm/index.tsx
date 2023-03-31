@@ -1,18 +1,20 @@
 import { Component } from 'solid-js'
 
 import TextInput from '@components/TextInput'
+import { Group } from '@models/day'
 import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
 
-import { TGroupForm, groupFormSchema, groupInitialValues } from './config'
+import { TGroupForm, groupFormSchema } from './config'
 
 export interface GroupFormProps {
     onClickNext(data: TGroupForm): void
+    group: Group
 }
 
-const GroupForm: Component<GroupFormProps> = ({ onClickNext }) => {
+const GroupForm: Component<GroupFormProps> = ({ onClickNext, group }) => {
     const loginForm = createForm<TGroupForm>({
         validate: zodForm(groupFormSchema),
-        initialValues: groupInitialValues,
+        initialValues: group,
     })
 
     const handleSubmit: SubmitHandler<TGroupForm> = (values) => {

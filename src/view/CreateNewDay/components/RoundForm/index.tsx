@@ -1,6 +1,7 @@
 import { Component, For, JSX } from 'solid-js'
 
 import TextInput from '@components/TextInput'
+import { EventRound } from '@models/block'
 import {
     Field,
     FieldArray,
@@ -14,21 +15,29 @@ import {
 
 import { initialRoundMovementValues } from '../../config'
 
-import { TRoundForm, eventBlockFormSchema, roundInitialValues, weightTypes } from './config'
+import { TRoundForm, eventRoundFormSchema, weightTypes } from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TRoundForm): void
+    round: EventRound
 }
 
-const RoundForm: Component<BlockFormProps> = ({ onClickNext }) => {
+const RoundForm: Component<BlockFormProps> = ({ onClickNext, round }) => {
     const form = createForm<TRoundForm>({
-        validate: zodForm(eventBlockFormSchema),
-        initialValues: roundInitialValues,
+        validate: zodForm(eventRoundFormSchema),
+        initialValues: round,
         validateOn: 'submit',
     })
 
     const handleSubmit: SubmitHandler<TRoundForm> = (values) => {
-        onClickNext(values)
+        const newValues = {
+            ...values,
+            movements: values.movements.map((mov) => {
+                if (mov.weight?.type === 'none') delete mov.weight
+                return mov
+            }),
+        }
+        onClickNext(newValues)
     }
 
     const handleClickAddMovement: JSX.CustomEventHandlersCamelCase<HTMLButtonElement>['onClick'] = (
@@ -78,16 +87,13 @@ const RoundForm: Component<BlockFormProps> = ({ onClickNext }) => {
                             <div class="paper flex flex-col gap-6">
                                 <Field of={form} name={`${array.name}.${index()}.name`}>
                                     {(field) => (
-                                        <>
-                                            <div>{field.value}</div>
-                                            <TextInput
-                                                {...field.props}
-                                                class="flex-1"
-                                                label="Nome"
-                                                value={field.value}
-                                                error={field.error}
-                                            />
-                                        </>
+                                        <TextInput
+                                            {...field.props}
+                                            class="flex-1"
+                                            label="Nome"
+                                            value={field.value}
+                                            error={field.error}
+                                        />
                                     )}
                                 </Field>
                                 <Field of={form} name={`${array.name}.${index()}.reps`}>

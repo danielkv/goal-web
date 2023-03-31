@@ -9,6 +9,6 @@ export type TRestBlockForm = Omit<TextBlock, 'type'>
 
 export const textBlockInitialValues: TRestBlockForm = initialTextBlockValues
 
-export const restBlockBlockFormSchema = z.object<ZodShape<TRestBlockForm>>({
+export const textBlockFormSchema = z.object<ZodShape<TRestBlockForm>>({
     text: z.string({ required_error: 'Texto é obrigatório' }).nonempty('Texto é obrigatório'),
 })

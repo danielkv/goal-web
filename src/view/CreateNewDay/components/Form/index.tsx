@@ -1,10 +1,21 @@
+import { get } from 'radash'
+
 import { Component, Match, Switch, createMemo, createSignal } from 'solid-js'
+import { produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
 import { NestedKeyOf } from '@interfaces/app'
 import { Day } from '@models/day'
-import { breadCrumbLabelMaps } from '@view/CreateNewDay/config'
+import {
+    breadCrumbLabelMaps,
+    dayStore,
+    initialBlockValues,
+    initialDayValues,
+    initialEventRoundValues,
+    initialGroupValues,
+    setDayStore,
+} from '@view/CreateNewDay/config'
 import { buildTree, getCurrentForm } from '@view/CreateNewDay/utils'
 
 import DayForm from '../DayForm'
@@ -14,18 +25,26 @@ import BlockForm from '../blocks'
 
 type CurrentPath = `day.${NestedKeyOf<Day>}` | 'day'
 
-const [currentPath, setCurrentPath] = createSignal<CurrentPath>('day.groups.0.blocks.1')
+const [currentPath, setCurrentPath] = createSignal<CurrentPath>('day')
+
+function getCurrentObject<T>(path: string): T {
+    const normalizedPath = path.replace(/day.?/, '')
+    const object = get<Day, T>(dayStore, normalizedPath)
+
+    return object as T
+}
 
 const Form: Component = () => {
     const currentForm = createMemo(() => getCurrentForm(currentPath()))
     const breadcrumbItems = createMemo<IBreadcrumbItem[]>(() => {
-        const tree = buildTree(currentPath())
+        const path = currentPath()
+        const tree = buildTree(path)
 
         return tree.map((item, treeIndex) => {
             const [form, formIndex] = getCurrentForm(item)
 
             const formLabel = breadCrumbLabelMaps[form] || form
-            const label = formIndex !== undefined ? `${formLabel} - ${formIndex}` : formLabel
+            const label = formIndex !== -1 ? `${formLabel} - ${formIndex}` : formLabel
 
             return {
                 key: item,
@@ -46,16 +65,89 @@ const Form: Component = () => {
 
                     <Switch>
                         <Match when={currentForm()[0] === 'day'}>
-                            <DayForm onClickNext={() => {}} />
+                            <DayForm
+                                onClickNext={(data) => {
+                                    setDayStore({ ...data })
+                                    setCurrentPath('day.groups.0')
+                                }}
+                                day={getCurrentObject(currentPath()) || initialDayValues}
+                            />
                         </Match>
                         <Match when={currentForm()[0] === 'groups'}>
-                            <GroupForm onClickNext={() => {}} />
+                            <GroupForm
+                                onClickNext={(data) => {
+                                    const currGroupIndex = currentForm()[2]['groups']
+
+                                    setDayStore(
+                                        produce((d) => {
+                                            if (d.groups.length <= 0)
+                                                return d.groups.push({ ...data, blocks: [] })
+
+                                            d.groups[currGroupIndex] = {
+                                                ...data,
+                                                blocks: d.groups[currGroupIndex].blocks,
+                                            }
+                                        })
+                                    )
+                                    setCurrentPath(`${currentPath()}.blocks.0` as CurrentPath)
+                                }}
+                                group={getCurrentObject(currentPath()) || initialGroupValues}
+                            />
                         </Match>
                         <Match when={currentForm()[0] === 'blocks'}>
-                            <BlockForm block={{ type: '' }} onClickNext={() => {}} />
+                            <BlockForm
+                                block={getCurrentObject(currentPath()) || initialBlockValues}
+                                onClickNext={(data) => {
+                                    const currGroupIndex = currentForm()[2]['groups']
+                                    const currBlockIndex = currentForm()[2]['blocks']
+
+                                    setDayStore(
+                                        produce((d) => {
+                                            if (d.groups[currGroupIndex].blocks.length <= 0)
+                                                return d.groups[currGroupIndex].blocks.push({
+                                                    ...data,
+                                                })
+                                            d.groups[currGroupIndex].blocks[currBlockIndex] = {
+                                                ...data,
+                                            }
+                                        })
+                                    )
+
+                                    setCurrentPath(`${currentPath()}.rounds.0` as CurrentPath)
+                                }}
+                            />
                         </Match>
                         <Match when={currentForm()[0] === 'rounds'}>
-                            <RoundForm onClickNext={() => {}} />
+                            <RoundForm
+                                onClickNext={(data) => {
+                                    const currGroupIndex = currentForm()[2]['groups']
+                                    const currBlockIndex = currentForm()[2]['blocks']
+                                    const currRoundsIndex = currentForm()[2]['rounds']
+
+                                    console.log(data)
+
+                                    setDayStore(
+                                        produce((d) => {
+                                            const block =
+                                                d.groups[currGroupIndex].blocks[currBlockIndex]
+
+                                            if (block.type !== 'event') return
+
+                                            if (block.rounds.length <= 0)
+                                                return block.rounds.push({
+                                                    ...data,
+                                                })
+
+                                            block.rounds[currRoundsIndex] = {
+                                                ...data,
+                                            }
+                                        })
+                                    )
+
+                                    setCurrentPath(`${currentPath()}.rounds.0` as CurrentPath)
+                                }}
+                                round={getCurrentObject(currentPath()) || initialEventRoundValues}
+                            />
                         </Match>
                     </Switch>
                 </div>

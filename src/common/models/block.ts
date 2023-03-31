@@ -22,13 +22,13 @@ export type EventRound = {
 
 export type BlockType = 'event' | 'rest' | 'text' | ''
 
-export interface EventBlockEMOM {
+export type EventBlockEMOM = {
     event_type: 'emom'
     each: number
     for: number
 }
 
-export interface EventBlockTimecap {
+export type EventBlockTimecap = {
     event_type: Exclude<EventType, 'emom'>
     timecap: number // seconds
 }
@@ -51,7 +51,7 @@ export type TextBlock = {
     text: string
 }
 
-interface EmptyBlock {
+type EmptyBlock = {
     type: ''
 }
 

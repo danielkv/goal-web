@@ -9,20 +9,26 @@ export function extractPaths(path: string) {
     return paths
 }
 
-export function getCurrentForm(path: string): [string, number] | [string] {
+export function getCurrentForm(path: string): [string, number, Record<string, number>] {
     const extractedPaths = extractPaths(path)
     let currentForm = ''
+    const indexMap: Record<string, number> = {}
     const lastItem = extractedPaths.at(-1)
-    let index = isNumber(lastItem) ? lastItem : null
+    let index = isNumber(lastItem) ? lastItem : -1
 
-    let i = extractedPaths.length
-    do {
-        const last = extractedPaths.at(i)
-        if (last && !isNumber(last)) currentForm = last
-        i--
-    } while (!currentForm && i >= 0)
+    extractedPaths.forEach((element, idx) => {
+        if (!isNumber(element)) {
+            currentForm = element
 
-    return index !== null ? [currentForm, index] : [currentForm]
+            if (['groups', 'blocks', 'rounds'].includes(element)) {
+                const arrayIndex = extractedPaths[idx + 1]
+
+                if (arrayIndex !== undefined && isNumber(arrayIndex)) indexMap[element] = arrayIndex
+            }
+        }
+    })
+
+    return [currentForm, index, indexMap]
 }
 
 export function buildTree(path: string) {

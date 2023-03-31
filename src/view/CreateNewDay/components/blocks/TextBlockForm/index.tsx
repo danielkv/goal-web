@@ -3,7 +3,7 @@ import { Component } from 'solid-js'
 import TextInput from '@components/TextInput'
 import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
 
-import { TRestBlockForm, restBlockBlockFormSchema, textBlockInitialValues } from './config'
+import { TRestBlockForm, textBlockFormSchema, textBlockInitialValues } from './config'
 
 export interface TextBlockFormProps {
     onClickNext(data: TRestBlockForm): void
@@ -11,7 +11,7 @@ export interface TextBlockFormProps {
 
 const TextBlockForm: Component<TextBlockFormProps> = ({ onClickNext }) => {
     const form = createForm<TRestBlockForm>({
-        validate: zodForm(restBlockBlockFormSchema),
+        validate: zodForm(textBlockFormSchema),
         initialValues: textBlockInitialValues,
         validateOn: 'submit',
     })

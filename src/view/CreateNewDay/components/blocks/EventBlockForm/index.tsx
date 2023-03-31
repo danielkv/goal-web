@@ -1,28 +1,25 @@
 import { Component, For, Show } from 'solid-js'
 
 import TextInput from '@components/TextInput'
+import { EventBlock } from '@models/block'
 import { Field, Form, SubmitHandler, createForm, getValue, zodForm } from '@modular-forms/solid'
 
-import {
-    TEventBlockForm,
-    eventBlockFormSchema,
-    eventBlockInitialValues,
-    eventTypes,
-} from './config'
+import { TEventBlockForm, eventBlockFormSchema, eventTypes } from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TEventBlockForm): void
+    block: EventBlock
 }
 
-const EventBlockForm: Component<BlockFormProps> = ({ onClickNext }) => {
+const EventBlockForm: Component<BlockFormProps> = ({ onClickNext, block }) => {
     const form = createForm<TEventBlockForm>({
         validate: zodForm(eventBlockFormSchema),
-        initialValues: eventBlockInitialValues,
-        validateOn: 'submit',
+        initialValues: block,
     })
 
     const handleSubmit: SubmitHandler<TEventBlockForm> = (values) => {
-        onClickNext(values)
+        const newValues = { ...values, rounds: block.rounds || [] }
+        onClickNext(newValues)
     }
 
     return (
@@ -35,11 +32,11 @@ const EventBlockForm: Component<BlockFormProps> = ({ onClickNext }) => {
             <Field of={form} name="name">
                 {(field) => (
                     <TextInput
+                        {...field.props}
                         class="flex-1"
                         label="Nome"
                         value={field.value}
                         error={field.error}
-                        {...field.props}
                     />
                 )}
             </Field>
@@ -61,24 +58,24 @@ const EventBlockForm: Component<BlockFormProps> = ({ onClickNext }) => {
                     <Field of={form} name="each">
                         {(field) => (
                             <TextInput
+                                {...field.props}
                                 class="flex-1"
                                 label="Cada (seg)"
                                 type="number"
                                 value={field.value}
                                 error={field.error}
-                                {...field.props}
                             />
                         )}
                     </Field>
                     <Field of={form} name="for">
                         {(field) => (
                             <TextInput
+                                {...field.props}
                                 class="flex-1"
                                 label="Por (seg)"
                                 type="number"
                                 value={field.value}
                                 error={field.error}
-                                {...field.props}
                             />
                         )}
                     </Field>
@@ -87,12 +84,12 @@ const EventBlockForm: Component<BlockFormProps> = ({ onClickNext }) => {
                     <Field of={form} name="timecap">
                         {(field) => (
                             <TextInput
+                                {...field.props}
                                 class="flex-1"
                                 label="Timecap"
                                 type="number"
                                 value={field.value}
                                 error={field.error}
-                                {...field.props}
                             />
                         )}
                     </Field>

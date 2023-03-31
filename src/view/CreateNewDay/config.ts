@@ -1,3 +1,5 @@
+import { createStore } from 'solid-js/store'
+
 import {
     Block,
     EventBlock,
@@ -57,3 +59,24 @@ export const breadCrumbLabelMaps: Record<string, string> = {
     blocks: 'Bloco',
     round: 'Round',
 }
+
+export const [dayStore, setDayStore] = createStore<Day>({
+    name: 'teste',
+    date: '2023-03-07',
+    period: 1,
+    groups: [
+        {
+            name: 'Aquecimento',
+            blocks: [
+                {
+                    type: 'event',
+                    event_type: 'for_time',
+                    timecap: 600,
+                    info: '',
+                    name: '',
+                    rounds: [],
+                },
+            ],
+        },
+    ],
+})

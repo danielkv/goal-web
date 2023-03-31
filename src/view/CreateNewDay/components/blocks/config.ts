@@ -5,7 +5,11 @@ import { Block, BlockType } from '@models/block'
 
 import { initialBlockValues } from '../../config'
 
-export type TBlockForm = Pick<Block, 'type'>
+import { eventBlockFormSchema } from './EventBlockForm/config'
+import { restBlockFormSchema } from './RestBlockForm/config'
+import { textBlockFormSchema } from './TextBlockForm/config'
+
+export type TBlockForm = Block
 
 export const blockInitialValues: TBlockForm = initialBlockValues
 
@@ -16,6 +20,12 @@ export const blockTypes: { key: BlockType; label: string }[] = [
     { key: 'text', label: 'Texto' },
 ]
 
-export const blockBlockFormSchema = z.object<ZodShape<TBlockForm>>({
-    type: z.enum(['event', 'rest', 'text', '']),
-})
+export const blockBlockFormSchema = z.union([
+    z.object<ZodShape<TBlockForm>>({
+        type: z.enum(['']),
+        info: z.optional(z.string()),
+    }),
+    eventBlockFormSchema,
+    textBlockFormSchema,
+    restBlockFormSchema,
+])

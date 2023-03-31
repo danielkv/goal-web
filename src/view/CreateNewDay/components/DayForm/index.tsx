@@ -1,18 +1,20 @@
 import { Component } from 'solid-js'
 
 import TextInput from '@components/TextInput'
+import { Day } from '@models/day'
 import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
 
-import { TDayForm, dayForemInitialValues, dayFormSchema } from './config'
+import { TDayForm, dayFormSchema } from './config'
 
 export interface DayFormProps {
     onClickNext(data: TDayForm): void
+    day: Day
 }
 
-const DayForm: Component<DayFormProps> = ({ onClickNext }) => {
+const DayForm: Component<DayFormProps> = ({ onClickNext, day }) => {
     const loginForm = createForm<TDayForm>({
         validate: zodForm(dayFormSchema),
-        initialValues: dayForemInitialValues,
+        initialValues: day,
     })
 
     const handleSubmit: SubmitHandler<TDayForm> = (values) => {
@@ -30,22 +32,24 @@ const DayForm: Component<DayFormProps> = ({ onClickNext }) => {
                 <Field of={loginForm} name="period">
                     {(field) => (
                         <TextInput
+                            {...field.props}
                             class="flex-1"
                             label="Período"
+                            type="number"
                             value={field.value}
                             error={field.error}
-                            {...field.props}
                         />
                     )}
                 </Field>
                 <Field of={loginForm} name="date">
                     {(field) => (
                         <TextInput
+                            {...field.props}
                             class="flex-1"
                             label="Data"
+                            type="date"
                             value={field.value}
                             error={field.error}
-                            {...field.props}
                         />
                     )}
                 </Field>
