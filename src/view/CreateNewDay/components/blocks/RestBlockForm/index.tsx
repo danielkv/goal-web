@@ -1,23 +1,25 @@
 import { Component } from 'solid-js'
 
 import TextInput from '@components/TextInput'
+import { RestBlock } from '@models/block'
 import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
 
-import { TRestBlockForm, restBlockFormSchema, restBlockInitialValues } from './config'
+import { TRestBlockForm, restBlockFormSchema } from './config'
 
 export interface RestBlockFormProps {
     onClickNext(data: TRestBlockForm): void
+    block: RestBlock
 }
 
-const RestBlockForm: Component<RestBlockFormProps> = ({ onClickNext }) => {
+const RestBlockForm: Component<RestBlockFormProps> = (props) => {
     const form = createForm<TRestBlockForm>({
         validate: zodForm(restBlockFormSchema),
-        initialValues: restBlockInitialValues,
+        initialValues: props.block,
         validateOn: 'submit',
     })
 
     const handleSubmit: SubmitHandler<TRestBlockForm> = (values) => {
-        onClickNext(values)
+        props.onClickNext(values)
     }
 
     return (

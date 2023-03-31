@@ -11,15 +11,15 @@ export interface BlockFormProps {
     block: EventBlock
 }
 
-const EventBlockForm: Component<BlockFormProps> = ({ onClickNext, block }) => {
+const EventBlockForm: Component<BlockFormProps> = (props) => {
     const form = createForm<TEventBlockForm>({
         validate: zodForm(eventBlockFormSchema),
-        initialValues: block,
+        initialValues: props.block,
     })
 
     const handleSubmit: SubmitHandler<TEventBlockForm> = (values) => {
-        const newValues = { ...values, rounds: block.rounds || [] }
-        onClickNext(newValues)
+        const newValues = { ...values, rounds: props.block.rounds || [] }
+        props.onClickNext(newValues)
     }
 
     return (

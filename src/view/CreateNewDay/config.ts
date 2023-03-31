@@ -1,3 +1,4 @@
+import { createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 import {
@@ -10,6 +11,8 @@ import {
     TextBlock,
 } from '@models/block'
 import { Day, Group } from '@models/day'
+
+import { Path } from './types'
 
 export const initialMovementWeightValues: MovementWeight = {
     type: 'kg',
@@ -59,6 +62,8 @@ export const breadCrumbLabelMaps: Record<string, string> = {
     blocks: 'Bloco',
     round: 'Round',
 }
+
+export const [currentPath, setCurrentPath] = createSignal<Path>('day')
 
 export const [dayStore, setDayStore] = createStore<Day>({
     name: 'Semana deload',

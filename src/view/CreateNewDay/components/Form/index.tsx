@@ -1,31 +1,29 @@
 import { get } from 'radash'
 
-import { Component, Match, Switch, createMemo, createSignal } from 'solid-js'
+import { Component, Match, Switch, createMemo } from 'solid-js'
 import { produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
-import { NestedKeyOf } from '@interfaces/app'
 import { Day } from '@models/day'
 import {
     breadCrumbLabelMaps,
+    currentPath,
     dayStore,
     initialBlockValues,
     initialDayValues,
     initialEventRoundValues,
     initialGroupValues,
+    setCurrentPath,
     setDayStore,
 } from '@view/CreateNewDay/config'
+import { Path } from '@view/CreateNewDay/types'
 import { buildTree, getCurrentForm } from '@view/CreateNewDay/utils'
 
 import DayForm from '../DayForm'
 import GroupForm from '../GroupForm'
 import RoundForm from '../RoundForm'
 import BlockForm from '../blocks'
-
-type CurrentPath = `day.${NestedKeyOf<Day>}` | 'day'
-
-const [currentPath, setCurrentPath] = createSignal<CurrentPath>('day')
 
 function getCurrentObject<T>(path: string): T {
     const normalizedPath = path.replace(/day.?/, '')
@@ -59,7 +57,7 @@ const Form: Component = () => {
             <div class="flex flex-1 flex-col overflow-auto">
                 <div class="flex flex-col p-8 gap-6">
                     <Breadcrumb
-                        onClick={(key) => setCurrentPath(key as CurrentPath)}
+                        onClick={(key) => setCurrentPath(key as Path)}
                         items={breadcrumbItems()}
                     />
 
@@ -89,7 +87,7 @@ const Form: Component = () => {
                                             }
                                         })
                                     )
-                                    setCurrentPath(`${currentPath()}.blocks.0` as CurrentPath)
+                                    setCurrentPath(`${currentPath()}.blocks.0` as Path)
                                 }}
                                 group={getCurrentObject(currentPath()) || initialGroupValues}
                             />
@@ -113,7 +111,7 @@ const Form: Component = () => {
                                         })
                                     )
 
-                                    setCurrentPath(`${currentPath()}.rounds.0` as CurrentPath)
+                                    setCurrentPath(`${currentPath()}.rounds.0` as Path)
                                 }}
                             />
                         </Match>
@@ -144,7 +142,7 @@ const Form: Component = () => {
                                         })
                                     )
 
-                                    setCurrentPath(`${currentPath()}.rounds.0` as CurrentPath)
+                                    setCurrentPath(`${currentPath()}.rounds.0` as Path)
                                 }}
                                 round={getCurrentObject(currentPath()) || initialEventRoundValues}
                             />

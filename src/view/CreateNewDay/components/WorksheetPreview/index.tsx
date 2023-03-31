@@ -4,6 +4,7 @@ import { Component, For, Match, Switch } from 'solid-js'
 
 import { EventBlock, RestBlock, TextBlock } from '@models/block'
 import { Day } from '@models/day'
+import { Path } from '@view/CreateNewDay/types'
 
 import EventBlockPreview from './eventBlock'
 import RestBlockPreview from './restBlock'
@@ -11,12 +12,23 @@ import TextBlockPreview from './textBlock'
 
 export interface WorksheetPreviewProps {
     day: Day
+    onClickPeace(key: Path): void
 }
 
 const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
+    const handleClickPeace = (key: Path) => {
+        props.onClickPeace(key)
+    }
+
     return (
         <>
-            <div class="flex items-center gap-6 mb-20">
+            <div
+                class="flex items-center gap-6 mb-20 hoverable"
+                onClick={(e) => {
+                    e.stopPropagation()
+                    handleClickPeace(`day`)
+                }}
+            >
                 <div class="w-16 h-16 flex items-center justify-center bg-red-500">
                     {props.day.period}
                 </div>
@@ -27,19 +39,33 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                 </div>
             </div>
             <For each={props.day.groups}>
-                {(group) => (
-                    <div class="flex flex-col items-center text-xl">
+                {(group, blockIndex) => (
+                    <div
+                        class="flex flex-col items-center text-xl hoverable"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleClickPeace(`day.groups.${blockIndex()}`)
+                        }}
+                    >
                         <div class="bg-red-500 px-12 min-w-[350px] py-4 text-center">
                             {group.name}
                         </div>
 
                         <For each={group.blocks}>
-                            {(block, index) => (
+                            {(block, groupIndex) => (
                                 <>
-                                    {index() > 0 && (
+                                    {groupIndex() > 0 && (
                                         <div class="border-t-2 border-gray-500 w-20"></div>
                                     )}
-                                    <div class="m-6">
+                                    <div
+                                        class="m-6 hoverable"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleClickPeace(
+                                                `day.groups.${blockIndex()}.blocks.${groupIndex()}`
+                                            )
+                                        }}
+                                    >
                                         <Switch>
                                             <Match when={block.type === 'rest'}>
                                                 <RestBlockPreview block={block as RestBlock} />
@@ -48,7 +74,11 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                                 <TextBlockPreview block={block as TextBlock} />
                                             </Match>
                                             <Match when={block.type === 'event'}>
-                                                <EventBlockPreview block={block as EventBlock} />
+                                                <EventBlockPreview
+                                                    path={`day.groups.${blockIndex()}.blocks.${groupIndex()}`}
+                                                    onClickPeace={handleClickPeace}
+                                                    block={block as EventBlock}
+                                                />
                                             </Match>
                                         </Switch>
                                     </div>
