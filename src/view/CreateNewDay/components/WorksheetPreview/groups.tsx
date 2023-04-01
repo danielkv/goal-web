@@ -1,7 +1,11 @@
+import { FiTrash2 } from 'solid-icons/fi'
+
 import { Component, For, Match, Switch } from 'solid-js'
+import { produce } from 'solid-js/store'
 
 import { EventBlock, RestBlock, TextBlock } from '@models/block'
 import { Group } from '@models/day'
+import { setCurrentPath, setWorksheetStore } from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
 
 import EventBlockPreview from './blocks/eventBlock'
@@ -13,6 +17,9 @@ export interface GroupsProps {
     pathIndex: Path
     currentPath?: Path
     onClickPeace(key: Path): void
+
+    dayIndex: number
+    periodIndex: number
 }
 
 const Groups: Component<GroupsProps> = (props) => {
@@ -20,10 +27,21 @@ const Groups: Component<GroupsProps> = (props) => {
         props.onClickPeace(key)
     }
 
+    const handleRemoveGroup = (groupIndex: number) => {
+        setWorksheetStore(
+            produce((current) => {
+                current.days[props.dayIndex].periods[props.periodIndex].groups.splice(groupIndex, 1)
+
+                return current
+            })
+        )
+        setCurrentPath(`worksheet.days.${props.dayIndex}.periods.${props.periodIndex}`)
+    }
+
     return (
         <For each={props.groups}>
-            {(group, blockIndex) => {
-                const groupPath = `${props.pathIndex}.groups.${blockIndex()}` as Path
+            {(group, groupIndex) => {
+                const groupPath = `${props.pathIndex}.groups.${groupIndex()}` as Path
                 return (
                     <div
                         class="flex flex-col items-center text-xl hoverable"
@@ -35,19 +53,22 @@ const Groups: Component<GroupsProps> = (props) => {
                             handleClickPeace(groupPath)
                         }}
                     >
+                        <button class="icon-btn" onClick={() => handleRemoveGroup(groupIndex())}>
+                            <FiTrash2 />
+                        </button>
                         <div class="bg-red-500 px-12 min-w-[350px] py-4 text-center">
                             {group.name}
                         </div>
 
                         <For each={group.blocks}>
-                            {(block, groupIndex) => {
+                            {(block, blockIndex) => {
                                 const blockPath = `${
                                     props.pathIndex
-                                }.groups.${blockIndex()}.blocks.${groupIndex()}` as Path
+                                }.groups.${groupIndex()}.blocks.${blockIndex()}` as Path
 
                                 return (
                                     <>
-                                        {groupIndex() > 0 && (
+                                        {blockIndex() > 0 && (
                                             <div class="border-t-2 border-gray-500 w-20"></div>
                                         )}
                                         <div
@@ -60,6 +81,9 @@ const Groups: Component<GroupsProps> = (props) => {
                                                 handleClickPeace(blockPath)
                                             }}
                                         >
+                                            <button class="icon-btn">
+                                                <FiTrash2 />
+                                            </button>
                                             <Switch>
                                                 <Match when={block.type === 'rest'}>
                                                     <RestBlockPreview block={block as RestBlock} />
@@ -69,6 +93,10 @@ const Groups: Component<GroupsProps> = (props) => {
                                                 </Match>
                                                 <Match when={block.type === 'event'}>
                                                     <EventBlockPreview
+                                                        dayIndex={props.dayIndex}
+                                                        periodIndex={props.periodIndex}
+                                                        groupIndex={groupIndex()}
+                                                        blockIndex={blockIndex()}
                                                         currentPath={props.currentPath}
                                                         pathIndex={blockPath}
                                                         onClickPeace={handleClickPeace}

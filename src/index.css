@@ -27,7 +27,34 @@
 }
 
 @layer components {
+    .icon-btn {
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        @apply bg-red-500;
+    }
+    .icon-btn:hover {
+        @apply bg-red-700;
+    }
+
+    .hoverable .icon-btn {
+        position: absolute;
+        right: -17px;
+        top: 0;
+        margin-top: -17px;
+        display: none;
+    }
+
+    .hoverable.selected > .icon-btn {
+        display: flex;
+    }
+
     .hoverable {
+        position: relative;
     }
 
     .hoverable:hover {

@@ -3,7 +3,8 @@ import { produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
-import { Period } from '@models/day'
+import { Block } from '@models/block'
+import { Day, Group, Period } from '@models/day'
 import {
     currentPath,
     initialBlockValues,
@@ -91,7 +92,10 @@ const Form: Component = () => {
                                             }
                                         })
                                     )
-                                    setCurrentPath(`worksheet.days.${currDayIndex}.periods.0`)
+
+                                    const day = getCurrentObject<Day>(currentPath())
+                                    if (!day.periods.length)
+                                        setCurrentPath(`worksheet.days.${currDayIndex}.periods.0`)
                                 }}
                                 day={getCurrentObject(currentPath()) || initialDayValues}
                             />
@@ -102,8 +106,6 @@ const Form: Component = () => {
                                     const currentFormIndexes = currentForm()[2]
                                     const currDayIndex = currentFormIndexes['days']
                                     const currPeriodIndex = currentFormIndexes['periods']
-
-                                    const period = getCurrentObject<Period>(currentPath())
 
                                     setWorksheetStore(
                                         produce((d) => {
@@ -120,7 +122,7 @@ const Form: Component = () => {
                                             }
                                         })
                                     )
-
+                                    const period = getCurrentObject<Period>(currentPath())
                                     if (!period.groups.length)
                                         setCurrentPath(
                                             `worksheet.days.${currDayIndex}.periods.${currPeriodIndex}.groups.0`
@@ -152,7 +154,9 @@ const Form: Component = () => {
                                             }
                                         })
                                     )
-                                    setCurrentPath(`${currentPath()}.blocks.0` as Path)
+                                    const group = getCurrentObject<Group>(currentPath())
+                                    if (!group.blocks.length)
+                                        setCurrentPath(`${currentPath()}.blocks.0` as Path)
                                 }}
                                 group={getCurrentObject(currentPath()) || initialGroupValues}
                             />
@@ -181,8 +185,9 @@ const Form: Component = () => {
                                             }
                                         })
                                     )
-
-                                    setCurrentPath(`${currentPath()}.rounds.0` as Path)
+                                    const block = getCurrentObject<Block>(currentPath())
+                                    if (block.type === 'event' && !block.rounds.length)
+                                        setCurrentPath(`${currentPath()}.rounds.0` as Path)
                                 }}
                             />
                         </Match>
@@ -214,8 +219,6 @@ const Form: Component = () => {
                                             }
                                         })
                                     )
-
-                                    setCurrentPath(`${currentPath()}.rounds.0` as Path)
                                 }}
                                 round={getCurrentObject(currentPath()) || initialEventRoundValues}
                             />

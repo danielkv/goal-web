@@ -1,8 +1,11 @@
 import dayjs from 'dayjs'
+import { FiTrash2 } from 'solid-icons/fi'
 
 import { Component, For } from 'solid-js'
+import { produce } from 'solid-js/store'
 
 import { Worksheet } from '@models/day'
+import { setCurrentPath, setWorksheetStore } from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
 
 import Groups from './groups'
@@ -16,6 +19,28 @@ export interface WorksheetPreviewProps {
 const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
     const handleClickPeace = (key: Path) => {
         props.onClickPeace(key)
+    }
+
+    const handleRemoveDay = (dayIndex: number) => {
+        setWorksheetStore(
+            produce((current) => {
+                current.days.splice(dayIndex, 1)
+
+                return current
+            })
+        )
+        setCurrentPath(`worksheet`)
+    }
+
+    const handleRemovePeriod = (dayIndex: number, periodIndex: number) => {
+        setWorksheetStore(
+            produce((current) => {
+                current.days[dayIndex].periods.splice(periodIndex, 1)
+
+                return current
+            })
+        )
+        setCurrentPath(`worksheet.days.${dayIndex}`)
     }
 
     return (
@@ -44,21 +69,32 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                 handleClickPeace(dayPath)
                             }}
                         >
+                            <button class="icon-btn" onClick={() => handleRemoveDay(dayIndex())}>
+                                <FiTrash2 />
+                            </button>
                             <For each={day.periods}>
                                 {(period, periodIndex) => {
                                     const periodPath: Path = `worksheet.days.${dayIndex()}.periods.${periodIndex()}`
                                     return (
-                                        <div class="w-a4 min-h-a4 bg-gray-500">
-                                            <div
-                                                class="flex items-center gap-6 mb-20 hoverable"
-                                                classList={{
-                                                    selected: props.currentPath === periodPath,
-                                                }}
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    handleClickPeace(periodPath)
-                                                }}
+                                        <div
+                                            class="w-a4 min-h-a4 bg-gray-500  hoverable"
+                                            classList={{
+                                                selected: props.currentPath === periodPath,
+                                            }}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleClickPeace(periodPath)
+                                            }}
+                                        >
+                                            <button
+                                                class="icon-btn"
+                                                onClick={() =>
+                                                    handleRemovePeriod(dayIndex(), periodIndex())
+                                                }
                                             >
+                                                <FiTrash2 />
+                                            </button>
+                                            <div class="flex items-center gap-6 mb-20 ">
                                                 <div class="w-16 h-16 flex items-center justify-center bg-red-500">
                                                     {periodIndex() + 1}
                                                 </div>
@@ -83,12 +119,16 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <Groups
-                                                groups={period.groups}
-                                                onClickPeace={handleClickPeace}
-                                                pathIndex={periodPath}
-                                                currentPath={props.currentPath}
-                                            />
+                                            <div class="p-6">
+                                                <Groups
+                                                    dayIndex={dayIndex()}
+                                                    periodIndex={periodIndex()}
+                                                    groups={period.groups}
+                                                    onClickPeace={handleClickPeace}
+                                                    pathIndex={periodPath}
+                                                    currentPath={props.currentPath}
+                                                />
+                                            </div>
                                         </div>
                                     )
                                 }}
