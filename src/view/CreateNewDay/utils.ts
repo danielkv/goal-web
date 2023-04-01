@@ -1,8 +1,20 @@
+import dayjs from 'dayjs'
 import { get, isNumber } from 'radash'
 
 import { Worksheet } from '@models/day'
+import {
+    isBlock,
+    isDay,
+    isEventBlock,
+    isGroup,
+    isPeriod,
+    isRestBlock,
+    isRound,
+    isTextBlock,
+} from '@utils/models'
 
-import { worksheetStore } from './config'
+import { eventTypesMap } from './components/WorksheetPreview/config'
+import { breadCrumbLabelMaps, worksheetStore } from './config'
 
 export function getCurrentObject<T>(path: string, until?: string): T {
     let normalizedPath = path.replace(/worksheet.?/, '')
@@ -60,4 +72,21 @@ export function buildTree(path: string) {
 
         return acc
     }, [])
+}
+
+export function getBreadcrumbLabel(path: string): string {
+    const obj = getCurrentObject<Record<string, any>>(path)
+    const [form, formIndex] = getCurrentForm(path)
+
+    if (isDay(obj)) return dayjs(obj.date, 'YYYY-MM-DD').format('DD/MM/YYYY')
+    if (isPeriod(obj)) return `${String(formIndex + 1)}º Período `
+    if (isGroup(obj)) return obj.name
+    if (isBlock(obj)) {
+        if (isEventBlock(obj)) return eventTypesMap[obj.event_type] || 'Evento'
+        if (isTextBlock(obj)) return 'Texto'
+        if (isRestBlock(obj)) return 'Rest'
+    }
+    if (isRound(obj)) return `Round ${String(formIndex + 1)}`
+
+    return breadCrumbLabelMaps[form] || form
 }

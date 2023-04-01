@@ -5,7 +5,6 @@ import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
 import { Period } from '@models/day'
 import {
-    breadCrumbLabelMaps,
     currentPath,
     initialBlockValues,
     initialDayValues,
@@ -18,7 +17,12 @@ import {
     worksheetStore,
 } from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
-import { buildTree, getCurrentForm, getCurrentObject } from '@view/CreateNewDay/utils'
+import {
+    buildTree,
+    getBreadcrumbLabel,
+    getCurrentForm,
+    getCurrentObject,
+} from '@view/CreateNewDay/utils'
 
 import BlockForm from '../BlockForm'
 import DayForm from '../DayForm'
@@ -34,10 +38,7 @@ const Form: Component = () => {
         const tree = buildTree(path)
 
         return tree.map((item, treeIndex) => {
-            const [form, formIndex] = getCurrentForm(item)
-
-            const formLabel = breadCrumbLabelMaps[form] || form
-            const label = formIndex !== -1 ? `${formLabel} - ${formIndex}` : formLabel
+            const label = getBreadcrumbLabel(item)
 
             return {
                 key: item,
