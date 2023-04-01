@@ -1,11 +1,15 @@
-import { FiTrash2 } from 'solid-icons/fi'
-
-import { Component, For, Match, Switch } from 'solid-js'
+import { Component, For, Match, Switch, createMemo } from 'solid-js'
 import { produce } from 'solid-js/store'
 
+import PeaceControl from '@components/PeaceControl'
 import { EventBlock, RestBlock, TextBlock } from '@models/block'
 import { Group } from '@models/day'
-import { setCurrentPath, setWorksheetStore } from '@view/CreateNewDay/config'
+import {
+    initialBlockValues,
+    initialGroupValues,
+    setCurrentPath,
+    setWorksheetStore,
+} from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
 
 import EventBlockPreview from './blocks/eventBlock'
@@ -38,33 +42,92 @@ const Groups: Component<GroupsProps> = (props) => {
         setCurrentPath(`worksheet.days.${props.dayIndex}.periods.${props.periodIndex}`)
     }
 
+    const handleAddGroup = (groupIndex: number) => {
+        setWorksheetStore(
+            produce((current) => {
+                current.days[props.dayIndex].periods[props.periodIndex].groups.splice(
+                    groupIndex,
+                    0,
+                    initialGroupValues
+                )
+
+                return current
+            })
+        )
+        setTimeout(() => {
+            setCurrentPath(
+                `worksheet.days.${props.dayIndex}.periods.${props.periodIndex}.groups.${groupIndex}`
+            )
+        }, 1)
+    }
+
+    const handleRemoveBlock = (groupIndex: number, blockIndex: number) => {
+        setWorksheetStore(
+            produce((current) => {
+                current.days[props.dayIndex].periods[props.periodIndex].groups[
+                    groupIndex
+                ].blocks.splice(blockIndex, 1)
+
+                return current
+            })
+        )
+        setCurrentPath(
+            `worksheet.days.${props.dayIndex}.periods.${props.periodIndex}.groups.${groupIndex}`
+        )
+    }
+
+    const handleAddBlock = (groupIndex: number, blockIndex: number) => {
+        setWorksheetStore(
+            produce((current) => {
+                current.days[props.dayIndex].periods[props.periodIndex].groups[
+                    groupIndex
+                ].blocks.splice(blockIndex, 0, initialBlockValues)
+
+                return current
+            })
+        )
+        setTimeout(() => {
+            setCurrentPath(
+                `worksheet.days.${props.dayIndex}.periods.${props.periodIndex}.groups.${groupIndex}.blocks.${blockIndex}`
+            )
+        }, 1)
+    }
+
     return (
         <For each={props.groups}>
             {(group, groupIndex) => {
-                const groupPath = `${props.pathIndex}.groups.${groupIndex()}` as Path
+                const groupPath = createMemo(
+                    () => `${props.pathIndex}.groups.${groupIndex()}` as Path
+                )
                 return (
                     <div
                         class="flex flex-col items-center text-xl hoverable"
                         classList={{
-                            selected: props.currentPath === groupPath,
+                            selected: props.currentPath === groupPath(),
                         }}
                         onClick={(e) => {
                             e.stopPropagation()
-                            handleClickPeace(groupPath)
+                            handleClickPeace(groupPath())
                         }}
                     >
-                        <button class="icon-btn" onClick={() => handleRemoveGroup(groupIndex())}>
-                            <FiTrash2 />
-                        </button>
+                        <PeaceControl
+                            onClickRemove={() => handleRemoveGroup(groupIndex())}
+                            onClickTopAdd={() => handleAddGroup(groupIndex())}
+                            onClickBottomAdd={() => handleAddGroup(groupIndex() + 1)}
+                        />
+
                         <div class="bg-red-500 px-12 min-w-[350px] py-4 text-center">
                             {group.name}
                         </div>
 
                         <For each={group.blocks}>
                             {(block, blockIndex) => {
-                                const blockPath = `${
-                                    props.pathIndex
-                                }.groups.${groupIndex()}.blocks.${blockIndex()}` as Path
+                                const blockPath = createMemo(
+                                    () =>
+                                        `${
+                                            props.pathIndex
+                                        }.groups.${groupIndex()}.blocks.${blockIndex()}` as Path
+                                )
 
                                 return (
                                     <>
@@ -74,16 +137,24 @@ const Groups: Component<GroupsProps> = (props) => {
                                         <div
                                             class="m-3 p-3 hoverable"
                                             classList={{
-                                                selected: props.currentPath === blockPath,
+                                                selected: props.currentPath === blockPath(),
                                             }}
                                             onClick={(e) => {
                                                 e.stopPropagation()
-                                                handleClickPeace(blockPath)
+                                                handleClickPeace(blockPath())
                                             }}
                                         >
-                                            <button class="icon-btn">
-                                                <FiTrash2 />
-                                            </button>
+                                            <PeaceControl
+                                                onClickRemove={() =>
+                                                    handleRemoveBlock(groupIndex(), blockIndex())
+                                                }
+                                                onClickTopAdd={() =>
+                                                    handleAddBlock(groupIndex(), blockIndex())
+                                                }
+                                                onClickBottomAdd={() =>
+                                                    handleAddBlock(groupIndex(), blockIndex() + 1)
+                                                }
+                                            />
                                             <Switch>
                                                 <Match when={block.type === 'rest'}>
                                                     <RestBlockPreview block={block as RestBlock} />
@@ -98,7 +169,7 @@ const Groups: Component<GroupsProps> = (props) => {
                                                         groupIndex={groupIndex()}
                                                         blockIndex={blockIndex()}
                                                         currentPath={props.currentPath}
-                                                        pathIndex={blockPath}
+                                                        pathIndex={blockPath()}
                                                         onClickPeace={handleClickPeace}
                                                         block={block as EventBlock}
                                                     />

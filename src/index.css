@@ -35,18 +35,33 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        @apply bg-red-500;
-    }
-    .icon-btn:hover {
         @apply bg-red-700;
     }
+    .icon-btn:hover {
+        @apply bg-red-900;
+    }
 
-    .hoverable .icon-btn {
+    .hoverable > .icon-btn {
         position: absolute;
+        display: none;
+        z-index: 999;
+    }
+
+    .hoverable > .icon-btn.remove {
         right: -17px;
         top: 0;
         margin-top: -17px;
-        display: none;
+    }
+
+    .hoverable > .icon-btn.add {
+        left: 50%;
+        margin-left: -17px;
+    }
+    .hoverable > .icon-btn.add.top {
+        top: -17px;
+    }
+    .hoverable > .icon-btn.add {
+        bottom: -17px;
     }
 
     .hoverable.selected > .icon-btn {

@@ -3,9 +3,15 @@ import { FiTrash2 } from 'solid-icons/fi'
 import { Component, For } from 'solid-js'
 import { produce } from 'solid-js/store'
 
+import PeaceControl from '@components/PeaceControl'
 import { EventBlock } from '@models/block'
 import { getTimeFromSeconds } from '@utils/time'
-import { setCurrentPath, setWorksheetStore } from '@view/CreateNewDay/config'
+import {
+    initialEventRoundValues,
+    initialRoundMovementValues,
+    setCurrentPath,
+    setWorksheetStore,
+} from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
 
 import { eventTypesMap } from '../config'
@@ -41,6 +47,26 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
         setCurrentPath(`worksheet.days.${props.dayIndex}.periods.${props.periodIndex}`)
     }
 
+    const handleAddRound = (roundIndex: number) => {
+        setWorksheetStore(
+            produce((current) => {
+                const block =
+                    current.days[props.dayIndex].periods[props.periodIndex].groups[props.groupIndex]
+                        .blocks[props.blockIndex]
+
+                if (block.type === 'event')
+                    block.rounds.splice(roundIndex, 0, initialEventRoundValues)
+
+                return current
+            })
+        )
+        setTimeout(() => {
+            setCurrentPath(
+                `worksheet.days.${props.dayIndex}.periods.${props.periodIndex}.groups.${props.groupIndex}.blocks.${props.blockIndex}.rounds.${roundIndex}`
+            )
+        }, 1)
+    }
+
     const getTimeCap = () => {
         if (props.block.event_type === 'emom') {
             const each = getTimeFromSeconds(props.block.each)
@@ -74,12 +100,12 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                 handleClickPeace(roundPath)
                             }}
                         >
-                            <button
-                                class="icon-btn"
-                                onClick={() => handleRemoveRound(roundIndex())}
-                            >
-                                <FiTrash2 />
-                            </button>
+                            <PeaceControl
+                                onClickRemove={() => handleRemoveRound(roundIndex())}
+                                onClickTopAdd={() => handleAddRound(roundIndex())}
+                                onClickBottomAdd={() => handleAddRound(roundIndex() + 1)}
+                            />
+
                             {round.name && <div>{round.name}</div>}
                             <div>{rounds}</div>
                             <For each={round.movements}>
