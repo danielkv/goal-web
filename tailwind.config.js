@@ -22,7 +22,14 @@ module.exports = {
             white: '#ffffff',
         },
 
-        extend: {},
+        extend: {
+            width: {
+                a4: '210mm',
+            },
+            height: {
+                a4: '297mm',
+            },
+        },
     },
     plugins: [],
 }

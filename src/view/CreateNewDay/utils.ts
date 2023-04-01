@@ -1,12 +1,12 @@
 import { get, isNumber } from 'radash'
 
-import { Day } from '@models/day'
+import { Worksheet } from '@models/day'
 
 import { dayStore } from './config'
 
 export function getCurrentObject<T>(path: string): T {
-    const normalizedPath = path.replace(/day.?/, '')
-    const object = get<Day, T>(dayStore, normalizedPath)
+    const normalizedPath = path.replace(/worksheet.?/, '')
+    const object = get<Worksheet, T>(dayStore, normalizedPath)
 
     return object as T
 }
@@ -31,7 +31,7 @@ export function getCurrentForm(path: string): [string, number, Record<string, nu
         if (!isNumber(element)) {
             currentForm = element
 
-            if (['groups', 'blocks', 'rounds'].includes(element)) {
+            if (['days', 'groups', 'blocks', 'rounds'].includes(element)) {
                 const arrayIndex = extractedPaths[idx + 1]
 
                 if (arrayIndex !== undefined && isNumber(arrayIndex)) indexMap[element] = arrayIndex

@@ -15,7 +15,10 @@ const CreateNewDay: Component = () => {
             }}
         >
             <div class="flex flex-1 flex-col basis-auto overflow-auto">
-                <WorksheetPreview day={dayStore} onClickPeace={(key) => setCurrentPath(key)} />
+                <WorksheetPreview
+                    worksheet={dayStore}
+                    onClickPeace={(key) => setCurrentPath(key)}
+                />
                 <pre>{JSON.stringify(dayStore, null, 4)}</pre>
             </div>
             <div class="bg-gray-500 flex flex-col basis-auto">

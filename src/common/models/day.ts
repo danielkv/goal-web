@@ -11,3 +11,10 @@ export interface Day {
     date: string // YYYY-MM-DD
     groups: Group[]
 }
+
+export interface Worksheet {
+    name: string
+    info?: string
+    startDate: string // YYYY-MM-DD
+    days: Day[]
+}

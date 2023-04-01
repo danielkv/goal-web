@@ -51,11 +51,27 @@ const Form: Component = () => {
                     />
 
                     <Switch>
-                        <Match when={currentForm()[0] === 'day'}>
+                        <Match when={currentForm()[0] === 'days'}>
                             <DayForm
                                 onClickNext={(data) => {
-                                    setDayStore({ ...data })
-                                    setCurrentPath('day.groups.0')
+                                    const currDayIndex = currentForm()[2]['days']
+
+                                    setDayStore(
+                                        produce((d) => {
+                                            const days = d.days
+                                            if (days.length <= 0)
+                                                return days.push({
+                                                    ...data,
+                                                    groups: [],
+                                                })
+
+                                            days[currDayIndex] = {
+                                                ...data,
+                                                groups: days[currDayIndex].groups,
+                                            }
+                                        })
+                                    )
+                                    setCurrentPath(`worksheet.days.${currDayIndex}.groups.0`)
                                 }}
                                 day={getCurrentObject(currentPath()) || initialDayValues}
                             />
@@ -64,15 +80,20 @@ const Form: Component = () => {
                             <GroupForm
                                 onClickNext={(data) => {
                                     const currGroupIndex = currentForm()[2]['groups']
+                                    const currDayIndex = currentForm()[2]['days']
 
                                     setDayStore(
                                         produce((d) => {
-                                            if (d.groups.length <= 0)
-                                                return d.groups.push({ ...data, blocks: [] })
+                                            const groups = d.days[currDayIndex].groups
+                                            if (groups.length <= 0)
+                                                return groups.push({
+                                                    ...data,
+                                                    blocks: [],
+                                                })
 
-                                            d.groups[currGroupIndex] = {
+                                            groups[currGroupIndex] = {
                                                 ...data,
-                                                blocks: d.groups[currGroupIndex].blocks,
+                                                blocks: groups[currGroupIndex].blocks,
                                             }
                                         })
                                     )
@@ -87,14 +108,17 @@ const Form: Component = () => {
                                 onClickNext={(data) => {
                                     const currGroupIndex = currentForm()[2]['groups']
                                     const currBlockIndex = currentForm()[2]['blocks']
+                                    const currDayIndex = currentForm()[2]['days']
 
                                     setDayStore(
                                         produce((d) => {
-                                            if (d.groups[currGroupIndex].blocks.length <= 0)
-                                                return d.groups[currGroupIndex].blocks.push({
+                                            const blocks =
+                                                d.days[currDayIndex].groups[currGroupIndex].blocks
+                                            if (blocks.length <= 0)
+                                                return blocks.push({
                                                     ...data,
                                                 })
-                                            d.groups[currGroupIndex].blocks[currBlockIndex] = {
+                                            blocks[currBlockIndex] = {
                                                 ...data,
                                             }
                                         })
@@ -110,13 +134,14 @@ const Form: Component = () => {
                                     const currGroupIndex = currentForm()[2]['groups']
                                     const currBlockIndex = currentForm()[2]['blocks']
                                     const currRoundsIndex = currentForm()[2]['rounds']
-
-                                    console.log(data)
+                                    const currDayIndex = currentForm()[2]['days']
 
                                     setDayStore(
                                         produce((d) => {
                                             const block =
-                                                d.groups[currGroupIndex].blocks[currBlockIndex]
+                                                d.days[currDayIndex].groups[currGroupIndex].blocks[
+                                                    currBlockIndex
+                                                ]
 
                                             if (block.type !== 'event') return
 
