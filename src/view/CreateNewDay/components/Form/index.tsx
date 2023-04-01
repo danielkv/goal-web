@@ -20,10 +20,10 @@ import {
 import { Path } from '@view/CreateNewDay/types'
 import { buildTree, getCurrentForm } from '@view/CreateNewDay/utils'
 
+import BlockForm from '../BlockForm'
 import DayForm from '../DayForm'
 import GroupForm from '../GroupForm'
 import RoundForm from '../RoundForm'
-import BlockForm from '../blocks'
 
 function getCurrentObject<T>(path: string): T {
     const normalizedPath = path.replace(/day.?/, '')
