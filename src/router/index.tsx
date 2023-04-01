@@ -9,7 +9,6 @@ const AppRouter: Component = () => {
     return (
         <div class="h-full">
             <Header />
-
             <Routes>
                 <Route path="/" element={<CreateNewDay />} />
             </Routes>
