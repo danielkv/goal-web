@@ -1,8 +1,7 @@
-import dayjs from 'dayjs'
-
 import { Component } from 'solid-js'
 
 import { RestBlock } from '@models/block'
+import { getTimeFromSeconds } from '@utils/time'
 
 export interface EventBlockPreviewProps {
     block: RestBlock
@@ -10,7 +9,7 @@ export interface EventBlockPreviewProps {
 const RestBlockPreview: Component<EventBlockPreviewProps> = (props) => {
     return (
         <div>
-            {dayjs.duration(props.block.time, 'seconds').format("mm'ss''")} Rest - \
+            {getTimeFromSeconds(props.block.time)} Rest - \
             {props.block.text && <span>{props.block.text}</span>}
         </div>
     )

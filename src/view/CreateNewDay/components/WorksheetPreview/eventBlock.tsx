@@ -1,6 +1,7 @@
 import { Component, For } from 'solid-js'
 
 import { EventBlock } from '@models/block'
+import { getTimeFromSeconds } from '@utils/time'
 import { Path } from '@view/CreateNewDay/types'
 
 import { eventTypesMap } from './config'
@@ -16,11 +17,22 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
         props.onClickPeace(key)
     }
 
+    const getTimeCap = () => {
+        if (props.block.event_type === 'emom') {
+            const each = getTimeFromSeconds(props.block.each)
+            const forTime = getTimeFromSeconds(props.block.for)
+            return ` - Cada ${each} por ${forTime}`
+        }
+
+        const timecap = getTimeFromSeconds(props.block.timecap)
+        return ` - ${timecap}`
+    }
+
     return (
         <div class="text-center">
             {props.block.name && <div>{props.block.name}</div>}
-            <div class="font-bold text-lg bg-gray-300 px-4 py-2">
-                {eventTypesMap[props.block.event_type]}
+            <div class="font-bold text-base bg-gray-300 px-4 py-2">
+                {eventTypesMap[props.block.event_type]} {getTimeCap()}
             </div>
 
             <For each={props.block.rounds}>
@@ -33,7 +45,6 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                             class="m-2 hoverable"
                             onClick={(e) => {
                                 e.stopPropagation()
-                                console.log(`${props.path}.${rounds}.${roundIndex()}`)
                                 handleClickPeace(`${props.path}.rounds.${roundIndex()}` as Path)
                             }}
                         >
