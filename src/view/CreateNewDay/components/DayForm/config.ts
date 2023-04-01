@@ -6,16 +6,12 @@ import { Day } from '@models/day'
 
 import { initialDayValues } from '../../config'
 
-export type TDayForm = Omit<Day, 'groups'>
+export type TDayForm = Omit<Day, 'periods'>
 
-export const dayForemInitialValues: TDayForm = omit(initialDayValues, ['groups'])
+export const dayForemInitialValues: TDayForm = omit(initialDayValues, ['periods'])
 
 export const dayFormSchema = z.object<ZodShape<TDayForm>>({
     name: z.string({ required_error: 'Nome é obrigatório' }).nonempty('Nome é obrigatório'),
-    period: z.number({
-        required_error: 'Periodo é obrigatório',
-        invalid_type_error: 'Número inválido',
-    }),
     date: z
         .string({ required_error: 'Data é obrigatória' })
         .nonempty('Data é obrigatória')

@@ -1,22 +1,22 @@
 import { Block } from './block'
 
-export interface Group {
+export type Group = {
     name: string
     blocks: Block[]
 }
 
-export interface Period {
+export type Period = {
     name?: string
     groups: Group[]
 }
 
-export interface Day {
+export type Day = {
     name: string
     date: string // YYYY-MM-DD
     periods: Period[]
 }
 
-export interface Worksheet {
+export type Worksheet = {
     name: string
     info?: string
     startDate: string // YYYY-MM-DD

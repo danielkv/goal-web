@@ -51,7 +51,7 @@ export type TextBlock = {
     text: string
 }
 
-type EmptyBlock = {
+export type EmptyBlock = {
     type: ''
 }
 

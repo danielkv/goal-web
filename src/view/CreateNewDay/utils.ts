@@ -2,11 +2,15 @@ import { get, isNumber } from 'radash'
 
 import { Worksheet } from '@models/day'
 
-import { dayStore } from './config'
+import { worksheetStore } from './config'
 
-export function getCurrentObject<T>(path: string): T {
-    const normalizedPath = path.replace(/worksheet.?/, '')
-    const object = get<Worksheet, T>(dayStore, normalizedPath)
+export function getCurrentObject<T>(path: string, until?: string): T {
+    let normalizedPath = path.replace(/worksheet.?/, '')
+
+    if (until) {
+        normalizedPath = normalizedPath.slice(0, normalizedPath.search(until) + until.length - 1)
+    }
+    const object = get<Worksheet, T>(worksheetStore, normalizedPath)
 
     return object as T
 }

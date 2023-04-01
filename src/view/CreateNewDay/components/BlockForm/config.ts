@@ -1,6 +1,5 @@
 import { z } from 'zod'
 
-import { ZodShape } from '@interfaces/app'
 import { Block, BlockType } from '@models/block'
 
 import { initialBlockValues } from '../../config'
@@ -20,8 +19,8 @@ export const blockTypes: { key: BlockType; label: string }[] = [
     { key: 'text', label: 'Texto' },
 ]
 
-export const blockBlockFormSchema = z.union([
-    z.object<ZodShape<TBlockForm>>({
+export const blockFormSchema = z.union([
+    z.object({
         type: z.enum(['']),
         info: z.optional(z.string()),
     }),

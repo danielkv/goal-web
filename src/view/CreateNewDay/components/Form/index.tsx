@@ -3,6 +3,7 @@ import { produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
+import { Period } from '@models/day'
 import {
     breadCrumbLabelMaps,
     currentPath,
@@ -10,8 +11,11 @@ import {
     initialDayValues,
     initialEventRoundValues,
     initialGroupValues,
+    initialPeriodValues,
+    initialWorksheetValues,
     setCurrentPath,
-    setDayStore,
+    setWorksheetStore,
+    worksheetStore,
 } from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
 import { buildTree, getCurrentForm, getCurrentObject } from '@view/CreateNewDay/utils'
@@ -19,7 +23,9 @@ import { buildTree, getCurrentForm, getCurrentObject } from '@view/CreateNewDay/
 import BlockForm from '../BlockForm'
 import DayForm from '../DayForm'
 import GroupForm from '../GroupForm'
+import PeriodForm from '../PeriodForm'
 import RoundForm from '../RoundForm'
+import WorksheetForm from '../WorksheetForm'
 
 const Form: Component = () => {
     const currentForm = createMemo(() => getCurrentForm(currentPath()))
@@ -51,12 +57,25 @@ const Form: Component = () => {
                     />
 
                     <Switch>
+                        <Match when={currentForm()[0] === 'worksheet'}>
+                            <WorksheetForm
+                                onClickNext={(data) => {
+                                    setWorksheetStore({ ...data, days: worksheetStore.days || [] })
+
+                                    if (!worksheetStore.days.length)
+                                        setCurrentPath(`worksheet.days.0`)
+                                }}
+                                worksheet={
+                                    getCurrentObject(currentPath()) || initialWorksheetValues
+                                }
+                            />
+                        </Match>
                         <Match when={currentForm()[0] === 'days'}>
                             <DayForm
                                 onClickNext={(data) => {
                                     const currDayIndex = currentForm()[2]['days']
 
-                                    setDayStore(
+                                    setWorksheetStore(
                                         produce((d) => {
                                             const days = d.days
                                             if (days.length <= 0)
@@ -76,6 +95,39 @@ const Form: Component = () => {
                                 day={getCurrentObject(currentPath()) || initialDayValues}
                             />
                         </Match>
+                        <Match when={currentForm()[0] === 'periods'}>
+                            <PeriodForm
+                                onClickNext={(data) => {
+                                    const currentFormIndexes = currentForm()[2]
+                                    const currDayIndex = currentFormIndexes['days']
+                                    const currPeriodIndex = currentFormIndexes['periods']
+
+                                    const period = getCurrentObject<Period>(currentPath())
+
+                                    setWorksheetStore(
+                                        produce((d) => {
+                                            const periods = d.days[currDayIndex].periods
+                                            if (periods.length <= 0)
+                                                return periods.push({
+                                                    ...data,
+                                                    groups: [],
+                                                })
+
+                                            periods[currDayIndex] = {
+                                                ...data,
+                                                groups: periods[currPeriodIndex].groups,
+                                            }
+                                        })
+                                    )
+
+                                    if (!period.groups.length)
+                                        setCurrentPath(
+                                            `worksheet.days.${currDayIndex}.periods.${currPeriodIndex}.groups.0`
+                                        )
+                                }}
+                                period={getCurrentObject(currentPath()) || initialPeriodValues}
+                            />
+                        </Match>
                         <Match when={currentForm()[0] === 'groups'}>
                             <GroupForm
                                 onClickNext={(data) => {
@@ -83,7 +135,7 @@ const Form: Component = () => {
                                     const currDayIndex = currentForm()[2]['days']
                                     const currPeriodIndex = currentForm()[2]['periods']
 
-                                    setDayStore(
+                                    setWorksheetStore(
                                         produce((d) => {
                                             const groups =
                                                 d.days[currDayIndex].periods[currPeriodIndex].groups
@@ -114,7 +166,7 @@ const Form: Component = () => {
                                     const currDayIndex = currentFormIndexes['days']
                                     const currPeriodIndex = currentFormIndexes['periods']
 
-                                    setDayStore(
+                                    setWorksheetStore(
                                         produce((d) => {
                                             const blocks =
                                                 d.days[currDayIndex].periods[currPeriodIndex]
@@ -143,7 +195,7 @@ const Form: Component = () => {
                                     const currPeriodIndex = currentFormIndexes['periods']
                                     const currRoundsIndex = currentFormIndexes['rounds']
 
-                                    setDayStore(
+                                    setWorksheetStore(
                                         produce((d) => {
                                             const block =
                                                 d.days[currDayIndex].periods[currPeriodIndex]

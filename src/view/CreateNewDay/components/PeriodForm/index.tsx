@@ -1,45 +1,44 @@
 import { Component } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { TextBlock } from '@models/block'
+import { Period } from '@models/day'
 import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
 
-import { TRestBlockForm, textBlockFormSchema } from './config'
+import { TPeriodForm, periodFormSchema } from './config'
 
-export interface TextBlockFormProps {
-    onClickNext(data: TRestBlockForm): void
-    block: TextBlock
+export interface PeriodFormProps {
+    onClickNext(data: TPeriodForm): void
+    period: Period
 }
 
-const TextBlockForm: Component<TextBlockFormProps> = (props) => {
-    const form = createForm<TRestBlockForm>({
-        validate: zodForm(textBlockFormSchema),
-        initialValues: props.block,
+const PeriodForm: Component<PeriodFormProps> = (props) => {
+    const form = createForm<TPeriodForm>({
+        validate: zodForm(periodFormSchema),
+        initialValues: props.period,
     })
 
-    const handleSubmit: SubmitHandler<TRestBlockForm> = (values) => {
+    const handleSubmit: SubmitHandler<TPeriodForm> = (values) => {
         props.onClickNext(values)
     }
 
     return (
-        <Form<TRestBlockForm>
+        <Form<TPeriodForm>
             of={form}
             name="teste"
             class="flex flex-col gap-6"
             onSubmit={handleSubmit}
         >
-            <Field of={form} name="text">
+            <Field of={form} name="name">
                 {(field) => (
                     <TextInput
                         {...field.props}
                         class="flex-1"
-                        label="Texto"
+                        label="Nome"
                         value={field.value}
                         error={field.error}
                     />
                 )}
             </Field>
-
             <button class="btn btn-main self-end" type="submit">
                 Confirmar
             </button>
@@ -47,4 +46,4 @@ const TextBlockForm: Component<TextBlockFormProps> = (props) => {
     )
 }
 
-export default TextBlockForm
+export default PeriodForm

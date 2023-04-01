@@ -76,7 +76,7 @@ export const breadCrumbLabelMaps: Record<string, string> = {
 
 export const [currentPath, setCurrentPath] = createSignal<Path>('worksheet')
 
-export const [dayStore, setDayStore] = createStore<Worksheet>({
+export const [worksheetStore, setWorksheetStore] = createStore<Worksheet>({
     name: 'Planilha tal',
     startDate: '2023-04-01',
     days: [

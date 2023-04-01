@@ -11,51 +11,32 @@ export interface DayFormProps {
     day: Day
 }
 
-const DayForm: Component<DayFormProps> = ({ onClickNext, day }) => {
-    const loginForm = createForm<TDayForm>({
+const DayForm: Component<DayFormProps> = (props) => {
+    const form = createForm<TDayForm>({
         validate: zodForm(dayFormSchema),
-        initialValues: day,
+        initialValues: props.day,
     })
 
     const handleSubmit: SubmitHandler<TDayForm> = (values) => {
-        onClickNext(values)
+        props.onClickNext(values)
     }
 
     return (
-        <Form<TDayForm>
-            of={loginForm}
-            name="teste"
-            class="flex flex-col gap-6"
-            onSubmit={handleSubmit}
-        >
-            <div class="flex gap-6 items-start ">
-                <Field of={loginForm} name="period">
-                    {(field) => (
-                        <TextInput
-                            {...field.props}
-                            class="flex-1"
-                            label="Período"
-                            type="number"
-                            value={field.value}
-                            error={field.error}
-                        />
-                    )}
-                </Field>
-                <Field of={loginForm} name="date">
-                    {(field) => (
-                        <TextInput
-                            {...field.props}
-                            class="flex-1"
-                            label="Data"
-                            type="date"
-                            value={field.value}
-                            error={field.error}
-                        />
-                    )}
-                </Field>
-            </div>
+        <Form<TDayForm> of={form} name="teste" class="flex flex-col gap-6" onSubmit={handleSubmit}>
+            <Field of={form} name="date">
+                {(field) => (
+                    <TextInput
+                        {...field.props}
+                        class="flex-1"
+                        label="Data"
+                        type="date"
+                        value={field.value}
+                        error={field.error}
+                    />
+                )}
+            </Field>
 
-            <Field of={loginForm} name="name">
+            <Field of={form} name="name">
                 {(field) => (
                     <TextInput
                         class="flex-1"

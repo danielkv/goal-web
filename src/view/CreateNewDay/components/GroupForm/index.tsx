@@ -11,24 +11,24 @@ export interface GroupFormProps {
     group: Group
 }
 
-const GroupForm: Component<GroupFormProps> = ({ onClickNext, group }) => {
-    const loginForm = createForm<TGroupForm>({
+const GroupForm: Component<GroupFormProps> = (props) => {
+    const form = createForm<TGroupForm>({
         validate: zodForm(groupFormSchema),
-        initialValues: group,
+        initialValues: props.group,
     })
 
     const handleSubmit: SubmitHandler<TGroupForm> = (values) => {
-        onClickNext(values)
+        props.onClickNext(values)
     }
 
     return (
         <Form<TGroupForm>
-            of={loginForm}
+            of={form}
             name="teste"
             class="flex flex-col gap-6"
             onSubmit={handleSubmit}
         >
-            <Field of={loginForm} name="name">
+            <Field of={form} name="name">
                 {(field) => (
                     <TextInput
                         class="flex-1"
