@@ -2,7 +2,7 @@ import { Component } from 'solid-js'
 
 import Form from './components/Form'
 import WorksheetPreview from './components/WorksheetPreview'
-import { setCurrentPath, worksheetStore } from './config'
+import { currentPath, setCurrentPath, worksheetStore } from './config'
 
 const CreateNewDay: Component = () => {
     return (
@@ -16,6 +16,7 @@ const CreateNewDay: Component = () => {
         >
             <div class="flex flex-1 flex-col basis-auto overflow-auto">
                 <WorksheetPreview
+                    currentPath={currentPath()}
                     worksheet={worksheetStore}
                     onClickPeace={(key) => setCurrentPath(key)}
                 />

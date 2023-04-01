@@ -35,6 +35,11 @@
         outline-offset: -2px;
         cursor: pointer;
     }
+    .hoverable.selected {
+        outline: 2px solid theme('colors.red.500');
+        outline-offset: -2px;
+        cursor: pointer;
+    }
 
     .input {
         @apply font-sans;

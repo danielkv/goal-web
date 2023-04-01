@@ -9,7 +9,8 @@ import { displayWeight } from './utils'
 
 export interface EventBlockPreviewProps {
     block: EventBlock
-    path: Path
+    currentPath?: Path
+    pathIndex: Path
     onClickPeace(key: Path): void
 }
 const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
@@ -39,13 +40,15 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                 {(round, roundIndex) => {
                     const rounds =
                         round.repeat && round.repeat > 1 ? `${round.repeat} Rounds` : `1 Round`
+                    const roundPath = `${props.pathIndex}.rounds.${roundIndex()}` as Path
 
                     return (
                         <div
-                            class="m-2 hoverable"
+                            class="m-1 p-2 hoverable"
+                            classList={{ selected: props.currentPath === roundPath }}
                             onClick={(e) => {
                                 e.stopPropagation()
-                                handleClickPeace(`${props.path}.rounds.${roundIndex()}` as Path)
+                                handleClickPeace(roundPath)
                             }}
                         >
                             {round.name && <div>{round.name}</div>}
