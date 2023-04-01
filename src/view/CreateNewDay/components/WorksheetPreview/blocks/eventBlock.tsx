@@ -1,5 +1,3 @@
-import { FiTrash2 } from 'solid-icons/fi'
-
 import { Component, For } from 'solid-js'
 import { produce } from 'solid-js/store'
 
@@ -8,7 +6,6 @@ import { EventBlock } from '@models/block'
 import { getTimeFromSeconds } from '@utils/time'
 import {
     initialEventRoundValues,
-    initialRoundMovementValues,
     setCurrentPath,
     setWorksheetStore,
 } from '@view/CreateNewDay/config'
