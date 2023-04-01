@@ -11,7 +11,7 @@ const AppRouter: Component = () => {
             <Header />
 
             <Routes>
-                <Route path="/create-day" element={<CreateNewDay />} />
+                <Route path="/" element={<CreateNewDay />} />
             </Routes>
         </div>
     )
