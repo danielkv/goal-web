@@ -1,14 +1,11 @@
 import dayjs from 'dayjs'
 
-import { Component, For, Match, Switch } from 'solid-js'
+import { Component, For } from 'solid-js'
 
-import { EventBlock, RestBlock, TextBlock } from '@models/block'
 import { Worksheet } from '@models/day'
 import { Path } from '@view/CreateNewDay/types'
 
-import EventBlockPreview from './eventBlock'
-import RestBlockPreview from './restBlock'
-import TextBlockPreview from './textBlock'
+import Groups from './groups'
 
 export interface WorksheetPreviewProps {
     worksheet: Worksheet
@@ -86,103 +83,12 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <For each={period.groups}>
-                                                {(group, blockIndex) => {
-                                                    const groupPath: Path = `worksheet.days.${dayIndex()}.periods.${periodIndex()}.groups.${blockIndex()}`
-                                                    return (
-                                                        <div
-                                                            class="flex flex-col items-center text-xl hoverable"
-                                                            classList={{
-                                                                selected:
-                                                                    props.currentPath === groupPath,
-                                                            }}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                handleClickPeace(groupPath)
-                                                            }}
-                                                        >
-                                                            <div class="bg-red-500 px-12 min-w-[350px] py-4 text-center">
-                                                                {group.name}
-                                                            </div>
-
-                                                            <For each={group.blocks}>
-                                                                {(block, groupIndex) => {
-                                                                    const blockPath: Path = `worksheet.days.${dayIndex()}.periods.${periodIndex()}.groups.${blockIndex()}.blocks.${groupIndex()}`
-                                                                    return (
-                                                                        <>
-                                                                            {groupIndex() > 0 && (
-                                                                                <div class="border-t-2 border-gray-500 w-20"></div>
-                                                                            )}
-                                                                            <div
-                                                                                class="m-3 p-3 hoverable"
-                                                                                classList={{
-                                                                                    selected:
-                                                                                        props.currentPath ===
-                                                                                        blockPath,
-                                                                                }}
-                                                                                onClick={(e) => {
-                                                                                    e.stopPropagation()
-                                                                                    handleClickPeace(
-                                                                                        blockPath
-                                                                                    )
-                                                                                }}
-                                                                            >
-                                                                                <Switch>
-                                                                                    <Match
-                                                                                        when={
-                                                                                            block.type ===
-                                                                                            'rest'
-                                                                                        }
-                                                                                    >
-                                                                                        <RestBlockPreview
-                                                                                            block={
-                                                                                                block as RestBlock
-                                                                                            }
-                                                                                        />
-                                                                                    </Match>
-                                                                                    <Match
-                                                                                        when={
-                                                                                            block.type ===
-                                                                                            'text'
-                                                                                        }
-                                                                                    >
-                                                                                        <TextBlockPreview
-                                                                                            block={
-                                                                                                block as TextBlock
-                                                                                            }
-                                                                                        />
-                                                                                    </Match>
-                                                                                    <Match
-                                                                                        when={
-                                                                                            block.type ===
-                                                                                            'event'
-                                                                                        }
-                                                                                    >
-                                                                                        <EventBlockPreview
-                                                                                            currentPath={
-                                                                                                props.currentPath
-                                                                                            }
-                                                                                            pathIndex={
-                                                                                                blockPath
-                                                                                            }
-                                                                                            onClickPeace={
-                                                                                                handleClickPeace
-                                                                                            }
-                                                                                            block={
-                                                                                                block as EventBlock
-                                                                                            }
-                                                                                        />
-                                                                                    </Match>
-                                                                                </Switch>
-                                                                            </div>
-                                                                        </>
-                                                                    )
-                                                                }}
-                                                            </For>
-                                                        </div>
-                                                    )
-                                                }}
-                                            </For>
+                                            <Groups
+                                                groups={period.groups}
+                                                onClickPeace={handleClickPeace}
+                                                pathIndex={periodPath}
+                                                currentPath={props.currentPath}
+                                            />
                                         </div>
                                     )
                                 }}

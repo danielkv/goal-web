@@ -4,8 +4,8 @@ import { EventBlock } from '@models/block'
 import { getTimeFromSeconds } from '@utils/time'
 import { Path } from '@view/CreateNewDay/types'
 
-import { eventTypesMap } from './config'
-import { displayWeight } from './utils'
+import { eventTypesMap } from '../config'
+import { displayWeight } from '../utils'
 
 export interface EventBlockPreviewProps {
     block: EventBlock
