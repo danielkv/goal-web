@@ -1,15 +1,11 @@
-import { get } from 'radash'
-
 import { Component, Match, Switch, createMemo } from 'solid-js'
 import { produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
-import { Day } from '@models/day'
 import {
     breadCrumbLabelMaps,
     currentPath,
-    dayStore,
     initialBlockValues,
     initialDayValues,
     initialEventRoundValues,
@@ -18,19 +14,12 @@ import {
     setDayStore,
 } from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
-import { buildTree, getCurrentForm } from '@view/CreateNewDay/utils'
+import { buildTree, getCurrentForm, getCurrentObject } from '@view/CreateNewDay/utils'
 
 import BlockForm from '../BlockForm'
 import DayForm from '../DayForm'
 import GroupForm from '../GroupForm'
 import RoundForm from '../RoundForm'
-
-function getCurrentObject<T>(path: string): T {
-    const normalizedPath = path.replace(/day.?/, '')
-    const object = get<Day, T>(dayStore, normalizedPath)
-
-    return object as T
-}
 
 const Form: Component = () => {
     const currentForm = createMemo(() => getCurrentForm(currentPath()))

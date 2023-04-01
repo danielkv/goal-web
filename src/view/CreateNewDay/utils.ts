@@ -1,4 +1,15 @@
-import { isNumber } from 'radash'
+import { get, isNumber } from 'radash'
+
+import { Day } from '@models/day'
+
+import { dayStore } from './config'
+
+export function getCurrentObject<T>(path: string): T {
+    const normalizedPath = path.replace(/day.?/, '')
+    const object = get<Day, T>(dayStore, normalizedPath)
+
+    return object as T
+}
 
 export function extractPaths(path: string) {
     const regex = /([\w\-]+)/gm
