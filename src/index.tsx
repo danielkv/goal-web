@@ -1,5 +1,6 @@
 /* @refresh reload */
 import dayjs from 'dayjs'
+import 'dayjs/locale/pt-br'
 import duration from 'dayjs/plugin/duration'
 
 import { render } from 'solid-js/web'
@@ -10,6 +11,7 @@ import App from './App'
 import './index.css'
 
 dayjs.extend(duration)
+dayjs.locale('pt-br')
 
 const root = document.getElementById('root')
 
