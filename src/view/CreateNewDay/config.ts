@@ -10,7 +10,7 @@ import {
     RestBlock,
     TextBlock,
 } from '@models/block'
-import { Day, Group, Worksheet } from '@models/day'
+import { Day, Group, Period, Worksheet } from '@models/day'
 
 import { Path } from './types'
 
@@ -49,11 +49,14 @@ export const initialBlockValues: Block = { type: '', info: '' }
 
 export const initialGroupValues: Group = { name: '', blocks: [] }
 
+export const initialPeriodValues: Period = {
+    groups: [],
+}
+
 export const initialDayValues: Day = {
     name: '',
     date: '',
-    period: 1,
-    groups: [],
+    periods: [],
 }
 
 export const initialWorksheetValues: Worksheet = {
@@ -64,10 +67,11 @@ export const initialWorksheetValues: Worksheet = {
 
 export const breadCrumbLabelMaps: Record<string, string> = {
     worksheet: 'Planilha',
-    day: 'Dia',
+    periods: 'Período',
+    days: 'Dia',
     groups: 'Grupo',
     blocks: 'Bloco',
-    round: 'Round',
+    rounds: 'Round',
 }
 
 export const [currentPath, setCurrentPath] = createSignal<Path>('worksheet')
@@ -79,31 +83,66 @@ export const [dayStore, setDayStore] = createStore<Worksheet>({
         {
             name: 'Semana deload',
             date: '2023-03-07',
-            period: 1,
-            groups: [
+            periods: [
                 {
-                    name: 'Aquecimento',
-                    blocks: [
-                        { type: 'rest', time: 600, text: 'ola bloco rest' },
-                        { type: 'text', text: 'ola bloco de texto' },
+                    name: 'Período 1',
+                    groups: [
                         {
-                            type: 'event',
-                            event_type: 'for_time',
-                            rounds: [
+                            name: 'Aquecimento',
+                            blocks: [
+                                { type: 'rest', time: 600, text: 'ola bloco rest' },
+                                { type: 'text', text: 'ola bloco de texto' },
                                 {
-                                    name: '',
-                                    repeat: 2,
-                                    movements: [
+                                    type: 'event',
+                                    event_type: 'for_time',
+                                    rounds: [
                                         {
-                                            name: '1233',
-                                            reps: 0,
+                                            name: '',
+                                            repeat: 2,
+                                            movements: [
+                                                {
+                                                    name: '1233',
+                                                    reps: 0,
+                                                },
+                                            ],
                                         },
                                     ],
+                                    timecap: 600,
+                                    info: '',
+                                    name: '',
                                 },
                             ],
-                            timecap: 600,
-                            info: '',
-                            name: '',
+                        },
+                    ],
+                },
+                {
+                    groups: [
+                        {
+                            name: 'Aquecimento',
+                            blocks: [
+                                { type: 'text', text: 'ola bloco de texto' },
+                                {
+                                    type: 'event',
+                                    event_type: 'emom',
+                                    each: 120,
+                                    for: 600,
+                                    rounds: [
+                                        {
+                                            name: '',
+                                            repeat: 2,
+                                            movements: [
+                                                {
+                                                    name: '1233',
+                                                    reps: 0,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                    info: '',
+                                    name: '',
+                                },
+                                { type: 'rest', time: 600, text: 'ola bloco rest' },
+                            ],
                         },
                     ],
                 },

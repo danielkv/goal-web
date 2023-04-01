@@ -5,11 +5,15 @@ export interface Group {
     blocks: Block[]
 }
 
+export interface Period {
+    name?: string
+    groups: Group[]
+}
+
 export interface Day {
     name: string
-    period: number
     date: string // YYYY-MM-DD
-    groups: Group[]
+    periods: Period[]
 }
 
 export interface Worksheet {

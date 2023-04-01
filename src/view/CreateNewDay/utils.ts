@@ -31,7 +31,7 @@ export function getCurrentForm(path: string): [string, number, Record<string, nu
         if (!isNumber(element)) {
             currentForm = element
 
-            if (['days', 'groups', 'blocks', 'rounds'].includes(element)) {
+            if (['days', 'periods', 'groups', 'blocks', 'rounds'].includes(element)) {
                 const arrayIndex = extractedPaths[idx + 1]
 
                 if (arrayIndex !== undefined && isNumber(arrayIndex)) indexMap[element] = arrayIndex
