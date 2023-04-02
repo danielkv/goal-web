@@ -9,8 +9,8 @@ export interface EventBlockPreviewProps {
 const RestBlockPreview: Component<EventBlockPreviewProps> = (props) => {
     return (
         <div>
-            {getTimeFromSeconds(props.block.time)} Rest - \
-            {props.block.text && <span>{props.block.text}</span>}
+            {getTimeFromSeconds(props.block.time)} Rest
+            {props.block.text && <span> - {props.block.text}</span>}
         </div>
     )
 }
