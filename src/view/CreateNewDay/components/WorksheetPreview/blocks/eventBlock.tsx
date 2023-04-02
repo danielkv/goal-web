@@ -84,14 +84,20 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
 
             <For each={props.block.rounds}>
                 {(round, roundIndex) => {
-                    const rounds =
-                        round.repeat && round.repeat > 1 ? `${round.repeat} Rounds` : `1 Round`
+                    const rounds = round.repeat
+                        ? round.repeat > 1
+                            ? `${round.repeat} Rounds`
+                            : `1 Round`
+                        : ''
                     const roundPath = `${props.pathIndex}.rounds.${roundIndex()}` as Path
 
                     return (
                         <div
-                            class="m-1 p-2 hoverable"
-                            classList={{ selected: props.currentPath === roundPath }}
+                            class="m-1 p-2 round hoverable"
+                            classList={{
+                                selected: props.currentPath === roundPath,
+                                empty: !round.movements.length,
+                            }}
                             onClick={(e) => {
                                 e.stopPropagation()
                                 handleClickPeace(roundPath)

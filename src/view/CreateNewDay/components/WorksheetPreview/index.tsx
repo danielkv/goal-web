@@ -74,7 +74,7 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
     }
 
     return (
-        <div class="flex flex-col gap-6 items-center p-6">
+        <div class="flex flex-col gap-6 items-center p-6 worksheet">
             <h1
                 class="text-xl font-bold m-2 p-2 hoverable"
                 classList={{ selected: props.currentPath === 'worksheet' }}
@@ -92,8 +92,11 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                     const dayPath = createMemo<Path>(() => `worksheet.days.${dayIndex()}`)
                     return (
                         <div
-                            class="flex flex-col gap-12 items-center p-6 mb-6 hoverable"
-                            classList={{ selected: props.currentPath === dayPath() }}
+                            class="flex flex-col gap-12 items-center p-6 mb-6 day hoverable"
+                            classList={{
+                                selected: props.currentPath === dayPath(),
+                                empty: !day.periods.length,
+                            }}
                             onClick={(e) => {
                                 e.stopPropagation()
                                 handleClickPeace(dayPath())
@@ -112,9 +115,10 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                     )
                                     return (
                                         <div
-                                            class="w-a4 min-h-a4 bg-gray-500  hoverable"
+                                            class="period hoverable"
                                             classList={{
                                                 selected: props.currentPath === periodPath(),
+                                                empty: !period.groups.length,
                                             }}
                                             onClick={(e) => {
                                                 e.stopPropagation()
@@ -133,7 +137,7 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                                 }
                                             />
 
-                                            <div class="flex items-center gap-6 mb-20 ">
+                                            <div class="flex items-center gap-6 mb-20">
                                                 <div class="w-16 h-16 flex items-center justify-center bg-red-500">
                                                     {periodIndex() + 1}
                                                 </div>

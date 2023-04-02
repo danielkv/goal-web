@@ -78,7 +78,10 @@ export function getBreadcrumbLabel(path: string): string {
     const obj = getCurrentObject<Record<string, any>>(path)
     const [form, formIndex] = getCurrentForm(path)
 
-    if (isDay(obj)) return dayjs(obj.date, 'YYYY-MM-DD').format('DD/MM/YYYY')
+    if (isDay(obj)) {
+        const day = dayjs(obj.date, 'YYYY-MM-DD')
+        return day.isValid() ? day.format('DD/MM/YYYY') : 'Sem data'
+    }
     if (isPeriod(obj)) return `${String(formIndex + 1)}º Período `
     if (isGroup(obj)) return obj.name
     if (isBlock(obj)) {

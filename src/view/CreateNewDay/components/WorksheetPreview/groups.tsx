@@ -101,9 +101,10 @@ const Groups: Component<GroupsProps> = (props) => {
                 )
                 return (
                     <div
-                        class="flex flex-col items-center text-xl hoverable"
+                        class="flex flex-col items-center text-xl group hoverable"
                         classList={{
                             selected: props.currentPath === groupPath(),
+                            empty: !group.name,
                         }}
                         onClick={(e) => {
                             e.stopPropagation()
@@ -135,9 +136,10 @@ const Groups: Component<GroupsProps> = (props) => {
                                             <div class="border-t-2 border-gray-500 w-20"></div>
                                         )}
                                         <div
-                                            class="m-3 p-3 hoverable"
+                                            class="m-3 p-3 block hoverable"
                                             classList={{
                                                 selected: props.currentPath === blockPath(),
+                                                empty: block.type === '',
                                             }}
                                             onClick={(e) => {
                                                 e.stopPropagation()

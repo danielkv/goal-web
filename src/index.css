@@ -27,6 +27,38 @@
 }
 
 @layer components {
+    :root {
+        --page-size: 210mm;
+    }
+
+    .day {
+        min-width: var(--page-size);
+    }
+
+    .day.empty {
+        @apply bg-gray-500 drop-shadow-2xl;
+    }
+
+    .period {
+        @apply bg-gray-500 drop-shadow-2xl;
+
+        min-width: var(--page-size);
+    }
+
+    .group {
+        @apply mb-6;
+    }
+
+    .block.empty {
+        min-height: 50px;
+        min-width: 100px;
+    }
+
+    .round.empty {
+        min-height: 50px;
+        min-width: 100px;
+    }
+
     .icon-btn {
         color: white;
         width: 35px;
@@ -37,6 +69,7 @@
         justify-content: center;
         @apply bg-red-700;
     }
+
     .icon-btn:hover {
         @apply bg-red-900;
     }
