@@ -22,7 +22,7 @@ const DayForm: Component<DayFormProps> = (props) => {
     }
 
     return (
-        <Form<TDayForm> of={form} name="teste" class="flex flex-col gap-6" onSubmit={handleSubmit}>
+        <Form<TDayForm> of={form} name="teste" class="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Field of={form} name="date">
                 {(field) => (
                     <TextInput

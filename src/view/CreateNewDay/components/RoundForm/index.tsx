@@ -112,18 +112,21 @@ const RoundForm: Component<BlockFormProps> = ({ onClickNext, round }) => {
                                 <div class="flex gap-6 items-start">
                                     <Field of={form} name={`${array.name}.${index()}.weight.type`}>
                                         {(field) => (
-                                            <select class="input w-40" {...field.props}>
-                                                <For each={weightTypes}>
-                                                    {(item) => (
-                                                        <option
-                                                            value={item.key}
-                                                            selected={field.value === item.key}
-                                                        >
-                                                            {item.label}
-                                                        </option>
-                                                    )}
-                                                </For>
-                                            </select>
+                                            <div class="flex flex-col">
+                                                <label class="text-sm mb-2">Tipo de carga</label>
+                                                <select class="input w-40" {...field.props}>
+                                                    <For each={weightTypes}>
+                                                        {(item) => (
+                                                            <option
+                                                                value={item.key}
+                                                                selected={field.value === item.key}
+                                                            >
+                                                                {item.label}
+                                                            </option>
+                                                        )}
+                                                    </For>
+                                                </select>
+                                            </div>
                                         )}
                                     </Field>
                                     <Field of={form} name={`${array.name}.${index()}.weight.value`}>

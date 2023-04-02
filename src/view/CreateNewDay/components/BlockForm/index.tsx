@@ -28,15 +28,18 @@ const BlockForm: Component<BlockFormProps> = (props) => {
 
     return (
         <>
-            <select class="input input-full" onChange={(e) => setType((e.target as any).value)}>
-                <For each={blockTypes}>
-                    {(item) => (
-                        <option value={item.key} selected={type() === item.key}>
-                            {item.label}
-                        </option>
-                    )}
-                </For>
-            </select>
+            <div class="flex flex-col">
+                <label class="text-sm mb-2">Tipo de bloco</label>
+                <select class="input input-full" onChange={(e) => setType((e.target as any).value)}>
+                    <For each={blockTypes}>
+                        {(item) => (
+                            <option value={item.key} selected={type() === item.key}>
+                                {item.label}
+                            </option>
+                        )}
+                    </For>
+                </select>
+            </div>
 
             <TextInput
                 onChange={(e) => setInfo((e.target as any).value)}

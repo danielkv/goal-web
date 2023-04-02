@@ -121,7 +121,7 @@
         @apply text-base;
         @apply text-gray-500;
         @apply rounded-md;
-        padding: 8px 15px;
+        padding: 5px 12px;
     }
     .input:focus {
         outline: 3px solid;

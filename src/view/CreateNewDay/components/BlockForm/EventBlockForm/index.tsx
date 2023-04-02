@@ -26,7 +26,7 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
         <Form<TEventBlockForm>
             of={form}
             name="teste"
-            class="flex flex-col gap-6"
+            class="flex flex-col gap-4"
             onSubmit={handleSubmit}
         >
             <Field of={form} name="name">
@@ -43,15 +43,21 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
             <div class="flex gap-6">
                 <Field of={form} name="event_type">
                     {(field) => (
-                        <select class="input w-40" {...field.props}>
-                            <For each={eventTypes}>
-                                {(item) => (
-                                    <option value={item.key} selected={field.value === item.key}>
-                                        {item.label}
-                                    </option>
-                                )}
-                            </For>
-                        </select>
+                        <div class="flex flex-col">
+                            <label class="text-sm mb-2">Tipo de evento</label>
+                            <select class="input w-40" {...field.props}>
+                                <For each={eventTypes}>
+                                    {(item) => (
+                                        <option
+                                            value={item.key}
+                                            selected={field.value === item.key}
+                                        >
+                                            {item.label}
+                                        </option>
+                                    )}
+                                </For>
+                            </select>
+                        </div>
                     )}
                 </Field>
                 <Show when={getValue(form, 'event_type') === 'emom'}>

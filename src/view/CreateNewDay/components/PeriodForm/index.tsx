@@ -25,7 +25,7 @@ const PeriodForm: Component<PeriodFormProps> = (props) => {
         <Form<TPeriodForm>
             of={form}
             name="teste"
-            class="flex flex-col gap-6"
+            class="flex flex-col gap-4"
             onSubmit={handleSubmit}
         >
             <Field of={form} name="name">

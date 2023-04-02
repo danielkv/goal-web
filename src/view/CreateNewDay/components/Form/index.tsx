@@ -52,7 +52,7 @@ const Form: Component = () => {
     return (
         <>
             <div class="flex flex-1 flex-col overflow-auto">
-                <div class="flex flex-col p-8 gap-6">
+                <div class="flex flex-col p-8 gap-4">
                     <Breadcrumb
                         onClick={(key) => setCurrentPath(key as Path)}
                         items={breadcrumbItems()}

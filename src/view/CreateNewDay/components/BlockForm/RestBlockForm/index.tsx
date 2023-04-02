@@ -25,7 +25,7 @@ const RestBlockForm: Component<RestBlockFormProps> = (props) => {
         <Form<TRestBlockForm>
             of={form}
             name="teste"
-            class="flex flex-col gap-6"
+            class="flex flex-col gap-4"
             onSubmit={handleSubmit}
         >
             <Field of={form} name="time">
