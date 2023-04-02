@@ -4,19 +4,19 @@ export type WeightTypes = 'kg' | 'lb' | '%' | 'none'
 
 export type MovementWeight = {
     type: WeightTypes
-    value?: number
+    value: string
 }
 
 export type EventMovement = {
     name: string
-    reps: number
+    reps: string
     weight?: MovementWeight
     videoUrl?: string
 }
 
 export type EventRound = {
     name?: string
-    repeat?: number
+    repeat?: string
     movements: EventMovement[]
 }
 

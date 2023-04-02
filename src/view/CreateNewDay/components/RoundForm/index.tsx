@@ -72,7 +72,6 @@ const RoundForm: Component<BlockFormProps> = ({ onClickNext, round }) => {
                         {...field.props}
                         class="flex-1"
                         label="repetir"
-                        type="number"
                         value={field.value}
                         error={field.error}
                     />
@@ -102,7 +101,6 @@ const RoundForm: Component<BlockFormProps> = ({ onClickNext, round }) => {
                                             {...field.props}
                                             class="flex-1"
                                             label="Repetições"
-                                            type="number"
                                             value={field.value}
                                             error={field.error}
                                         />
@@ -135,7 +133,6 @@ const RoundForm: Component<BlockFormProps> = ({ onClickNext, round }) => {
                                                 {...field.props}
                                                 class="flex-1"
                                                 label="Peso"
-                                                type="number"
                                                 value={field.value}
                                                 error={field.error}
                                             />

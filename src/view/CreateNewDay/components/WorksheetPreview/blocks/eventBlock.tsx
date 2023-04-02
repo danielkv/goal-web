@@ -10,6 +10,7 @@ import {
     setWorksheetStore,
 } from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
+import { getRoundsDisplay } from '@view/CreateNewDay/utils'
 
 import { eventTypesMap } from '../config'
 import { displayWeight } from '../utils'
@@ -25,6 +26,7 @@ export interface EventBlockPreviewProps {
     groupIndex: number
     blockIndex: number
 }
+
 const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
     const handleClickPeace = (key: Path) => {
         props.onClickPeace(key)
@@ -79,16 +81,12 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
         <div class="text-center">
             {props.block.name && <div>{props.block.name}</div>}
             <div class="font-bold text-base bg-gray-300 px-4 py-2">
-                {eventTypesMap[props.block.event_type]} {getTimeCap()}
+                {eventTypesMap[props.block.event_type]} {getTimeCap()}{' '}
             </div>
 
             <For each={props.block.rounds}>
                 {(round, roundIndex) => {
-                    const rounds = round.repeat
-                        ? round.repeat > 1
-                            ? `${round.repeat} Rounds`
-                            : `1 Round`
-                        : ''
+                    const rounds = getRoundsDisplay(round.repeat)
                     const roundPath = `${props.pathIndex}.rounds.${roundIndex()}` as Path
 
                     return (
@@ -114,8 +112,9 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                             <For each={round.movements}>
                                 {(movement) => {
                                     const weight = displayWeight(movement.weight)
-                                    const reps = movement.reps ? `${movement.reps}x ` : ''
-                                    return <div>{`${reps}${movement.name}${weight}`}</div>
+                                    const reps = getRoundsDisplay(movement.reps)
+                                    const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
+                                    return <div>{`${repsDisplay}${movement.name}${weight}`}</div>
                                 }}
                             </For>
                         </div>

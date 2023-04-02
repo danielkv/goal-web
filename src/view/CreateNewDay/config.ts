@@ -17,12 +17,12 @@ import { Path } from './types'
 
 export const initialMovementWeightValues: MovementWeight = {
     type: 'kg',
-    value: 100,
+    value: '',
 }
 
 export const initialRoundMovementValues: EventMovement = {
     name: '',
-    reps: 0,
+    reps: '',
 }
 export const initialEventRoundValues: EventRound = {
     movements: [],
@@ -105,11 +105,10 @@ export const [worksheetStore, setWorksheetStore] = createStore<Worksheet>({
                                     rounds: [
                                         {
                                             name: '',
-                                            repeat: 2,
                                             movements: [
                                                 {
                                                     name: '1233',
-                                                    reps: 0,
+                                                    reps: '',
                                                 },
                                             ],
                                         },
@@ -136,11 +135,11 @@ export const [worksheetStore, setWorksheetStore] = createStore<Worksheet>({
                                     rounds: [
                                         {
                                             name: '',
-                                            repeat: 2,
+                                            repeat: '2',
                                             movements: [
                                                 {
                                                     name: '1233',
-                                                    reps: 0,
+                                                    reps: '',
                                                 },
                                             ],
                                         },

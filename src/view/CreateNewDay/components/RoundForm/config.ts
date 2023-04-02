@@ -18,7 +18,7 @@ export const weightTypes: { key: WeightTypes; label: string }[] = [
 
 export const eventRoundFormSchema = z.object<ZodShape<TRoundForm>>({
     name: z.string(),
-    repeat: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
+    repeat: z.optional(z.string()),
     movements: z.array(
         z.object<ZodShape<EventMovement>>({
             name: z
@@ -27,16 +27,13 @@ export const eventRoundFormSchema = z.object<ZodShape<TRoundForm>>({
                     invalid_type_error: 'Não é um texto',
                 })
                 .nonempty('Nome é obrigatório'),
-            reps: z.number({
-                invalid_type_error: 'Número inválido',
-                required_error: 'N de Repetições é obrigatório',
-            }),
+            reps: z.string(),
             videoUrl: z.optional(z.string()),
             weight: z.optional(
                 z
                     .object<ZodShape<MovementWeight>>({
                         type: z.enum(['none', 'kg', 'lb', '%']),
-                        value: z.custom<number>().optional(),
+                        value: z.custom<string>(),
                     })
                     .superRefine((values, ctx) => {
                         if (values.type !== 'none' && !values.value)
