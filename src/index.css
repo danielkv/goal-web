@@ -28,10 +28,15 @@
 
 @layer components {
     :root {
-        --page-size: 210mm;
+        --page-size: 600px;
+    }
+
+    .worksheet {
+        @apply flex flex-col gap-6 items-center p-6;
     }
 
     .day {
+        @apply flex flex-col gap-12 items-center p-6 mb-6;
         min-width: var(--page-size);
     }
 
@@ -44,14 +49,50 @@
 
         min-width: var(--page-size);
     }
+    .period > .header {
+        @apply flex items-center gap-6 mb-6;
+    }
+    .period > .header > .title {
+        @apply flex-1 text-xl tracking-[.3em];
+        text-transform: uppercase;
+    }
 
     .group {
-        @apply mb-6;
+        @apply mb-6 flex flex-col items-center;
+    }
+
+    .group > .title {
+        @apply bg-red-500  px-3 text-base min-w-[250px] py-3 text-center;
+    }
+    .group .block-separator {
+        @apply border-t-2 border-gray-100 w-20;
+    }
+
+    .block {
+        @apply text-sm m-2 p-2 flex items-center !important;
     }
 
     .block.empty {
         min-height: 50px;
         min-width: 100px;
+    }
+
+    .block > .info {
+        @apply bg-gray-100 p-3 text-sm mr-6;
+        position: absolute;
+        width: 180px;
+        right: 100%;
+    }
+    .block > .info:after {
+        content: '';
+
+        border-top: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 10px solid theme('colors.gray.100');
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        margin-top: -20px;
     }
 
     .round.empty {
@@ -61,9 +102,9 @@
 
     .icon-btn {
         color: white;
-        width: 35px;
-        height: 35px;
-        border-radius: 20px;
+        width: 28px;
+        height: 28px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -81,14 +122,13 @@
     }
 
     .hoverable > .icon-btn.remove {
-        right: -17px;
-        top: 0;
-        margin-top: -17px;
+        right: -14px;
+        top: -14px;
     }
 
     .hoverable > .icon-btn.add {
         left: 50%;
-        margin-left: -17px;
+        margin-left: -14px;
     }
     .hoverable > .icon-btn.add.top {
         top: -17px;
@@ -136,7 +176,7 @@
     }
 
     .btn {
-        @apply px-6 py-2 bg-gray-100 rounded-md text-lg;
+        @apply px-4 py-1 bg-gray-100 rounded-md text-base;
     }
     .btn:hover {
         @apply bg-gray-300;

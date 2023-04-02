@@ -81,7 +81,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
                     <RestBlockForm
                         block={props.block as RestBlock}
                         onClickNext={(restBlock) => {
-                            handleSubmit({ ...restBlock, type: 'rest' })
+                            handleSubmit({ ...restBlock, type: 'rest', info: info() || undefined })
                         }}
                     />
                 </Match>
@@ -89,7 +89,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
                     <TextBlockForm
                         block={props.block as TextBlock}
                         onClickNext={(textBlock) => {
-                            handleSubmit({ ...textBlock, type: 'text' })
+                            handleSubmit({ ...textBlock, type: 'text', info: info() || undefined })
                         }}
                     />
                 </Match>

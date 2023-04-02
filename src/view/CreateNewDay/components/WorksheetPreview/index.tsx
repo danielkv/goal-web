@@ -74,7 +74,7 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
     }
 
     return (
-        <div class="flex flex-col gap-6 items-center p-6 worksheet">
+        <div class="worksheet">
             <h1
                 class="text-xl font-bold m-2 p-2 hoverable"
                 classList={{ selected: props.currentPath === 'worksheet' }}
@@ -92,7 +92,7 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                     const dayPath = createMemo<Path>(() => `worksheet.days.${dayIndex()}`)
                     return (
                         <div
-                            class="flex flex-col gap-12 items-center p-6 mb-6 day hoverable"
+                            class="day hoverable"
                             classList={{
                                 selected: props.currentPath === dayPath(),
                                 empty: !day.periods.length,
@@ -137,12 +137,12 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                                 }
                                             />
 
-                                            <div class="flex items-center gap-6 mb-20">
+                                            <div class="header">
                                                 <div class="w-16 h-16 flex items-center justify-center bg-red-500">
                                                     {periodIndex() + 1}
                                                 </div>
-                                                <div class="flex-1 text-2xl tracking-[.5em]">
-                                                    WORKSHEET
+                                                <div class="title">
+                                                    {period.name || 'WORKSHEET'}
                                                 </div>
                                                 <div class="text-right mr-6">
                                                     <small class="flex items-center justify-end gap-3">
@@ -156,10 +156,7 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                                                             'DD/MM/YYYY'
                                                         )}
                                                     </small>
-                                                    <div class="font-bold text-lg">
-                                                        {day.name}
-                                                        {period.name && ` - ${period.name}`}
-                                                    </div>
+                                                    <div class="font-bold">{day.name}</div>
                                                 </div>
                                             </div>
                                             <div class="p-6">

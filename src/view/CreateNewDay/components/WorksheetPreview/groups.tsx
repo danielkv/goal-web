@@ -101,7 +101,7 @@ const Groups: Component<GroupsProps> = (props) => {
                 )
                 return (
                     <div
-                        class="flex flex-col items-center text-xl group hoverable"
+                        class="group hoverable"
                         classList={{
                             selected: props.currentPath === groupPath(),
                             empty: !group.name,
@@ -117,9 +117,7 @@ const Groups: Component<GroupsProps> = (props) => {
                             onClickBottomAdd={() => handleAddGroup(groupIndex() + 1)}
                         />
 
-                        <div class="bg-red-500 px-12 min-w-[350px] py-4 text-center">
-                            {group.name}
-                        </div>
+                        <div class="title">{group.name}</div>
 
                         <For each={group.blocks}>
                             {(block, blockIndex) => {
@@ -132,11 +130,9 @@ const Groups: Component<GroupsProps> = (props) => {
 
                                 return (
                                     <>
-                                        {blockIndex() > 0 && (
-                                            <div class="border-t-2 border-gray-500 w-20"></div>
-                                        )}
+                                        {blockIndex() > 0 && <div class="block-separator"></div>}
                                         <div
-                                            class="m-3 p-3 block hoverable"
+                                            class="block hoverable"
                                             classList={{
                                                 selected: props.currentPath === blockPath(),
                                                 empty: block.type === '',
@@ -157,6 +153,7 @@ const Groups: Component<GroupsProps> = (props) => {
                                                     handleAddBlock(groupIndex(), blockIndex() + 1)
                                                 }
                                             />
+                                            {block.info && <div class="info">{block.info}</div>}
                                             <Switch>
                                                 <Match when={block.type === 'rest'}>
                                                     <RestBlockPreview block={block as RestBlock} />
