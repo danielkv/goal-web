@@ -1,8 +1,8 @@
-import { Component } from 'solid-js'
+import { Component, createEffect } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { TextBlock } from '@models/block'
-import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
+import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TRestBlockForm, textBlockFormSchema } from './config'
 
@@ -16,6 +16,8 @@ const TextBlockForm: Component<TextBlockFormProps> = (props) => {
         validate: zodForm(textBlockFormSchema),
         initialValues: props.block,
     })
+
+    createEffect(() => reset(form, { initialValues: props.block }))
 
     const handleSubmit: SubmitHandler<TRestBlockForm> = (values) => {
         props.onClickNext(values)

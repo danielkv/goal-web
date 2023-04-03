@@ -1,4 +1,4 @@
-import { Component, For, JSX } from 'solid-js'
+import { Component, For, JSX, createEffect } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { EventRound } from '@models/block'
@@ -10,6 +10,7 @@ import {
     createForm,
     insert,
     remove,
+    reset,
     zodForm,
 } from '@modular-forms/solid'
 
@@ -22,12 +23,13 @@ export interface BlockFormProps {
     round: EventRound
 }
 
-const RoundForm: Component<BlockFormProps> = ({ onClickNext, round }) => {
+const RoundForm: Component<BlockFormProps> = (props) => {
     const form = createForm<TRoundForm>({
         validate: zodForm(eventRoundFormSchema),
-        initialValues: round,
-        validateOn: 'submit',
+        initialValues: props.round,
     })
+
+    createEffect(() => reset(form, { initialValues: props.round }))
 
     const handleSubmit: SubmitHandler<TRoundForm> = (values) => {
         const newValues = {
@@ -37,7 +39,7 @@ const RoundForm: Component<BlockFormProps> = ({ onClickNext, round }) => {
                 return mov
             }),
         }
-        onClickNext(newValues)
+        props.onClickNext(newValues)
     }
 
     const handleClickAddMovement: JSX.CustomEventHandlersCamelCase<HTMLButtonElement>['onClick'] = (

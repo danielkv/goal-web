@@ -1,8 +1,8 @@
-import { Component } from 'solid-js'
+import { Component, createEffect } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { Period } from '@models/day'
-import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
+import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TPeriodForm, periodFormSchema } from './config'
 
@@ -16,6 +16,8 @@ const PeriodForm: Component<PeriodFormProps> = (props) => {
         validate: zodForm(periodFormSchema),
         initialValues: props.period,
     })
+
+    createEffect(() => reset(form, { initialValues: props.period }))
 
     const handleSubmit: SubmitHandler<TPeriodForm> = (values) => {
         props.onClickNext(values)

@@ -1,8 +1,8 @@
-import { Component } from 'solid-js'
+import { Component, createEffect } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { Day } from '@models/day'
-import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
+import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TDayForm, dayFormSchema } from './config'
 
@@ -16,6 +16,8 @@ const DayForm: Component<DayFormProps> = (props) => {
         validate: zodForm(dayFormSchema),
         initialValues: props.day,
     })
+
+    createEffect(() => reset(form, { initialValues: props.day }))
 
     const handleSubmit: SubmitHandler<TDayForm> = (values) => {
         props.onClickNext(values)

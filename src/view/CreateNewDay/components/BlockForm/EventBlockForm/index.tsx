@@ -1,8 +1,16 @@
-import { Component, For, Show } from 'solid-js'
+import { Component, For, Show, createEffect } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { EventBlock } from '@models/block'
-import { Field, Form, SubmitHandler, createForm, getValue, zodForm } from '@modular-forms/solid'
+import {
+    Field,
+    Form,
+    SubmitHandler,
+    createForm,
+    getValue,
+    reset,
+    zodForm,
+} from '@modular-forms/solid'
 
 import { TEventBlockForm, eventBlockFormSchema, eventTypes } from './config'
 
@@ -16,6 +24,8 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
         validate: zodForm(eventBlockFormSchema),
         initialValues: props.block,
     })
+
+    createEffect(() => reset(form, { initialValues: props.block }))
 
     const handleSubmit: SubmitHandler<TEventBlockForm> = (values) => {
         const newValues = { ...values, rounds: props.block.rounds || [] }

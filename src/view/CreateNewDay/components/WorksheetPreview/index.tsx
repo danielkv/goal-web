@@ -1,19 +1,13 @@
 import dayjs from 'dayjs'
 
 import { Component, For, createMemo } from 'solid-js'
-import { produce } from 'solid-js/store'
 
 import PeaceControl from '@components/PeaceControl'
 import { Worksheet } from '@models/day'
-import {
-    initialDayValues,
-    initialPeriodValues,
-    setCurrentPath,
-    setWorksheetStore,
-} from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
 
 import Groups from './groups'
+import { handleAddDay, handleAddPeriod, handleRemoveDay, handleRemovePeriod } from './utils'
 
 export interface WorksheetPreviewProps {
     worksheet: Worksheet
@@ -24,53 +18,6 @@ export interface WorksheetPreviewProps {
 const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
     const handleClickPeace = (key: Path) => {
         props.onClickPeace(key)
-    }
-
-    const handleRemoveDay = (dayIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days.splice(dayIndex, 1)
-
-                return current
-            })
-        )
-        setCurrentPath(`worksheet`)
-    }
-
-    const handleAddDay = (dayIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days.splice(dayIndex, 0, initialDayValues)
-
-                return current
-            })
-        )
-        setTimeout(() => {
-            setCurrentPath(`worksheet.days.${dayIndex}`)
-        }, 1)
-    }
-
-    const handleRemovePeriod = (dayIndex: number, periodIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days[dayIndex].periods.splice(periodIndex, 1)
-
-                return current
-            })
-        )
-        setCurrentPath(`worksheet.days.${dayIndex}`)
-    }
-    const handleAddPeriod = (dayIndex: number, periodIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days[dayIndex].periods.splice(periodIndex, 0, initialPeriodValues)
-
-                return current
-            })
-        )
-        setTimeout(() => {
-            setCurrentPath(`worksheet.days.${dayIndex}.periods.${periodIndex}`)
-        }, 1)
     }
 
     return (
@@ -104,8 +51,20 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                         >
                             <PeaceControl
                                 onClickRemove={() => handleRemoveDay(dayIndex())}
-                                onClickTopAdd={() => handleAddDay(dayIndex())}
-                                onClickBottomAdd={() => handleAddDay(dayIndex() + 1)}
+                                onClickTopAdd={() =>
+                                    handleAddDay(dayIndex(), {
+                                        date: dayjs(day.date)
+                                            .subtract(1, 'day')
+                                            .format('YYYY-MM-DD'),
+                                        name: day.name,
+                                    })
+                                }
+                                onClickBottomAdd={() =>
+                                    handleAddDay(dayIndex() + 1, {
+                                        date: dayjs(day.date).add(1, 'day').format('YYYY-MM-DD'),
+                                        name: day.name,
+                                    })
+                                }
                             />
                             <For each={day.periods}>
                                 {(period, periodIndex) => {
