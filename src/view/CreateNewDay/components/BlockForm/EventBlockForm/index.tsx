@@ -1,4 +1,4 @@
-import { Component, For, Show, createEffect } from 'solid-js'
+import { Component, For, Show, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { EventBlock } from '@models/block'
@@ -25,7 +25,12 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
         initialValues: props.block,
     })
 
-    createEffect(() => reset(form, { initialValues: props.block }))
+    const memoData = createMemo(() => props.block)
+    createEffect(
+        on(memoData, () => {
+            reset(form, { initialValues: memoData() })
+        })
+    )
 
     const handleSubmit: SubmitHandler<TEventBlockForm> = (values) => {
         const newValues = { ...values, rounds: props.block.rounds || [] }

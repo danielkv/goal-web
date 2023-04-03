@@ -1,4 +1,4 @@
-import { Component, createEffect } from 'solid-js'
+import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { Group } from '@models/day'
@@ -17,7 +17,12 @@ const GroupForm: Component<GroupFormProps> = (props) => {
         initialValues: props.group,
     })
 
-    createEffect(() => reset(form, { initialValues: props.group }))
+    const memoData = createMemo(() => props.group)
+    createEffect(
+        on(memoData, () => {
+            reset(form, { initialValues: memoData() })
+        })
+    )
 
     const handleSubmit: SubmitHandler<TGroupForm> = (values) => {
         props.onClickNext(values)

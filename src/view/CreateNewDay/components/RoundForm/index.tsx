@@ -1,4 +1,4 @@
-import { Component, For, JSX, createEffect } from 'solid-js'
+import { Component, For, JSX, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { EventRound } from '@models/block'
@@ -29,7 +29,12 @@ const RoundForm: Component<BlockFormProps> = (props) => {
         initialValues: props.round,
     })
 
-    createEffect(() => reset(form, { initialValues: props.round }))
+    const memoData = createMemo(() => props.round)
+    createEffect(
+        on(memoData, () => {
+            reset(form, { initialValues: memoData() })
+        })
+    )
 
     const handleSubmit: SubmitHandler<TRoundForm> = (values) => {
         const newValues = {

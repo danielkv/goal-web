@@ -83,7 +83,7 @@ export function getBreadcrumbLabel(path: string): string {
         return day.isValid() ? day.format('DD/MM/YYYY') : 'Sem data'
     }
     if (isPeriod(obj)) return `${String(formIndex + 1)}º Período `
-    if (isGroup(obj)) return obj.name
+    if (isGroup(obj)) return obj.name || 'Grupo'
     if (isBlock(obj)) {
         if (isEventBlock(obj)) return eventTypesMap[obj.event_type] || 'Evento'
         if (isTextBlock(obj)) return 'Texto'

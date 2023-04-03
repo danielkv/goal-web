@@ -26,6 +26,8 @@ export const initialRoundMovementValues: EventMovement = {
 }
 export const initialEventRoundValues: EventRound = {
     movements: [],
+    name: '',
+    repeat: '',
 }
 
 export const initialEventBlockValues: EventBlock = {
@@ -51,6 +53,7 @@ export const initialBlockValues: Block = { type: '', info: '' }
 export const initialGroupValues: Group = { name: '', blocks: [] }
 
 export const initialPeriodValues: Period = {
+    name: '',
     groups: [],
 }
 
@@ -96,6 +99,7 @@ export const [worksheetStore, setWorksheetStore] = createStore<Worksheet>({
                     groups: [
                         {
                             name: 'Aquecimento',
+
                             blocks: [
                                 { type: 'rest', time: 600, text: 'ola bloco rest' },
                                 { type: 'text', text: 'ola bloco de texto' },
@@ -104,6 +108,7 @@ export const [worksheetStore, setWorksheetStore] = createStore<Worksheet>({
                                     event_type: 'for_time',
                                     rounds: [
                                         {
+                                            repeat: '',
                                             name: '',
                                             movements: [
                                                 {

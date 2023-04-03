@@ -1,4 +1,4 @@
-import { Component, createEffect } from 'solid-js'
+import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { TextBlock } from '@models/block'
@@ -17,7 +17,12 @@ const TextBlockForm: Component<TextBlockFormProps> = (props) => {
         initialValues: props.block,
     })
 
-    createEffect(() => reset(form, { initialValues: props.block }))
+    const memoData = createMemo(() => props.block)
+    createEffect(
+        on(memoData, () => {
+            reset(form, { initialValues: memoData() })
+        })
+    )
 
     const handleSubmit: SubmitHandler<TRestBlockForm> = (values) => {
         props.onClickNext(values)

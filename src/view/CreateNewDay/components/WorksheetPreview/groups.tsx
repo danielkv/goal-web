@@ -1,20 +1,14 @@
 import { Component, For, Match, Switch, createMemo } from 'solid-js'
-import { produce } from 'solid-js/store'
 
 import PeaceControl from '@components/PeaceControl'
 import { EventBlock, RestBlock, TextBlock } from '@models/block'
 import { Group } from '@models/day'
-import {
-    initialBlockValues,
-    initialGroupValues,
-    setCurrentPath,
-    setWorksheetStore,
-} from '@view/CreateNewDay/config'
 import { Path } from '@view/CreateNewDay/types'
 
 import EventBlockPreview from './blocks/eventBlock'
 import RestBlockPreview from './blocks/restBlock'
 import TextBlockPreview from './blocks/textBlock'
+import { handleAddBlock, handleAddGroup, handleRemoveBlock, handleRemoveGroup } from './utils'
 
 export interface GroupsProps {
     groups: Group[]
@@ -29,68 +23,6 @@ export interface GroupsProps {
 const Groups: Component<GroupsProps> = (props) => {
     const handleClickPeace = (key: Path) => {
         props.onClickPeace(key)
-    }
-
-    const handleRemoveGroup = (groupIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days[props.dayIndex].periods[props.periodIndex].groups.splice(groupIndex, 1)
-
-                return current
-            })
-        )
-        setCurrentPath(`worksheet.days.${props.dayIndex}.periods.${props.periodIndex}`)
-    }
-
-    const handleAddGroup = (groupIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days[props.dayIndex].periods[props.periodIndex].groups.splice(
-                    groupIndex,
-                    0,
-                    initialGroupValues
-                )
-
-                return current
-            })
-        )
-        setTimeout(() => {
-            setCurrentPath(
-                `worksheet.days.${props.dayIndex}.periods.${props.periodIndex}.groups.${groupIndex}`
-            )
-        }, 1)
-    }
-
-    const handleRemoveBlock = (groupIndex: number, blockIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days[props.dayIndex].periods[props.periodIndex].groups[
-                    groupIndex
-                ].blocks.splice(blockIndex, 1)
-
-                return current
-            })
-        )
-        setCurrentPath(
-            `worksheet.days.${props.dayIndex}.periods.${props.periodIndex}.groups.${groupIndex}`
-        )
-    }
-
-    const handleAddBlock = (groupIndex: number, blockIndex: number) => {
-        setWorksheetStore(
-            produce((current) => {
-                current.days[props.dayIndex].periods[props.periodIndex].groups[
-                    groupIndex
-                ].blocks.splice(blockIndex, 0, initialBlockValues)
-
-                return current
-            })
-        )
-        setTimeout(() => {
-            setCurrentPath(
-                `worksheet.days.${props.dayIndex}.periods.${props.periodIndex}.groups.${groupIndex}.blocks.${blockIndex}`
-            )
-        }, 1)
     }
 
     return (
@@ -112,9 +44,15 @@ const Groups: Component<GroupsProps> = (props) => {
                         }}
                     >
                         <PeaceControl
-                            onClickRemove={() => handleRemoveGroup(groupIndex())}
-                            onClickTopAdd={() => handleAddGroup(groupIndex())}
-                            onClickBottomAdd={() => handleAddGroup(groupIndex() + 1)}
+                            onClickRemove={() =>
+                                handleRemoveGroup(props.dayIndex, props.periodIndex, groupIndex())
+                            }
+                            onClickTopAdd={() =>
+                                handleAddGroup(props.dayIndex, props.periodIndex, groupIndex())
+                            }
+                            onClickBottomAdd={() =>
+                                handleAddGroup(props.dayIndex, props.periodIndex, groupIndex() + 1)
+                            }
                         />
 
                         <div class="title">{group.name}</div>
@@ -144,13 +82,28 @@ const Groups: Component<GroupsProps> = (props) => {
                                         >
                                             <PeaceControl
                                                 onClickRemove={() =>
-                                                    handleRemoveBlock(groupIndex(), blockIndex())
+                                                    handleRemoveBlock(
+                                                        props.dayIndex,
+                                                        props.periodIndex,
+                                                        groupIndex(),
+                                                        blockIndex()
+                                                    )
                                                 }
                                                 onClickTopAdd={() =>
-                                                    handleAddBlock(groupIndex(), blockIndex())
+                                                    handleAddBlock(
+                                                        props.dayIndex,
+                                                        props.periodIndex,
+                                                        groupIndex(),
+                                                        blockIndex()
+                                                    )
                                                 }
                                                 onClickBottomAdd={() =>
-                                                    handleAddBlock(groupIndex(), blockIndex() + 1)
+                                                    handleAddBlock(
+                                                        props.dayIndex,
+                                                        props.periodIndex,
+                                                        groupIndex(),
+                                                        blockIndex() + 1
+                                                    )
                                                 }
                                             />
                                             {block.info && <div class="info">{block.info}</div>}

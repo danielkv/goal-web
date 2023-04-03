@@ -1,4 +1,4 @@
-import { Component, createEffect } from 'solid-js'
+import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { Day } from '@models/day'
@@ -17,7 +17,12 @@ const DayForm: Component<DayFormProps> = (props) => {
         initialValues: props.day,
     })
 
-    createEffect(() => reset(form, { initialValues: props.day }))
+    const memoData = createMemo(() => props.day)
+    createEffect(
+        on(memoData, () => {
+            reset(form, { initialValues: memoData() })
+        })
+    )
 
     const handleSubmit: SubmitHandler<TDayForm> = (values) => {
         props.onClickNext(values)
