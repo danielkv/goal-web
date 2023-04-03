@@ -11,7 +11,7 @@ const Breadcrumb: Component<BreadcrumbProps> = (props) => {
     }
 
     return (
-        <div class="flex items-center">
+        <div class="flex items-center flex-1 flex-wrap">
             <For each={props.items}>
                 {(item, index) => (
                     <>
