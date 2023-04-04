@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { ProviderId, getAuth } from 'firebase/auth'
+import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions'
 
 export const FIREBASE_APP = initializeApp({
     apiKey: import.meta.env.VITE_APP_APIKEY,
@@ -13,6 +14,8 @@ export const FIREBASE_APP = initializeApp({
 
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP)
 
+export const FUNCTIONS = getFunctions(FIREBASE_APP)
+
 export const signInOptions = [
     {
         provider: ProviderId.PASSWORD,
@@ -20,3 +23,8 @@ export const signInOptions = [
         disableSignUp: { status: true },
     },
 ]
+
+connectFunctionsEmulator(FUNCTIONS, 'localhost', 5001)
+
+export const FUNCTION_CALL = <RequestData = unknown, ResponseData = unknown>(fnName: string) =>
+    httpsCallable<RequestData, ResponseData>(FUNCTIONS, fnName)

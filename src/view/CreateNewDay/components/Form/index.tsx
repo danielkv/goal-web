@@ -5,6 +5,7 @@ import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
 import { Block } from '@models/block'
 import { Day, Group, Period } from '@models/day'
+import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
 import {
     currentPath,
     initialBlockValues,
@@ -227,7 +228,9 @@ const Form: Component = () => {
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">
-                <button class="btn btn-main">Finalizar</button>
+                <button class="btn btn-main" onClick={() => saveWorksheetUseCase(worksheetStore)}>
+                    Finalizar
+                </button>
             </div>
         </>
     )

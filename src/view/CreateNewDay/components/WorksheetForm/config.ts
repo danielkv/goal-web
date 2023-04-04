@@ -6,7 +6,7 @@ import { Worksheet } from '@models/day'
 
 import { initialWorksheetValues } from '../../config'
 
-export type TWorksheetForm = Omit<Worksheet, 'days'>
+export type TWorksheetForm = Omit<Worksheet, 'days' | 'id'>
 
 export const worksheetInitialValues: TWorksheetForm = omit(initialWorksheetValues, ['days'])
 

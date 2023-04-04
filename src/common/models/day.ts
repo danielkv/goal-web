@@ -17,6 +17,7 @@ export type Day = {
 }
 
 export type Worksheet = {
+    id?: string
     name: string
     info?: string
     startDate: string // YYYY-MM-DD
