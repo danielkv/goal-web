@@ -6,7 +6,7 @@ import { Day } from '@models/day'
 
 import { initialDayValues } from '../../config'
 
-export type TDayForm = Omit<Day, 'periods'>
+export type TDayForm = Omit<Day, 'periods' | 'id'>
 
 export const dayForemInitialValues: TDayForm = omit(initialDayValues, ['periods'])
 
