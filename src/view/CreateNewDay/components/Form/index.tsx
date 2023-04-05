@@ -123,7 +123,7 @@ const Form: Component = () => {
                                                     groups: [],
                                                 })
 
-                                            periods[currDayIndex] = {
+                                            periods[currPeriodIndex] = {
                                                 ...data,
                                                 groups: periods[currPeriodIndex].groups,
                                             }
