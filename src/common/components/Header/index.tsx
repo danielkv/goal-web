@@ -5,11 +5,14 @@ import { Component } from 'solid-js'
 import LogoSvg from '@assets/logo.svg?component-solid'
 import { FIREBASE_AUTH } from '@common/providers/firebase'
 import { loggedUser } from '@contexts/user/user.context'
+import { A } from '@solidjs/router'
 
 const Header: Component = () => {
     return (
         <div class="h-[80px] bg-gray-300 flex items-center px-6 justify-between">
-            <LogoSvg height={50} />
+            <A href="/">
+                <LogoSvg height={50} />
+            </A>
             {loggedUser() && (
                 <button
                     onClick={() => FIREBASE_AUTH.signOut()}

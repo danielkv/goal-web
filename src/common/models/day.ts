@@ -23,3 +23,5 @@ export type Worksheet = {
     startDate: string // YYYY-MM-DD
     days: Day[]
 }
+
+export type WorksheetModel = Omit<Worksheet, 'id'> & { id: string }

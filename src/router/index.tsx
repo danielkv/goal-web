@@ -4,6 +4,7 @@ import Header from '@components/Header'
 import { loggedUser } from '@contexts/user/user.context'
 import { Route, Routes, useNavigate } from '@solidjs/router'
 import LoginPage from '@view/Login'
+import WorksheetList from '@view/WorksheetList'
 
 import CreateNewDay from '../view/CreateNewDay'
 
@@ -20,7 +21,9 @@ const AppRouter: Component = () => {
             <Header />
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/" element={<CreateNewDay />} />
+                <Route path="/" element={<WorksheetList />} />
+                <Route path="/worksheet/new" element={<CreateNewDay />} />
+                <Route path="/worksheet/:id" element={<CreateNewDay />} />
             </Routes>
         </div>
     )
