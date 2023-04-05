@@ -1,12 +1,10 @@
-import { firestore } from 'firebase-admin'
+import * as admin from 'firebase-admin'
 import { https } from 'firebase-functions'
 
-import { init } from '../helpers'
+admin.initializeApp()
 
 export const saveWorksheet = https.onCall(
     (worksheet: Record<string, any>, context: https.CallableContext) => {
-        init()
-
         if (worksheet.id) return updateWorksheetUseCase(worksheet)
 
         return createWorksheetUseCase(worksheet)
@@ -14,9 +12,11 @@ export const saveWorksheet = https.onCall(
 )
 
 async function createWorksheetUseCase({ days, ...worksheet }: Record<string, any>) {
-    const worksheetRef = firestore().collection('worksheets')
+    const db = admin.firestore()
 
-    const batch = firestore().batch()
+    const worksheetRef = db.collection('worksheets')
+
+    const batch = db.batch()
 
     const worksheetDocRef = worksheetRef.doc()
     batch.create(worksheetDocRef, worksheet)
@@ -33,9 +33,10 @@ async function createWorksheetUseCase({ days, ...worksheet }: Record<string, any
 }
 
 async function updateWorksheetUseCase({ days, ...worksheet }: Record<string, any>) {
-    const worksheetRef = firestore().collection('worksheets')
+    const db = admin.firestore()
 
-    const batch = firestore().batch()
+    const worksheetRef = db.collection('worksheets')
+    const batch = db.batch()
 
     const worksheetDocRef = worksheetRef.doc(worksheet.id)
     batch.set(worksheetDocRef, worksheet)
@@ -52,8 +53,8 @@ async function updateWorksheetUseCase({ days, ...worksheet }: Record<string, any
 }
 
 function saveDaysUseCase(
-    batch: firestore.WriteBatch,
-    worksheetRef: firestore.DocumentReference,
+    batch: admin.firestore.WriteBatch,
+    worksheetRef: admin.firestore.DocumentReference,
     days: Record<string, any>[]
 ) {
     const dayRef = worksheetRef.collection('days')

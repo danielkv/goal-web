@@ -1,6 +1,7 @@
-import { initializeApp } from 'firebase-admin'
-import { getApps } from 'firebase-admin/app'
+import * as admin from 'firebase-admin'
 
+let initialized = false
 export function init() {
-    if (!getApps().length) initializeApp()
+    if (!initialized) admin.initializeApp()
+    initialized = true
 }
