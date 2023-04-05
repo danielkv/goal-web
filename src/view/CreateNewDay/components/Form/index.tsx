@@ -50,6 +50,12 @@ const Form: Component = () => {
         })
     })
 
+    const handleClickFinishButton = async () => {
+        const result = await saveWorksheetUseCase(worksheetStore)
+
+        setWorksheetStore(result)
+    }
+
     return (
         <>
             <div class="flex flex-1 flex-col overflow-auto">
@@ -228,7 +234,7 @@ const Form: Component = () => {
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">
-                <button class="btn btn-main" onClick={() => saveWorksheetUseCase(worksheetStore)}>
+                <button class="btn btn-main" onClick={handleClickFinishButton}>
                     Finalizar
                 </button>
             </div>

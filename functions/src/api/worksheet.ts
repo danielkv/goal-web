@@ -3,21 +3,72 @@ import { https } from 'firebase-functions'
 
 import { init } from '../helpers'
 
-export const saveWorksheet = https.onCall((worksheet: any, context: https.CallableContext) => {
-    init()
+export const saveWorksheet = https.onCall(
+    (worksheet: Record<string, any>, context: https.CallableContext) => {
+        init()
 
-    return createWorksheetUseCase(worksheet)
-})
+        if (worksheet.id) return updateWorksheetUseCase(worksheet)
 
-async function createWorksheetUseCase(data: Record<string, any>) {
+        return createWorksheetUseCase(worksheet)
+    }
+)
+
+async function createWorksheetUseCase({ days, ...worksheet }: Record<string, any>) {
     const worksheetRef = firestore().collection('worksheets')
 
-    const created = await worksheetRef.add(data)
+    const batch = firestore().batch()
+
+    const worksheetDocRef = worksheetRef.doc()
+    batch.create(worksheetDocRef, worksheet)
+
+    const createdDays = saveDaysUseCase(batch, worksheetDocRef, days)
+
+    await batch.commit()
 
     return {
-        id: created.id,
-        ...data,
+        id: worksheetDocRef.id,
+        days: createdDays,
+        ...worksheet,
     }
 }
 
-//function updateWorksheetUseCase(worksheet: Record<string, any>, response: VercelResponse): {}
+async function updateWorksheetUseCase({ days, ...worksheet }: Record<string, any>) {
+    const worksheetRef = firestore().collection('worksheets')
+
+    const batch = firestore().batch()
+
+    const worksheetDocRef = worksheetRef.doc(worksheet.id)
+    batch.set(worksheetDocRef, worksheet)
+
+    const createdDays = saveDaysUseCase(batch, worksheetDocRef, days)
+
+    await batch.commit()
+
+    return {
+        id: worksheetDocRef.id,
+        days: createdDays,
+        ...worksheet,
+    }
+}
+
+function saveDaysUseCase(
+    batch: firestore.WriteBatch,
+    worksheetRef: firestore.DocumentReference,
+    days: Record<string, any>[]
+) {
+    const dayRef = worksheetRef.collection('days')
+
+    days.forEach((day) => {
+        if (!day.id) {
+            const dayDocRef = dayRef.doc()
+            batch.create(dayDocRef, day)
+
+            day.id = dayDocRef.id
+        } else {
+            const dayDocRef = dayRef.doc(day.id)
+            batch.set(dayDocRef, day)
+        }
+    })
+
+    return days
+}
