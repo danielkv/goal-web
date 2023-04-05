@@ -2,6 +2,8 @@ import { initializeApp } from 'firebase/app'
 import { ProviderId, getAuth } from 'firebase/auth'
 import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions'
 
+const useEmulator = import.meta.env.PROD ? false : true
+
 export const FIREBASE_APP = initializeApp({
     apiKey: import.meta.env.VITE_APP_APIKEY,
     authDomain: import.meta.env.VITE_APP_AUTHDOMAIN,
@@ -24,7 +26,7 @@ export const signInOptions = [
     },
 ]
 
-connectFunctionsEmulator(FUNCTIONS, 'localhost', 5001)
+if (useEmulator) connectFunctionsEmulator(FUNCTIONS, 'localhost', 5001)
 
 export const FUNCTION_CALL = <RequestData = unknown, ResponseData = unknown>(fnName: string) =>
     httpsCallable<RequestData, ResponseData>(FUNCTIONS, fnName)
