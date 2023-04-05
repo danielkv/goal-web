@@ -11,7 +11,6 @@ export type Period = {
 }
 
 export type Day = {
-    id?: string
     name: string
     date: string // YYYY-MM-DD
     periods: Period[]
