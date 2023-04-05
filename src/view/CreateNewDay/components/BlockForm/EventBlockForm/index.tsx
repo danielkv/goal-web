@@ -118,7 +118,7 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
             </div>
 
             <button class="btn btn-main self-end" type="submit">
-                Confirmar
+                Aplicar
             </button>
         </Form>
     )

@@ -47,7 +47,7 @@ const GroupForm: Component<GroupFormProps> = (props) => {
                 )}
             </Field>
             <button class="btn btn-main self-end" type="submit">
-                Confirmar
+                Aplicar
             </button>
         </Form>
     )

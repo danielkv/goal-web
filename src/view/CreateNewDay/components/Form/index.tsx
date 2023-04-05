@@ -1,4 +1,4 @@
-import { Component, Match, Switch, createMemo } from 'solid-js'
+import { Component, Match, Switch, createMemo, createSignal } from 'solid-js'
 import { produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
@@ -6,6 +6,7 @@ import { IBreadcrumbItem } from '@components/Breadcrumb/types'
 import { Block } from '@models/block'
 import { Day, Group, Period } from '@models/day'
 import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
+import { getErrorMessage } from '@utils/errors'
 import {
     currentPath,
     initialBlockValues,
@@ -34,6 +35,7 @@ import RoundForm from '../RoundForm'
 import WorksheetForm from '../WorksheetForm'
 
 const Form: Component = () => {
+    const [saving, setSaving] = createSignal(false)
     const currentForm = createMemo(() => getCurrentForm(currentPath()))
     const breadcrumbItems = createMemo<IBreadcrumbItem[]>(() => {
         const path = currentPath()
@@ -51,9 +53,16 @@ const Form: Component = () => {
     })
 
     const handleClickFinishButton = async () => {
-        const result = await saveWorksheetUseCase(worksheetStore)
+        try {
+            setSaving(true)
+            const result = await saveWorksheetUseCase(worksheetStore)
 
-        setWorksheetStore(result)
+            setWorksheetStore(result)
+        } catch (err) {
+            alert(getErrorMessage(err))
+        } finally {
+            setSaving(false)
+        }
     }
 
     return (
@@ -234,8 +243,8 @@ const Form: Component = () => {
                 </div>
             </div>
             <div class="paper flex flex-col gap-6 rounded-none">
-                <button class="btn btn-main" onClick={handleClickFinishButton}>
-                    Finalizar
+                <button class="btn btn-main" disabled={saving()} onClick={handleClickFinishButton}>
+                    {saving() ? 'Salvando...' : 'Salvar'}
                 </button>
             </div>
         </>

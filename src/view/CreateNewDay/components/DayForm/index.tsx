@@ -56,7 +56,7 @@ const DayForm: Component<DayFormProps> = (props) => {
             </Field>
 
             <button class="btn btn-main self-end" type="submit">
-                Confirmar
+                Aplicar
             </button>
         </Form>
     )

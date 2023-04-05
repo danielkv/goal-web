@@ -166,7 +166,7 @@ const RoundForm: Component<BlockFormProps> = (props) => {
             </button>
 
             <button class="btn btn-main self-end" type="submit">
-                Confirmar
+                Aplicar
             </button>
         </Form>
     )

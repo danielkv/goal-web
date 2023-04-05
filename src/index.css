@@ -178,14 +178,28 @@
     .btn {
         @apply px-4 py-1 bg-gray-100 rounded-md text-base;
     }
+
     .btn:hover {
         @apply bg-gray-300;
     }
     .btn.btn-light {
         @apply bg-gray-500;
     }
+    .btn.btn-light:disabled {
+        @apply bg-gray-700;
+    }
     .btn.btn-light:hover {
         @apply bg-gray-600;
+    }
+
+    .btn.btn-main {
+        @apply bg-red-500;
+    }
+    .btn.btn-main:disabled {
+        @apply bg-red-300;
+    }
+    .btn.btn-main:not(:disabled):hover {
+        @apply bg-red-700;
     }
 
     .section-title {
@@ -193,13 +207,6 @@
         border-bottom: 2px solid theme('colors.gray.100');
         color: theme('colors.gray.700');
         font-weight: bold;
-    }
-
-    .btn.btn-main {
-        @apply bg-red-500;
-    }
-    .btn.btn-main:hover {
-        @apply bg-red-700;
     }
 }
 
