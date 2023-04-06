@@ -107,7 +107,6 @@ const CreateNewDay: Component = () => {
                 ) : (
                     <>
                         <WorksheetPreview
-                            thisPath={currentPath()}
                             currentPath={currentPath()}
                             item={worksheetStore}
                             onClickPeace={(key) => setCurrentPath(key)}

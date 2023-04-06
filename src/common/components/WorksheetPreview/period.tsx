@@ -5,7 +5,7 @@ import { Component, For, createMemo, splitProps } from 'solid-js'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { Day, Period } from '@models/day'
-import { addToPath, pathToNextIndex } from '@utils/paths'
+import { addToPath, getLastIndex, pathToNextIndex } from '@utils/paths'
 import { createPeriodValues } from '@utils/worksheetInitials'
 
 import GroupPreview from './group'
@@ -41,7 +41,9 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
             )}
 
             <div class="header">
-                <div class="w-16 h-16 flex items-center justify-center bg-red-500">{1}</div>
+                <div class="w-16 h-16 flex items-center justify-center bg-red-500">
+                    {getLastIndex(props.thisPath) + 1}
+                </div>
                 <div class="title">{props.item.name || 'WORKSHEET'}</div>
                 <div class="text-right mr-6">
                     <small class="flex items-center justify-end gap-3">

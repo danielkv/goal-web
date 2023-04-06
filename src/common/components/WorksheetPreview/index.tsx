@@ -8,7 +8,7 @@ import { Path } from '@view/CreateNewDay/types'
 
 import DayPreview from './day'
 
-export interface WorksheetPreviewProps extends WorksheetPeace<Worksheet> {}
+export interface WorksheetPreviewProps extends Omit<WorksheetPeace<Worksheet>, 'thisPath'> {}
 
 const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
     const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onClickPeace'])
