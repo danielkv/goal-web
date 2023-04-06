@@ -4,7 +4,7 @@ import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { EventBlock } from '@models/block'
 import { addToPath } from '@utils/paths'
-import { eventTypesMap, initialEventRoundValues } from '@utils/worksheetInitials'
+import { createEventRoundValues, eventTypesMap } from '@utils/worksheetInitials'
 
 import { displayWeight, getRoundsDisplay, getTimeCap } from '../utils'
 
@@ -41,10 +41,10 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                 <PeaceControl
                                     onClickRemove={() => props.onRemove?.(props.thisPath)}
                                     onClickTopAdd={() =>
-                                        props.onAdd?.(props.thisPath, initialEventRoundValues)
+                                        props.onAdd?.(props.thisPath, createEventRoundValues())
                                     }
                                     onClickBottomAdd={() =>
-                                        props.onAdd?.(props.thisPath, initialEventRoundValues)
+                                        props.onAdd?.(props.thisPath, createEventRoundValues())
                                     }
                                 />
                             )}

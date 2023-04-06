@@ -4,7 +4,7 @@ import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { Group } from '@models/day'
 import { addToPath, pathToNextIndex } from '@utils/paths'
-import { initialGroupValues } from '@utils/worksheetInitials'
+import { createGroupValues } from '@utils/worksheetInitials'
 
 import BlockPreview from './block'
 
@@ -29,9 +29,9 @@ const GroupPreview: Component<GroupProps> = (props) => {
             {props.onAdd && props.onRemove && (
                 <PeaceControl
                     onClickRemove={() => props.onRemove?.(props.thisPath)}
-                    onClickTopAdd={() => props.onAdd?.(props.thisPath, initialGroupValues)}
+                    onClickTopAdd={() => props.onAdd?.(props.thisPath, createGroupValues())}
                     onClickBottomAdd={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), initialGroupValues)
+                        props.onAdd?.(pathToNextIndex(props.thisPath), createGroupValues())
                     }
                 />
             )}

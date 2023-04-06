@@ -13,7 +13,7 @@ import {
     reset,
     zodForm,
 } from '@modular-forms/solid'
-import { initialRoundMovementValues } from '@utils/worksheetInitials'
+import { createRoundMovementValues } from '@utils/worksheetInitials'
 
 import { TRoundForm, eventRoundFormSchema, weightTypes } from './config'
 
@@ -51,7 +51,7 @@ const RoundForm: Component<BlockFormProps> = (props) => {
     ) => {
         e.preventDefault()
 
-        insert(form, 'movements', { value: initialRoundMovementValues })
+        insert(form, 'movements', { value: createRoundMovementValues() })
     }
 
     return (

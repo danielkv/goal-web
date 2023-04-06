@@ -3,11 +3,11 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { Worksheet } from '@models/day'
-import { initialWorksheetValues } from '@utils/worksheetInitials'
+import { createWorksheetValues } from '@utils/worksheetInitials'
 
 export type TWorksheetForm = Omit<Worksheet, 'days' | 'id'>
 
-export const worksheetInitialValues: TWorksheetForm = omit(initialWorksheetValues, ['days'])
+export const worksheetInitialValues: TWorksheetForm = omit(createWorksheetValues(), ['days'])
 
 export const worksheetFormSchema = z.object<ZodShape<TWorksheetForm>>({
     name: z.string({ required_error: 'Nome é obrigatório' }).nonempty('Nome é obrigatório'),

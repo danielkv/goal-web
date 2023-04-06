@@ -3,11 +3,11 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { Day } from '@models/day'
-import { initialDayValues } from '@utils/worksheetInitials'
+import { createDayValues } from '@utils/worksheetInitials'
 
 export type TDayForm = Omit<Day, 'periods'>
 
-export const dayForemInitialValues: TDayForm = omit(initialDayValues, ['periods'])
+export const dayForemInitialValues: TDayForm = omit(createDayValues(), ['periods'])
 
 export const dayFormSchema = z.object<ZodShape<TDayForm>>({
     name: z.string({ required_error: 'Nome é obrigatório' }).nonempty('Nome é obrigatório'),

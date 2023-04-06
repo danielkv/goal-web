@@ -4,7 +4,7 @@ import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { Block, EventBlock, RestBlock, TextBlock } from '@models/block'
 import { pathToNextIndex } from '@utils/paths'
-import { initialBlockValues } from '@utils/worksheetInitials'
+import { createBlockValues } from '@utils/worksheetInitials'
 
 import EventBlockPreview from './blocks/eventBlock'
 import RestBlockPreview from './blocks/restBlock'
@@ -31,9 +31,9 @@ const BlockPreview: Component<BlockProps> = (props) => {
             {props.onAdd && props.onRemove && (
                 <PeaceControl
                     onClickRemove={() => props.onRemove?.(props.thisPath)}
-                    onClickTopAdd={() => props.onAdd?.(props.thisPath, initialBlockValues)}
+                    onClickTopAdd={() => props.onAdd?.(props.thisPath, createBlockValues())}
                     onClickBottomAdd={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), initialBlockValues)
+                        props.onAdd?.(pathToNextIndex(props.thisPath), createBlockValues())
                     }
                 />
             )}

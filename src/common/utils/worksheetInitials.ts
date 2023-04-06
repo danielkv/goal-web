@@ -11,58 +11,80 @@ import {
 } from '@models/block'
 import { Day, Group, Period, Worksheet } from '@models/day'
 
-export const initialMovementWeightValues: MovementWeight = {
-    type: 'kg',
-    value: '',
+export function createMovementWeightValues(): MovementWeight {
+    return {
+        type: 'kg',
+        value: '',
+    }
 }
 
-export const initialRoundMovementValues: EventMovement = {
-    name: '',
-    reps: '',
+export function createRoundMovementValues(): EventMovement {
+    return {
+        name: '',
+        reps: '',
+    }
 }
-export const initialEventRoundValues: EventRound = {
-    movements: [],
-    name: '',
-    repeat: '',
-}
-
-export const initialEventBlockValues: EventBlock = {
-    type: 'event',
-    name: '',
-    event_type: 'for_time',
-    timecap: 600,
-    rounds: [],
+export function createEventRoundValues(): EventRound {
+    return {
+        movements: [],
+        name: '',
+        repeat: '',
+    }
 }
 
-export const initialRestBlockValues: RestBlock = {
-    type: 'rest',
-    time: 120,
+export function createEventBlockValues(): EventBlock {
+    return {
+        type: 'event',
+        name: '',
+        event_type: 'for_time',
+        timecap: 600,
+        rounds: [],
+    }
 }
 
-export const initialTextBlockValues: TextBlock = {
-    type: 'text',
-    text: '',
+export function createRestBlockValues(): RestBlock {
+    return {
+        type: 'rest',
+        time: 120,
+    }
 }
 
-export const initialBlockValues: Block = { type: '', info: '' }
-
-export const initialGroupValues: Group = { name: '', blocks: [] }
-
-export const initialPeriodValues: Period = {
-    name: '',
-    groups: [],
+export function createTextBlockValues(): TextBlock {
+    return {
+        type: 'text',
+        text: '',
+    }
 }
 
-export const initialDayValues: Day = {
-    name: '',
-    date: '',
-    periods: [],
+export function createBlockValues(): Block {
+    return { type: '', info: '' }
 }
 
-export const initialWorksheetValues: Worksheet = {
-    name: '',
-    startDate: '',
-    days: [],
+export function createGroupValues(): Group {
+    return { name: '', blocks: [] }
+}
+
+export function createPeriodValues(): Period {
+    return {
+        name: '',
+        groups: [],
+    }
+}
+
+export function createDayValues(): Day {
+    return {
+        name: '',
+        date: '',
+        periods: [],
+    }
+}
+
+export function createWorksheetValues(): Worksheet {
+    return {
+        name: '',
+        startDate: '',
+        days: [],
+    }
 }
 
 export const breadCrumbLabelMaps: Record<string, string> = {

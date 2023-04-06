@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { Block, BlockType } from '@models/block'
-import { initialBlockValues } from '@utils/worksheetInitials'
+import { createBlockValues } from '@utils/worksheetInitials'
 
 import { eventBlockFormSchema } from './EventBlockForm/config'
 import { restBlockFormSchema } from './RestBlockForm/config'
@@ -9,7 +9,7 @@ import { textBlockFormSchema } from './TextBlockForm/config'
 
 export type TBlockForm = Block
 
-export const blockInitialValues: TBlockForm = initialBlockValues
+export const blockInitialValues: TBlockForm = createBlockValues()
 
 export const blockTypes: { key: BlockType; label: string }[] = [
     { key: '', label: '' },

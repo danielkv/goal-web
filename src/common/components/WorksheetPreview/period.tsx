@@ -6,7 +6,7 @@ import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { Day, Period } from '@models/day'
 import { addToPath, pathToNextIndex } from '@utils/paths'
-import { initialPeriodValues } from '@utils/worksheetInitials'
+import { createPeriodValues } from '@utils/worksheetInitials'
 
 import GroupPreview from './group'
 
@@ -33,9 +33,9 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
             {props.onAdd && props.onRemove && (
                 <PeaceControl
                     onClickRemove={() => props.onRemove?.(props.thisPath)}
-                    onClickTopAdd={() => props.onAdd?.(props.thisPath, initialPeriodValues)}
+                    onClickTopAdd={() => props.onAdd?.(props.thisPath, createPeriodValues())}
                     onClickBottomAdd={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), initialPeriodValues)
+                        props.onAdd?.(pathToNextIndex(props.thisPath), createPeriodValues())
                     }
                 />
             )}

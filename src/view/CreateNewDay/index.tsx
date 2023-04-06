@@ -8,7 +8,7 @@ import { useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
 import { getLastIndex, getPeaceFromPath, pathToParent } from '@utils/paths'
-import { initialWorksheetValues } from '@utils/worksheetInitials'
+import { createWorksheetValues } from '@utils/worksheetInitials'
 
 import Form from './components/Form'
 
@@ -18,15 +18,13 @@ const CreateNewDay: Component = () => {
 
     const [currentPath, setCurrentPath] = createSignal<Path>('worksheet')
 
-    const [worksheetStore, setWorksheetStore] = createStore<Worksheet>({
-        ...initialWorksheetValues,
-    })
+    const [worksheetStore, setWorksheetStore] = createStore<Worksheet>(createWorksheetValues())
 
     createEffect(() => {
         const params = useParams()
 
         if (params.id) loadWorksheet(params.id)
-        else setWorksheetStore({ ...initialWorksheetValues })
+        else setWorksheetStore(createWorksheetValues())
     })
 
     const handleRemovePeace = <Values,>(path: Path) => {

@@ -9,12 +9,12 @@ import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
 import { getErrorMessage } from '@utils/errors'
 import { buildPathSequence, getPeaceFromPath } from '@utils/paths'
 import {
-    initialBlockValues,
-    initialDayValues,
-    initialEventRoundValues,
-    initialGroupValues,
-    initialPeriodValues,
-    initialWorksheetValues,
+    createBlockValues,
+    createDayValues,
+    createEventRoundValues,
+    createGroupValues,
+    createPeriodValues,
+    createWorksheetValues,
 } from '@utils/worksheetInitials'
 import { Path } from '@view/CreateNewDay/types'
 import { getBreadcrumbLabel, getCurrentForm } from '@view/CreateNewDay/utils'
@@ -87,7 +87,7 @@ const Form: Component<FormProps> = (props) => {
                                 }}
                                 worksheet={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
-                                    initialWorksheetValues
+                                    createWorksheetValues
                                 }
                             />
                         </Match>
@@ -123,7 +123,7 @@ const Form: Component<FormProps> = (props) => {
                                 }}
                                 day={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
-                                    initialDayValues
+                                    createDayValues()
                                 }
                             />
                         </Match>
@@ -160,7 +160,7 @@ const Form: Component<FormProps> = (props) => {
                                 }}
                                 period={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
-                                    initialPeriodValues
+                                    createPeriodValues()
                                 }
                             />
                         </Match>
@@ -196,7 +196,7 @@ const Form: Component<FormProps> = (props) => {
                                 }}
                                 group={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
-                                    initialGroupValues
+                                    createGroupValues
                                 }
                             />
                         </Match>
@@ -204,7 +204,7 @@ const Form: Component<FormProps> = (props) => {
                             <BlockForm
                                 block={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
-                                    initialBlockValues
+                                    createBlockValues()
                                 }
                                 onClickNext={(data) => {
                                     const currentFormIndexes = currentForm()[2]
@@ -267,7 +267,7 @@ const Form: Component<FormProps> = (props) => {
                                 }}
                                 round={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
-                                    initialEventRoundValues
+                                    createEventRoundValues()
                                 }
                             />
                         </Match>

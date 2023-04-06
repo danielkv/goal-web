@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { EventBlock, EventType } from '@models/block'
-import { initialEventBlockValues } from '@utils/worksheetInitials'
+import { createEventBlockValues } from '@utils/worksheetInitials'
 
 import { eventRoundFormSchema } from '../../RoundForm/config'
 
@@ -20,7 +20,7 @@ export const eventTypes: { key: EventType; label: string }[] = [
     { key: 'max_weight', label: 'Carga máxima' },
 ]
 
-export const eventBlockInitialValues: TEventBlockForm = omit(initialEventBlockValues, ['type'])
+export const eventBlockInitialValues: TEventBlockForm = omit(createEventBlockValues(), ['type'])
 
 export const eventBlockFormSchema = z
     .object<ZodShape<TEventBlockForm>>({

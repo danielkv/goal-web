@@ -2,11 +2,11 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { EventMovement, EventRound, MovementWeight, WeightTypes } from '@models/block'
-import { initialEventRoundValues } from '@utils/worksheetInitials'
+import { createEventRoundValues } from '@utils/worksheetInitials'
 
 export type TRoundForm = EventRound
 
-export const roundInitialValues: TRoundForm = initialEventRoundValues
+export const roundInitialValues: TRoundForm = createEventRoundValues()
 
 export const weightTypes: { key: WeightTypes; label: string }[] = [
     { key: 'none', label: 'Sem carga' },
