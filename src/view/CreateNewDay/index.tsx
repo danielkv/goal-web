@@ -2,9 +2,10 @@ import { Component, createEffect, createSignal } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 
 import WorksheetPreview from '@components/WorksheetPreview'
+import { loggedUser } from '@contexts/user/user.context'
 import { Path } from '@interfaces/app'
 import { Worksheet } from '@models/day'
-import { useParams } from '@solidjs/router'
+import { useNavigate, useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
 import { getLastIndex, getPeaceFromPath, pathToParent } from '@utils/paths'
@@ -18,7 +19,13 @@ const CreateNewDay: Component = () => {
 
     const [currentPath, setCurrentPath] = createSignal<Path>('worksheet')
 
+    const navigate = useNavigate()
+
     const [worksheetStore, setWorksheetStore] = createStore<Worksheet>(createWorksheetValues())
+
+    createEffect(() => {
+        if (!loggedUser()) navigate('/login', { replace: true })
+    })
 
     createEffect(() => {
         const params = useParams()

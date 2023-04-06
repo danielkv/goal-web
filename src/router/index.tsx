@@ -1,31 +1,36 @@
-import { Component, createEffect } from 'solid-js'
+import { Component, createSignal } from 'solid-js'
 
 import Header from '@components/Header'
-import { loggedUser } from '@contexts/user/user.context'
-import { Route, Routes, useNavigate } from '@solidjs/router'
+import { Route, Routes } from '@solidjs/router'
+import { initialLoadUseCase } from '@useCases/app/initialLoad'
 import LoginPage from '@view/Login'
 import WorksheetList from '@view/WorksheetList'
 
 import CreateNewDay from '../view/CreateNewDay'
 
 const AppRouter: Component = () => {
-    const navigate = useNavigate()
+    const [loading, setLoading] = createSignal(true)
 
-    createEffect(() => {
-        if (loggedUser()) navigate('/', { replace: true })
-        else navigate('/login', { replace: true })
+    initialLoadUseCase().finally(() => {
+        setLoading(false)
     })
 
     return (
-        <div class="h-full">
-            <Header />
-            <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/" element={<WorksheetList />} />
-                <Route path="/worksheet/new" element={<CreateNewDay />} />
-                <Route path="/worksheet/:id" element={<CreateNewDay />} />
-            </Routes>
-        </div>
+        <>
+            {loading() ? (
+                <div>Carregango...</div>
+            ) : (
+                <div class="h-full">
+                    <Header />
+                    <Routes>
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/" element={<WorksheetList />} />
+                        <Route path="/worksheet/new" element={<CreateNewDay />} />
+                        <Route path="/worksheet/:id" element={<CreateNewDay />} />
+                    </Routes>
+                </div>
+            )}
+        </>
     )
 }
 

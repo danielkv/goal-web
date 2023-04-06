@@ -1,6 +1,7 @@
-import { Component, For, Suspense, createResource } from 'solid-js'
+import { Component, For, Suspense, createEffect, createResource } from 'solid-js'
 
 import WorksheetItem from '@components/WorksheetItem'
+import { loggedUser } from '@contexts/user/user.context'
 import { useNavigate } from '@solidjs/router'
 import { getWorksheetsUseCase } from '@useCases/worksheet/getWorksheets'
 
@@ -16,6 +17,10 @@ const WorksheetList: Component = () => {
     const handleClickWorksheetNew = () => {
         navigate(`/worksheet/new`)
     }
+
+    createEffect(() => {
+        if (!loggedUser()) navigate('/login', { replace: true })
+    })
 
     return (
         <div class="p-10">

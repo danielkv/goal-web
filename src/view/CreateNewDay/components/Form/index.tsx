@@ -3,11 +3,18 @@ import { SetStoreFunction, produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
-import { Block } from '@models/block'
+import { Block, EventBlock } from '@models/block'
 import { Day, Group, Period, Worksheet } from '@models/day'
 import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
 import { getErrorMessage } from '@utils/errors'
-import { buildPathSequence, getPeaceFromPath } from '@utils/paths'
+import {
+    addToPath,
+    buildPathSequence,
+    getCurrentPeace,
+    getLastIndex,
+    getPeaceFromPath,
+    pathToParent,
+} from '@utils/paths'
 import {
     createBlockValues,
     createDayValues,
@@ -17,7 +24,7 @@ import {
     createWorksheetValues,
 } from '@utils/worksheetInitials'
 import { Path } from '@view/CreateNewDay/types'
-import { getBreadcrumbLabel, getCurrentForm } from '@view/CreateNewDay/utils'
+import { getBreadcrumbLabel } from '@view/CreateNewDay/utils'
 
 import BlockForm from '../BlockForm'
 import DayForm from '../DayForm'
@@ -35,7 +42,7 @@ export interface FormProps {
 
 const Form: Component<FormProps> = (props) => {
     const [saving, setSaving] = createSignal(false)
-    const currentForm = createMemo(() => getCurrentForm(props.currentPath))
+    const currentForm = createMemo(() => getCurrentPeace(props.currentPath))
 
     const breadcrumbItems = createMemo<IBreadcrumbItem[]>(() => {
         const sequence = buildPathSequence(props.currentPath)
@@ -74,7 +81,7 @@ const Form: Component<FormProps> = (props) => {
                     />
 
                     <Switch>
-                        <Match when={currentForm()[0] === 'worksheet'}>
+                        <Match when={currentForm() === 'worksheet'}>
                             <WorksheetForm
                                 onClickNext={(data) => {
                                     props.handleSetWorksheet({
@@ -91,23 +98,25 @@ const Form: Component<FormProps> = (props) => {
                                 }
                             />
                         </Match>
-                        <Match when={currentForm()[0] === 'days'}>
+                        <Match when={currentForm() === 'days'}>
                             <DayForm
                                 onClickNext={(data) => {
-                                    const currDayIndex = currentForm()[2]['days']
+                                    const listPath = pathToParent(props.currentPath)
+                                    const lastIndex = getLastIndex(props.currentPath)
 
                                     props.handleSetWorksheet(
-                                        produce((d) => {
-                                            const days = d.days
+                                        produce((current) => {
+                                            const days = getPeaceFromPath<Day[]>(current, listPath)
+
                                             if (days.length <= 0)
                                                 return days.push({
                                                     ...data,
                                                     periods: [],
                                                 })
 
-                                            days[currDayIndex] = {
+                                            days[lastIndex] = {
                                                 ...data,
-                                                periods: days[currDayIndex].periods,
+                                                periods: days[lastIndex].periods,
                                             }
                                         })
                                     )
@@ -116,9 +125,10 @@ const Form: Component<FormProps> = (props) => {
                                         props.worksheet,
                                         props.currentPath
                                     )
+
                                     if (!day.periods.length)
                                         props.handleSetPath(
-                                            `worksheet.days.${currDayIndex}.periods.0`
+                                            addToPath<Day>(props.currentPath, `periods.0`)
                                         )
                                 }}
                                 day={
@@ -127,35 +137,40 @@ const Form: Component<FormProps> = (props) => {
                                 }
                             />
                         </Match>
-                        <Match when={currentForm()[0] === 'periods'}>
+                        <Match when={currentForm() === 'periods'}>
                             <PeriodForm
                                 onClickNext={(data) => {
-                                    const currentFormIndexes = currentForm()[2]
-                                    const currDayIndex = currentFormIndexes['days']
-                                    const currPeriodIndex = currentFormIndexes['periods']
+                                    const listPath = pathToParent(props.currentPath)
+                                    const lastIndex = getLastIndex(props.currentPath)
 
                                     props.handleSetWorksheet(
-                                        produce((d) => {
-                                            const periods = d.days[currDayIndex].periods
+                                        produce((current) => {
+                                            const periods = getPeaceFromPath<Period[]>(
+                                                current,
+                                                listPath
+                                            )
+
                                             if (periods.length <= 0)
                                                 return periods.push({
                                                     ...data,
                                                     groups: [],
                                                 })
 
-                                            periods[currPeriodIndex] = {
+                                            periods[lastIndex] = {
                                                 ...data,
-                                                groups: periods[currPeriodIndex].groups,
+                                                groups: periods[lastIndex].groups,
                                             }
                                         })
                                     )
+
                                     const period = getPeaceFromPath<Period>(
                                         props.worksheet,
                                         props.currentPath
                                     )
+
                                     if (!period.groups.length)
                                         props.handleSetPath(
-                                            `worksheet.days.${currDayIndex}.periods.${currPeriodIndex}.groups.0`
+                                            addToPath<Day>(props.currentPath, `periods.0`)
                                         )
                                 }}
                                 period={
@@ -164,35 +179,40 @@ const Form: Component<FormProps> = (props) => {
                                 }
                             />
                         </Match>
-                        <Match when={currentForm()[0] === 'groups'}>
+                        <Match when={currentForm() === 'groups'}>
                             <GroupForm
                                 onClickNext={(data) => {
-                                    const currGroupIndex = currentForm()[2]['groups']
-                                    const currDayIndex = currentForm()[2]['days']
-                                    const currPeriodIndex = currentForm()[2]['periods']
+                                    const listPath = pathToParent(props.currentPath)
+                                    const lastIndex = getLastIndex(props.currentPath)
 
                                     props.handleSetWorksheet(
-                                        produce((d) => {
-                                            const groups =
-                                                d.days[currDayIndex].periods[currPeriodIndex].groups
+                                        produce((current) => {
+                                            const groups = getPeaceFromPath<Group[]>(
+                                                current,
+                                                listPath
+                                            )
+
                                             if (groups.length <= 0)
                                                 return groups.push({
                                                     ...data,
                                                     blocks: [],
                                                 })
 
-                                            groups[currGroupIndex] = {
+                                            groups[lastIndex] = {
                                                 ...data,
-                                                blocks: groups[currGroupIndex].blocks,
+                                                blocks: groups[lastIndex].blocks,
                                             }
                                         })
                                     )
+
                                     const group = getPeaceFromPath<Group>(
                                         props.worksheet,
                                         props.currentPath
                                     )
                                     if (!group.blocks.length)
-                                        props.handleSetPath(`${props.currentPath}.blocks.0` as Path)
+                                        props.handleSetPath(
+                                            addToPath<Group>(props.currentPath, `blocks.0`)
+                                        )
                                 }}
                                 group={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
@@ -200,66 +220,65 @@ const Form: Component<FormProps> = (props) => {
                                 }
                             />
                         </Match>
-                        <Match when={currentForm()[0] === 'blocks'}>
+                        <Match when={currentForm() === 'blocks'}>
                             <BlockForm
                                 block={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
                                     createBlockValues()
                                 }
                                 onClickNext={(data) => {
-                                    const currentFormIndexes = currentForm()[2]
-                                    const currGroupIndex = currentFormIndexes['groups']
-                                    const currBlockIndex = currentFormIndexes['blocks']
-                                    const currDayIndex = currentFormIndexes['days']
-                                    const currPeriodIndex = currentFormIndexes['periods']
+                                    const listPath = pathToParent(props.currentPath)
+                                    const lastIndex = getLastIndex(props.currentPath)
 
                                     props.handleSetWorksheet(
-                                        produce((d) => {
-                                            const blocks =
-                                                d.days[currDayIndex].periods[currPeriodIndex]
-                                                    .groups[currGroupIndex].blocks
+                                        produce((current) => {
+                                            const blocks = getPeaceFromPath<Block[]>(
+                                                current,
+                                                listPath
+                                            )
+
                                             if (blocks.length <= 0)
                                                 return blocks.push({
                                                     ...data,
                                                 })
-                                            blocks[currBlockIndex] = {
+
+                                            blocks[lastIndex] = {
                                                 ...data,
                                             }
                                         })
                                     )
+
                                     const block = getPeaceFromPath<Block>(
                                         props.worksheet,
                                         props.currentPath
                                     )
+
                                     if (block.type === 'event' && !block.rounds.length)
-                                        props.handleSetPath(`${props.currentPath}.rounds.0` as Path)
+                                        props.handleSetPath(
+                                            addToPath<Block>(props.currentPath, `rounds.0`)
+                                        )
                                 }}
                             />
                         </Match>
-                        <Match when={currentForm()[0] === 'rounds'}>
+                        <Match when={currentForm() === 'rounds'}>
                             <RoundForm
                                 onClickNext={(data) => {
-                                    const currentFormIndexes = currentForm()[2]
-                                    const currGroupIndex = currentFormIndexes['groups']
-                                    const currBlockIndex = currentFormIndexes['blocks']
-                                    const currDayIndex = currentFormIndexes['days']
-                                    const currPeriodIndex = currentFormIndexes['periods']
-                                    const currRoundsIndex = currentFormIndexes['rounds']
+                                    const listPath = pathToParent(props.currentPath, 2)
+                                    const lastIndex = getLastIndex(props.currentPath)
 
                                     props.handleSetWorksheet(
-                                        produce((d) => {
-                                            const block =
-                                                d.days[currDayIndex].periods[currPeriodIndex]
-                                                    .groups[currGroupIndex].blocks[currBlockIndex]
-
-                                            if (block.type !== 'event') return
+                                        produce((current) => {
+                                            const block = getPeaceFromPath<EventBlock>(
+                                                current,
+                                                listPath
+                                            )
 
                                             if (block.rounds.length <= 0)
                                                 return block.rounds.push({
                                                     ...data,
                                                 })
 
-                                            block.rounds[currRoundsIndex] = {
+                                            block.rounds[lastIndex] = {
                                                 ...data,
                                             }
                                         })
