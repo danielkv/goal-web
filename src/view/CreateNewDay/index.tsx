@@ -1,12 +1,18 @@
 import { Component, createEffect, createSignal } from 'solid-js'
 
+import WorksheetPreview from '@components/WorksheetPreview'
+import {
+    currentPath,
+    setCurrentPath,
+    setWorksheetStore,
+    worksheetStore,
+} from '@contexts/worksheet/store'
 import { useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
+import { handleAddPeace, handleRemovePeace } from '@utils/models'
 
 import Form from './components/Form'
-import WorksheetPreview from './components/WorksheetPreview'
-import { currentPath, setCurrentPath, setWorksheetStore, worksheetStore } from './config'
 
 const CreateNewDay: Component = () => {
     const [loading, setLoading] = createSignal(false)
@@ -51,16 +57,24 @@ const CreateNewDay: Component = () => {
                 ) : (
                     <>
                         <WorksheetPreview
+                            thisPath={currentPath()}
                             currentPath={currentPath()}
-                            worksheet={worksheetStore}
+                            item={worksheetStore}
                             onClickPeace={(key) => setCurrentPath(key)}
+                            onAdd={handleAddPeace}
+                            onRemove={handleRemovePeace}
                         />
                         <pre>{JSON.stringify(worksheetStore, null, 4)}</pre>
                     </>
                 )}
             </div>
             <div class="bg-gray-500 flex flex-col basis-auto">
-                <Form />
+                <Form
+                    worksheet={worksheetStore}
+                    handleSetWorksheet={setWorksheetStore}
+                    currentPath={currentPath()}
+                    handleSetPath={setCurrentPath}
+                />
             </div>
         </div>
     )

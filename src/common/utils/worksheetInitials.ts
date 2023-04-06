@@ -1,19 +1,15 @@
-import { createSignal } from 'solid-js'
-import { createStore } from 'solid-js/store'
-
 import {
     Block,
     BlockType,
     EventBlock,
     EventMovement,
     EventRound,
+    EventType,
     MovementWeight,
     RestBlock,
     TextBlock,
 } from '@models/block'
 import { Day, Group, Period, Worksheet } from '@models/day'
-
-import { Path } from './types'
 
 export const initialMovementWeightValues: MovementWeight = {
     type: 'kg',
@@ -82,4 +78,11 @@ export const blockTypesMap: Record<Exclude<BlockType, ''>, string> = {
     event: 'Evento ',
     rest: 'REST',
     text: 'Texto',
+}
+
+export const eventTypesMap: Record<EventType, string> = {
+    for_time: 'For Time',
+    amrap: 'AMRAP',
+    emom: 'EMOM',
+    max_weight: 'Carga máxima',
 }

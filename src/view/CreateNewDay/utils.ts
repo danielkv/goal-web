@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
-import { get, isNumber } from 'radash'
+import { isNumber } from 'radash'
 
+import { Path } from '@interfaces/app'
 import { Worksheet } from '@models/day'
 import {
     isBlock,
@@ -12,20 +13,8 @@ import {
     isRound,
     isTextBlock,
 } from '@utils/models'
-
-import { eventTypesMap } from './components/WorksheetPreview/config'
-import { breadCrumbLabelMaps, worksheetStore } from './config'
-
-export function getCurrentObject<T>(path: string, until?: string): T {
-    let normalizedPath = path.replace(/worksheet.?/, '')
-
-    if (until) {
-        normalizedPath = normalizedPath.slice(0, normalizedPath.search(until) + until.length - 1)
-    }
-    const object = get<Worksheet, T>(worksheetStore, normalizedPath)
-
-    return object as T
-}
+import { getPeaceFromPath } from '@utils/paths'
+import { breadCrumbLabelMaps, eventTypesMap } from '@utils/worksheetInitials'
 
 export function extractPaths(path: string) {
     const regex = /([\w\-]+)/gm
@@ -58,24 +47,24 @@ export function getCurrentForm(path: string): [string, number, Record<string, nu
     return [currentForm, index, indexMap]
 }
 
-export function buildTree(path: string) {
+export function buildTree(path: Path) {
     const paths = extractPaths(path)
 
-    return paths.reduce<string[]>((acc, item, index) => {
+    return paths.reduce<Path[]>((acc, item, index) => {
         const curr = paths.slice(0, index + 1).join('.')
 
         if (isNumber(item)) {
             const nextIndex = acc.length - 1
 
-            acc[nextIndex] = `${acc[nextIndex]}.${item}`
-        } else acc.push(curr)
+            acc[nextIndex] = `${acc[nextIndex]}.${item}` as Path
+        } else acc.push(curr as Path)
 
         return acc
     }, [])
 }
 
-export function getBreadcrumbLabel(path: string): string {
-    const obj = getCurrentObject<Record<string, any>>(path)
+export function getBreadcrumbLabel(worksheet: Worksheet, path: Path): string {
+    const obj = getPeaceFromPath<Record<string, any>>(worksheet, path)
     const [form, formIndex] = getCurrentForm(path)
 
     if (isDay(obj)) {

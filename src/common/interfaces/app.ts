@@ -1,5 +1,7 @@
 import { ZodType } from 'zod'
 
+import { Worksheet } from '@models/day'
+
 export type ZodShape<T extends Record<string, any>> = Required<{
     [k in keyof T]: ZodType<T[k]>
 }>
@@ -14,3 +16,7 @@ export type NestedKeyOf<ObjectType extends object> = ObjectType extends Array<in
                 Key | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
               : Key
       }[keyof ObjectType & (string | number)]
+
+export type ConvertPath<Path extends object> = `worksheet.${NestedKeyOf<Path>}` | 'worksheet'
+
+export type Path = ConvertPath<Worksheet>
