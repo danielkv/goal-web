@@ -2,8 +2,7 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { EventMovement, EventRound, MovementWeight, WeightTypes } from '@models/block'
-
-import { initialEventRoundValues } from '../../config'
+import { initialEventRoundValues } from '@utils/worksheetInitials'
 
 export type TRoundForm = EventRound
 

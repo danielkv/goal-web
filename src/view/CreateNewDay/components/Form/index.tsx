@@ -7,7 +7,7 @@ import { Block } from '@models/block'
 import { Day, Group, Period, Worksheet } from '@models/day'
 import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
 import { getErrorMessage } from '@utils/errors'
-import { getPeaceFromPath } from '@utils/paths'
+import { buildPathSequence, getPeaceFromPath } from '@utils/paths'
 import {
     initialBlockValues,
     initialDayValues,
@@ -15,9 +15,9 @@ import {
     initialGroupValues,
     initialPeriodValues,
     initialWorksheetValues,
-} from '@view/CreateNewDay/config'
+} from '@utils/worksheetInitials'
 import { Path } from '@view/CreateNewDay/types'
-import { buildTree, getBreadcrumbLabel, getCurrentForm } from '@view/CreateNewDay/utils'
+import { getBreadcrumbLabel, getCurrentForm } from '@view/CreateNewDay/utils'
 
 import BlockForm from '../BlockForm'
 import DayForm from '../DayForm'
@@ -38,16 +38,15 @@ const Form: Component<FormProps> = (props) => {
     const currentForm = createMemo(() => getCurrentForm(props.currentPath))
 
     const breadcrumbItems = createMemo<IBreadcrumbItem[]>(() => {
-        const path = props.currentPath
-        const tree = buildTree(path)
+        const sequence = buildPathSequence(props.currentPath)
 
-        return tree.map((item, treeIndex) => {
+        return sequence.map((item, treeIndex) => {
             const label = getBreadcrumbLabel(props.worksheet, item)
 
             return {
                 key: item,
                 label,
-                buttonDisabled: treeIndex + 1 >= tree.length,
+                buttonDisabled: treeIndex + 1 >= sequence.length,
             }
         })
     })

@@ -6,7 +6,7 @@ import LogoSvg from '@assets/logo.svg?component-solid'
 import { Worksheet } from '@models/day'
 
 export interface WorksheetItemProps {
-    worksheet: Omit<Worksheet, 'days'>
+    worksheet?: Omit<Worksheet, 'days'>
     onClick(): void
 }
 
@@ -24,8 +24,10 @@ const WorksheetItem: Component<WorksheetItemProps> = (props) => {
                 </div>
             </div>
             <div class="text-center mt-2">
-                <h3 class=" font-bold">{props.worksheet.name}</h3>
-                <h4 class="text-xs">{dayjs(props.worksheet.startDate).format('DD/MM/YYYY')}</h4>
+                <h3 class=" font-bold">{props.worksheet?.name || 'Nova planilha'}</h3>
+                <h4 class="text-xs">
+                    {!!props.worksheet && dayjs(props.worksheet.startDate).format('DD/MM/YYYY')}
+                </h4>
             </div>
         </div>
     )

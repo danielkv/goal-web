@@ -1,16 +1,14 @@
 import { Component, createEffect, createSignal } from 'solid-js'
+import { createStore, produce } from 'solid-js/store'
 
 import WorksheetPreview from '@components/WorksheetPreview'
-import {
-    currentPath,
-    setCurrentPath,
-    setWorksheetStore,
-    worksheetStore,
-} from '@contexts/worksheet/store'
+import { Path } from '@interfaces/app'
+import { Worksheet } from '@models/day'
 import { useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
-import { handleAddPeace, handleRemovePeace } from '@utils/models'
+import { getLastIndex, getPeaceFromPath, pathToParent } from '@utils/paths'
+import { initialWorksheetValues } from '@utils/worksheetInitials'
 
 import Form from './components/Form'
 
@@ -18,11 +16,58 @@ const CreateNewDay: Component = () => {
     const [loading, setLoading] = createSignal(false)
     const [error, setError] = createSignal<string | null>(null)
 
+    const [currentPath, setCurrentPath] = createSignal<Path>('worksheet')
+
+    const [worksheetStore, setWorksheetStore] = createStore<Worksheet>({
+        ...initialWorksheetValues,
+    })
+
     createEffect(() => {
         const params = useParams()
 
         if (params.id) loadWorksheet(params.id)
+        else setWorksheetStore({ ...initialWorksheetValues })
     })
+
+    const handleRemovePeace = <Values,>(path: Path) => {
+        const listPath = pathToParent(path)
+        const lastIndex = getLastIndex(path)
+        const returnPath = pathToParent(path, 2)
+
+        setWorksheetStore(
+            produce((current) => {
+                const list = getPeaceFromPath<Values[]>(current, listPath)
+
+                list.splice(lastIndex, 1)
+            })
+        )
+
+        setTimeout(() => {
+            setCurrentPath(returnPath)
+        }, 1)
+    }
+
+    const handleAddPeace = <Values,>(
+        path: Path,
+        initialValues: Values,
+        override?: Partial<Values>
+    ) => {
+        const listPath = pathToParent(path)
+        const lastIndex = getLastIndex(path)
+
+        setWorksheetStore(
+            produce((current) => {
+                const list = getPeaceFromPath<Values[]>(current, listPath)
+
+                list.splice(lastIndex, 0, { ...initialValues, ...override })
+
+                //return current
+            })
+        )
+        setTimeout(() => {
+            setCurrentPath(path)
+        }, 1)
+    }
 
     async function loadWorksheet(worksheetId: string) {
         try {

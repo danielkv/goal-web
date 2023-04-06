@@ -13,8 +13,7 @@ import {
     reset,
     zodForm,
 } from '@modular-forms/solid'
-
-import { initialRoundMovementValues } from '../../config'
+import { initialRoundMovementValues } from '@utils/worksheetInitials'
 
 import { TRoundForm, eventRoundFormSchema, weightTypes } from './config'
 

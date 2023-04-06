@@ -2,8 +2,7 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { Group } from '@models/day'
-
-import { initialGroupValues } from '../../config'
+import { initialGroupValues } from '@utils/worksheetInitials'
 
 export type TGroupForm = Omit<Group, 'blocks'>
 

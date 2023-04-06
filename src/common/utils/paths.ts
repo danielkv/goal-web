@@ -43,14 +43,26 @@ export function pathToNextIndex(path: Path, count = 1): Path {
 
 export function getLastIndex(path: Path): number {
     const arrayPath = path.split('.')
-    return Number(
-        arrayPath.reverse().find((ele) => {
-            if (isNumber(Number(ele))) return true
-        })
-    )
+    const lastIndex = arrayPath.reverse().find((ele) => {
+        if (isNumber(Number(ele))) return true
+    })
+    return lastIndex ? Number(lastIndex) : -1
 }
 
-export function extractPaths(path: string) {
+export function getCurrentPeace(path: Path): string {
+    const arrayPath = path.split('.').reverse()
+
+    let current = ''
+    let i = 0
+    do {
+        current = arrayPath[i]
+        i++
+    } while (isNumber(Number(current)))
+
+    return current
+}
+
+export function extractPaths(path: Path) {
     const regex = /([\w\-]+)/gm
     const paths = [...path.matchAll(regex)].map((item) =>
         !Number.isNaN(Number(item[0])) ? Number(item[0]) : item[0]
@@ -71,4 +83,20 @@ export function getIndexes(path: Path): Record<string, number> {
 
         return acc
     }, {})
+}
+
+export function buildPathSequence(path: Path) {
+    const paths = extractPaths(path)
+
+    return paths.reduce<Path[]>((acc, item, index) => {
+        const curr = paths.slice(0, index + 1).join('.')
+
+        if (isNumber(item)) {
+            const nextIndex = acc.length - 1
+
+            acc[nextIndex] = `${acc[nextIndex]}.${item}` as Path
+        } else acc.push(curr as Path)
+
+        return acc
+    }, [])
 }

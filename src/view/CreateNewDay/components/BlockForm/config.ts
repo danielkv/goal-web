@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
 import { Block, BlockType } from '@models/block'
-
-import { initialBlockValues } from '../../config'
+import { initialBlockValues } from '@utils/worksheetInitials'
 
 import { eventBlockFormSchema } from './EventBlockForm/config'
 import { restBlockFormSchema } from './RestBlockForm/config'

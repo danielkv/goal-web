@@ -2,8 +2,7 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { TextBlock } from '@models/block'
-
-import { initialTextBlockValues } from '../../../config'
+import { initialTextBlockValues } from '@utils/worksheetInitials'
 
 export type TRestBlockForm = Omit<TextBlock, 'type'>
 

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { Component, For, createEffect, createMemo, splitProps } from 'solid-js'
+import { Component, For, createMemo, splitProps } from 'solid-js'
 
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
@@ -14,10 +14,6 @@ export interface DayProps extends WorksheetPeace<Day> {}
 
 const DayPreview: Component<DayProps> = (props) => {
     const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onClickPeace'])
-
-    createEffect(() => {
-        console.log(parentProps)
-    })
 
     return (
         <div

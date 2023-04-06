@@ -3,8 +3,8 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { EventBlock, EventType } from '@models/block'
+import { initialEventBlockValues } from '@utils/worksheetInitials'
 
-import { initialEventBlockValues } from '../../../config'
 import { eventRoundFormSchema } from '../../RoundForm/config'
 
 export type TEventBlockForm = Omit<EventBlock, 'type'> & {

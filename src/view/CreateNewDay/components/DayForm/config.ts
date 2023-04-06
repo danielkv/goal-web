@@ -3,8 +3,7 @@ import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
 import { Day } from '@models/day'
-
-import { initialDayValues } from '../../config'
+import { initialDayValues } from '@utils/worksheetInitials'
 
 export type TDayForm = Omit<Day, 'periods'>
 

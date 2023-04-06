@@ -13,6 +13,10 @@ const WorksheetList: Component = () => {
         navigate(`/worksheet/${worksheetId}`)
     }
 
+    const handleClickWorksheetNew = () => {
+        navigate(`/worksheet/new`)
+    }
+
     return (
         <div class="p-10">
             <Suspense fallback={<div>Carregando...</div>}>
@@ -25,6 +29,7 @@ const WorksheetList: Component = () => {
                             />
                         )}
                     </For>
+                    <WorksheetItem onClick={handleClickWorksheetNew} />
                 </div>
             </Suspense>
         </div>

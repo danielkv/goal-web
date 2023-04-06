@@ -5,9 +5,8 @@ import { WorksheetPeace } from '@interfaces/preview'
 import { EventBlock } from '@models/block'
 import { addToPath } from '@utils/paths'
 import { eventTypesMap, initialEventRoundValues } from '@utils/worksheetInitials'
-import { getRoundsDisplay } from '@view/CreateNewDay/utils'
 
-import { displayWeight, getTimeCap } from '../utils'
+import { displayWeight, getRoundsDisplay, getTimeCap } from '../utils'
 
 export interface EventBlockPreviewProps extends WorksheetPeace<EventBlock> {}
 
