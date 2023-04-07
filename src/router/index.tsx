@@ -1,5 +1,6 @@
 import { Component, createSignal } from 'solid-js'
 
+import ActivityIndicator from '@components/ActivityIndicator'
 import Header from '@components/Header'
 import { Route, Routes } from '@solidjs/router'
 import { initialLoadUseCase } from '@useCases/app/initialLoad'
@@ -19,7 +20,9 @@ const AppRouter: Component = () => {
     return (
         <>
             {loading() ? (
-                <div>Carregango...</div>
+                <div class="w-full h-full flex items-center justify-center">
+                    <ActivityIndicator color="#fff" size={40} />
+                </div>
             ) : (
                 <div class="h-full">
                     <Header />

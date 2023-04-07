@@ -19,7 +19,7 @@ const Preview: Component<{}> = (props) => {
         const pdfElement = document.createElement('div')
         pdfElement.classList.add('pdf-page')
 
-        html.forEach((item, index) => {
+        html.forEach((item) => {
             const cloned = item.cloneNode(true)
 
             pdfElement.appendChild(cloned)
