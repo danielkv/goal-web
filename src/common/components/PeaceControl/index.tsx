@@ -1,4 +1,4 @@
-import { FiPlus, FiTrash2 } from 'solid-icons/fi'
+import { FiCopy, FiPlus, FiTrash2 } from 'solid-icons/fi'
 
 import { Component } from 'solid-js'
 
@@ -6,6 +6,8 @@ export interface PeaceControlProps {
     onClickRemove?(): void
     onClickTopAdd?(): void
     onClickBottomAdd?(): void
+    onClickTopDuplicate?(): void
+    onClickBottomDuplicate?(): void
 }
 
 const PeaceControl: Component<PeaceControlProps> = (props) => {
@@ -21,6 +23,14 @@ const PeaceControl: Component<PeaceControlProps> = (props) => {
 
             <button class="icon-btn add bottom" onClick={props.onClickBottomAdd}>
                 <FiPlus />
+            </button>
+
+            <button class="icon-btn duplicate top" onClick={props.onClickTopDuplicate}>
+                <FiCopy />
+            </button>
+
+            <button class="icon-btn duplicate bottom" onClick={props.onClickBottomDuplicate}>
+                <FiCopy />
             </button>
         </>
     )

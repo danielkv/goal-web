@@ -28,7 +28,8 @@
 
 @layer components {
     :root {
-        --page-size: 600px;
+        --page-width: 600px;
+        --page-height: 776.5px;
     }
 
     .worksheet {
@@ -38,7 +39,7 @@
 
     .day {
         @apply flex flex-col em:gap-12 items-center em:p-6 em:mb-6;
-        min-width: var(--page-size);
+        min-width: var(--page-width);
     }
 
     .day.empty {
@@ -58,7 +59,8 @@
     .period {
         @apply bg-gray-500 drop-shadow-2xl box-border;
 
-        min-width: var(--page-size);
+        width: var(--page-width);
+        height: var(--page-height);
     }
 
     .period > .header {
@@ -145,13 +147,19 @@
 
     .hoverable > .icon-btn.add {
         left: 50%;
-        margin-left: -14px;
+        margin-left: 6px;
     }
-    .hoverable > .icon-btn.add.top {
-        top: -17px;
+
+    .hoverable > .icon-btn.duplicate {
+        left: 50%;
+        margin-left: -34px;
     }
-    .hoverable > .icon-btn.add {
-        bottom: -17px;
+
+    .hoverable > .icon-btn.top {
+        top: -14px;
+    }
+    .hoverable > .icon-btn.bottom {
+        bottom: -14px;
     }
 
     .hoverable.selected > .icon-btn {

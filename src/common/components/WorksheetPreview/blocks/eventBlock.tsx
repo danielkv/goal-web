@@ -3,7 +3,7 @@ import { Component, For, createMemo } from 'solid-js'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { EventBlock } from '@models/block'
-import { addToPath } from '@utils/paths'
+import { addToPath, pathToNextIndex } from '@utils/paths'
 import { createEventRoundValues, eventTypesMap } from '@utils/worksheetInitials'
 
 import { displayWeight, getRoundsDisplay, getTimeCap } from '../utils'
@@ -44,7 +44,24 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                         props.onAdd?.(props.thisPath, createEventRoundValues())
                                     }
                                     onClickBottomAdd={() =>
-                                        props.onAdd?.(props.thisPath, createEventRoundValues())
+                                        props.onAdd?.(
+                                            pathToNextIndex(props.thisPath),
+                                            createEventRoundValues()
+                                        )
+                                    }
+                                    onClickTopDuplicate={() =>
+                                        props.onAdd?.(props.thisPath, createEventRoundValues(), {
+                                            ...props.item,
+                                        })
+                                    }
+                                    onClickBottomDuplicate={() =>
+                                        props.onAdd?.(
+                                            pathToNextIndex(props.thisPath),
+                                            createEventRoundValues(),
+                                            {
+                                                ...props.item,
+                                            }
+                                        )
                                     }
                                 />
                             )}

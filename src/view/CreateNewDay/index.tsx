@@ -67,14 +67,13 @@ const CreateNewDay: Component = () => {
     ) => {
         const listPath = pathToParent(path)
         const lastIndex = getLastIndex(path)
+        const newValue = { ...initialValues, ...override }
 
         setWorksheetStore(
             produce((current) => {
                 const list = getPeaceFromPath<Values[]>(current, listPath)
 
-                list.splice(lastIndex, 0, { ...initialValues, ...override })
-
-                //return current
+                list.splice(lastIndex, 0, newValue)
             })
         )
         setTimeout(() => {

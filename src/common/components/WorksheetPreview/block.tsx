@@ -35,6 +35,14 @@ const BlockPreview: Component<BlockProps> = (props) => {
                     onClickBottomAdd={() =>
                         props.onAdd?.(pathToNextIndex(props.thisPath), createBlockValues())
                     }
+                    onClickTopDuplicate={() =>
+                        props.onAdd?.(props.thisPath, createBlockValues(), { ...props.item })
+                    }
+                    onClickBottomDuplicate={() =>
+                        props.onAdd?.(pathToNextIndex(props.thisPath), createBlockValues(), {
+                            ...props.item,
+                        })
+                    }
                 />
             )}
             {props.item.info && <div class="info">{props.item.info}</div>}

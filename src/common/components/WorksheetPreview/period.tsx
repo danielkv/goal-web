@@ -37,6 +37,16 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
                     onClickBottomAdd={() =>
                         props.onAdd?.(pathToNextIndex(props.thisPath), createPeriodValues())
                     }
+                    onClickTopDuplicate={() =>
+                        props.onAdd?.(props.thisPath, createPeriodValues(), {
+                            ...props.item,
+                        })
+                    }
+                    onClickBottomDuplicate={() =>
+                        props.onAdd?.(pathToNextIndex(props.thisPath), createPeriodValues(), {
+                            ...props.item,
+                        })
+                    }
                 />
             )}
 

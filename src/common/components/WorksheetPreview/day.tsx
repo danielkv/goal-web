@@ -43,6 +43,16 @@ const DayPreview: Component<DayProps> = (props) => {
                             name: props.item.name,
                         })
                     }
+                    onClickTopDuplicate={() =>
+                        props.onAdd?.(props.thisPath, createDayValues(), {
+                            ...props.item,
+                        })
+                    }
+                    onClickBottomDuplicate={() =>
+                        props.onAdd?.(pathToNextIndex(props.thisPath), createDayValues(), {
+                            ...props.item,
+                        })
+                    }
                 />
             )}
 

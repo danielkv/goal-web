@@ -33,6 +33,16 @@ const GroupPreview: Component<GroupProps> = (props) => {
                     onClickBottomAdd={() =>
                         props.onAdd?.(pathToNextIndex(props.thisPath), createGroupValues())
                     }
+                    onClickTopDuplicate={() =>
+                        props.onAdd?.(props.thisPath, createGroupValues(), {
+                            ...props.item,
+                        })
+                    }
+                    onClickBottomDuplicate={() =>
+                        props.onAdd?.(pathToNextIndex(props.thisPath), createGroupValues(), {
+                            ...props.item,
+                        })
+                    }
                 />
             )}
 
