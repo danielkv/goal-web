@@ -19,7 +19,7 @@ const CreateNewDay: Component = () => {
     const [loading, setLoading] = createSignal(false)
     const [error, setError] = createSignal<string | null>(null)
 
-    const [currentPath, setCurrentPath] = createSignal<Path>('worksheet')
+    const [currentPath, setCurrentPath] = createSignal<Path>('' as Path)
 
     const navigate = useNavigate()
 
@@ -33,7 +33,10 @@ const CreateNewDay: Component = () => {
         const params = useParams()
 
         if (params.id) loadWorksheet(params.id)
-        else setWorksheetStore(createWorksheetValues())
+        else {
+            setWorksheetStore(createWorksheetValues())
+            setCurrentPath('worksheet')
+        }
     })
 
     const handleViewWorksheet = () => {

@@ -1,8 +1,8 @@
-import { Component } from 'solid-js'
+import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { Worksheet } from '@models/day'
-import { Field, Form, SubmitHandler, createForm, zodForm } from '@modular-forms/solid'
+import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TWorksheetForm, worksheetFormSchema } from './config'
 
@@ -16,6 +16,13 @@ const WorksheetForm: Component<WorksheetFormProps> = (props) => {
         validate: zodForm(worksheetFormSchema),
         initialValues: props.worksheet,
     })
+
+    const memoData = createMemo(() => props.worksheet)
+    createEffect(
+        on(memoData, () => {
+            reset(form, { initialValues: memoData() })
+        })
+    )
 
     const handleSubmit: SubmitHandler<TWorksheetForm> = (values) => {
         props.onClickNext(values)

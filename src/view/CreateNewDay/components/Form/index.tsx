@@ -170,7 +170,7 @@ const Form: Component<FormProps> = (props) => {
 
                                     if (!period.groups.length)
                                         props.handleSetPath(
-                                            addToPath<Day>(props.currentPath, `periods.0`)
+                                            addToPath<Period>(props.currentPath, `groups.0`)
                                         )
                                 }}
                                 period={
@@ -216,7 +216,7 @@ const Form: Component<FormProps> = (props) => {
                                 }}
                                 group={
                                     getPeaceFromPath(props.worksheet, props.currentPath) ||
-                                    createGroupValues
+                                    createGroupValues()
                                 }
                             />
                         </Match>
