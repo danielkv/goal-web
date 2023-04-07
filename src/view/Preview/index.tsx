@@ -1,13 +1,14 @@
 import html2pdf from 'html2pdf.js'
 
-import { Component, Suspense, createResource } from 'solid-js'
+import { Component, createResource } from 'solid-js'
 
+import ActivityIndicator from '@components/ActivityIndicator'
 import WorksheetPreview from '@components/WorksheetPreview'
 import { WorksheetModel } from '@models/day'
 import { useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 
-const Preview: Component<{}> = (props) => {
+const Preview: Component = () => {
     const params = useParams()
 
     const [worksheet] = createResource(params.id, getWorksheetByIdUseCase)
@@ -40,18 +41,32 @@ const Preview: Component<{}> = (props) => {
     }
 
     return (
-        <div>
-            <Suspense>
-                <button class="btn" onClick={() => generatePDF()}>
-                    Gerar PDF
-                </button>
-                {worksheet() ? (
-                    <div id="pdfContent">
-                        <WorksheetPreview item={worksheet() as WorksheetModel} />
-                    </div>
-                ) : null}
-            </Suspense>
-        </div>
+        <>
+            {worksheet.loading ? (
+                <div class="w-full h-full flex items-center justify-center">
+                    <ActivityIndicator color="#fff" size={40} />
+                </div>
+            ) : (
+                <div>
+                    {worksheet() ? (
+                        <>
+                            <div class="h-[60px] bg-gray-500 flex items-center px-6 justify-end">
+                                <button class="btn btn-main" onClick={() => generatePDF()}>
+                                    Baixar PDF
+                                </button>
+                            </div>
+                            <div id="pdfContent">
+                                <WorksheetPreview item={worksheet() as WorksheetModel} />
+                            </div>
+                        </>
+                    ) : (
+                        <div class="w-full h-full flex items-center justify-center">
+                            <div>Ocorreu um erro</div>
+                        </div>
+                    )}
+                </div>
+            )}
+        </>
     )
 }
 
