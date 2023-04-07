@@ -1,4 +1,4 @@
-import { jsPDF } from 'jspdf'
+import html2pdf from 'html2pdf.js'
 
 import { Component, Suspense, createResource } from 'solid-js'
 
@@ -12,19 +12,31 @@ const Preview: Component<{}> = (props) => {
 
     const [worksheet] = createResource(params.id, getWorksheetByIdUseCase)
 
-    let ref: HTMLDivElement
-
     function generatePDF() {
-        const pdf = new jsPDF('p', 'pt', 'letter')
-        const period = ref.querySelector('.period')
-        if (!period) return
-        pdf.html(ref as HTMLElement, {
-            callback: function (pdf) {
-                pdf.save()
-            },
-            filename: 'pdf.pdf',
-            autoPaging: true,
+        const html = document.querySelectorAll('.period')
+        if (!html) return
+
+        const pdfElement = document.createElement('div')
+        pdfElement.classList.add('pdf-page')
+
+        html.forEach((item, index) => {
+            const cloned = item.cloneNode(true)
+
+            pdfElement.appendChild(cloned)
         })
+
+        html2pdf()
+            .set({
+                html2canvas: {
+                    scale: 2,
+                },
+                jsPDF: {
+                    floatPrecision: 'smart',
+                    format: 'letter',
+                },
+            })
+            .from(pdfElement)
+            .save()
     }
 
     return (
@@ -34,11 +46,7 @@ const Preview: Component<{}> = (props) => {
                     Gerar PDF
                 </button>
                 {worksheet() ? (
-                    <div
-                        ref={(e) => {
-                            ref = e
-                        }}
-                    >
+                    <div id="pdfContent">
                         <WorksheetPreview item={worksheet() as WorksheetModel} />
                     </div>
                 ) : null}

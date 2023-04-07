@@ -1,5 +1,10 @@
 lockfileVersion: '6.0'
 
+patchedDependencies:
+  html2canvas@1.4.1:
+    hash: bos4awhukety2hb2x7gohrgyy4
+    path: patches/html2canvas@1.4.1.patch
+
 dependencies:
   '@modular-forms/solid':
     specifier: ^0.11.0
@@ -16,6 +21,12 @@ dependencies:
   firebaseui:
     specifier: ^6.0.2
     version: 6.0.2(firebase@9.19.1)
+  html2canvas:
+    specifier: ^1.4.1
+    version: 1.4.1(patch_hash=bos4awhukety2hb2x7gohrgyy4)
+  html2pdf.js:
+    specifier: ^0.10.1
+    version: 0.10.1
   jspdf:
     specifier: ^2.5.1
     version: 2.5.1
@@ -1322,7 +1333,6 @@ packages:
     resolution: {integrity: sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==}
     engines: {node: '>= 0.6.0'}
     dev: false
-    optional: true
 
   /binary-extensions@2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
@@ -1470,7 +1480,6 @@ packages:
     dependencies:
       utrie: 1.0.2
     dev: false
-    optional: true
 
   /css-select@4.3.0:
     resolution: {integrity: sha512-wPpOYtnsVontu2mODhA19JrqWxNsfdatRKd64kmpRbQgh1KtItko5sTnEpPdpSaJszTOhEMlF/RPz28qj4HqhQ==}
@@ -1582,6 +1591,10 @@ packages:
   /entities@2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
     dev: true
+
+  /es6-promise@4.2.8:
+    resolution: {integrity: sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==}
+    dev: false
 
   /esbuild@0.16.17:
     resolution: {integrity: sha512-G8LEkV0XzDMNwXKgM0Jwu3nY3lSTwSGY6XbxM9cr9+s0T/qSV1q1JVPBGzm3dcjhCic9+emZDmMffkwgPeOeLg==}
@@ -1776,7 +1789,7 @@ packages:
     resolution: {integrity: sha512-c3Ab/url5ksaT0WyleslpBEthOzWhrjQbg75y7XUsfSzi3Dgzt0l8w5e7DylRn15MTlMMD58dTfzddNS2kcAjQ==}
     dev: true
 
-  /html2canvas@1.4.1:
+  /html2canvas@1.4.1(patch_hash=bos4awhukety2hb2x7gohrgyy4):
     resolution: {integrity: sha512-fPU6BHNpsyIhr8yyMpTLLxAbkaK8ArIBcmZIRiBLiDhjeqvXolaEmDGmELFuX9I4xDcaKKcJl+TKZLqruBbmWA==}
     engines: {node: '>=8.0.0'}
     requiresBuild: true
@@ -1784,7 +1797,15 @@ packages:
       css-line-break: 2.1.0
       text-segmentation: 1.0.3
     dev: false
-    optional: true
+    patched: true
+
+  /html2pdf.js@0.10.1:
+    resolution: {integrity: sha512-3onwwhOWsZfNjIZwV6YIJ6FVhXk+X9YxHSqzeS6hup+1dGi2DHI+zZYUJ+iFnvtaYcjlhyrILL1fvRCUOa8Fcg==}
+    dependencies:
+      es6-promise: 4.2.8
+      html2canvas: 1.4.1(patch_hash=bos4awhukety2hb2x7gohrgyy4)
+      jspdf: 2.5.1
+    dev: false
 
   /http-parser-js@0.5.8:
     resolution: {integrity: sha512-SGeBX54F94Wgu5RH3X5jsDtf4eHyRogWX1XGT3b4HuW3tQPM4AaBzoUji/4AAJNXCEOWZ5O0DgZmJw1947gD5Q==}
@@ -1880,7 +1901,7 @@ packages:
       canvg: 3.0.10
       core-js: 3.30.0
       dompurify: 2.4.5
-      html2canvas: 1.4.1
+      html2canvas: 1.4.1(patch_hash=bos4awhukety2hb2x7gohrgyy4)
     dev: false
 
   /lilconfig@2.1.0:
@@ -2391,7 +2412,6 @@ packages:
     dependencies:
       utrie: 1.0.2
     dev: false
-    optional: true
 
   /thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}
@@ -2468,7 +2488,6 @@ packages:
     dependencies:
       base64-arraybuffer: 1.0.2
     dev: false
-    optional: true
 
   /vite-plugin-solid-svg@0.6.1(solid-js@1.6.10)(vite@4.1.1):
     resolution: {integrity: sha512-tKprBmA1h4lofRnZ/oi8SJQ1vdL0U+H2gVo7ZL+PKNIVeOn2A0M3t83A2xsMZjmboIZ17Y27xrugLN+phmdb6Q==}

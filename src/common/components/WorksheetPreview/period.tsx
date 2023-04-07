@@ -41,9 +41,7 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
             )}
 
             <div class="header">
-                <div class="w-16 h-16 flex items-center justify-center bg-red-500">
-                    {getLastIndex(props.thisPath) + 1}
-                </div>
+                <div class="period-square">{getLastIndex(props.thisPath) + 1}</div>
                 <div class="title">{props.item.name || 'WORKSHEET'}</div>
                 <div class="text-right mr-6">
                     <small class="flex items-center justify-end gap-3">

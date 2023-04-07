@@ -31,5 +31,19 @@ module.exports = {
             },
         },
     },
-    plugins: [],
+    variants: {
+        fontSize: ({ after }) => after(['em']),
+    },
+    plugins: [
+        require('tailwindcss/plugin')(function ({ addVariant }) {
+            addVariant('em', ({ container }) => {
+                container.walkRules((rule) => {
+                    rule.selector = `.em\\:${rule.selector.slice(1)}`
+                    rule.walkDecls((decl) => {
+                        decl.value = decl.value.replace('rem', 'em')
+                    })
+                })
+            })
+        }),
+    ],
 }

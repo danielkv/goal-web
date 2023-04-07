@@ -32,11 +32,12 @@
     }
 
     .worksheet {
-        @apply flex flex-col gap-6 items-center p-6;
+        @apply flex flex-col em:gap-6 items-center em:p-6;
+        font-size: 16px;
     }
 
     .day {
-        @apply flex flex-col gap-12 items-center p-6 mb-6;
+        @apply flex flex-col em:gap-12 items-center em:p-6 em:mb-6;
         min-width: var(--page-size);
     }
 
@@ -44,32 +45,48 @@
         @apply bg-gray-500 drop-shadow-2xl;
     }
 
+    .pdf-page {
+        font-size: 22px;
+    }
+
+    .pdf-page .period {
+        page-break-inside: inside;
+        width: 215.9mm;
+        height: 279.4mm;
+    }
+
     .period {
-        @apply bg-gray-500 drop-shadow-2xl;
+        @apply bg-gray-500 drop-shadow-2xl box-border;
 
         min-width: var(--page-size);
     }
+
     .period > .header {
-        @apply flex items-center gap-6 mb-6;
+        @apply flex items-center em:gap-6 em:mb-6;
     }
     .period > .header > .title {
-        @apply flex-1 text-xl tracking-[.3em];
+        @apply flex-1 tracking-[.3em] em:text-lg;
+
         text-transform: uppercase;
     }
 
+    .period > .header > .period-square {
+        @apply em:w-14 em:h-14 em:text-lg font-bold flex items-center justify-center bg-red-500;
+    }
+
     .group {
-        @apply mb-6 flex flex-col items-center;
+        @apply em:mb-6 flex flex-col items-center;
     }
 
     .group > .title {
-        @apply bg-red-500  px-3 text-base min-w-[250px] py-3 text-center;
+        @apply bg-red-500 em:px-3 em:py-3 em:text-base min-w-[250px] text-center;
     }
     .group .block-separator {
-        @apply border-t-2 border-gray-100 w-20;
+        @apply border-t-2 border-gray-100 em:w-20;
     }
 
     .block {
-        @apply text-sm m-2 p-2 flex items-center !important;
+        @apply em:text-sm em:m-2 em:p-2 flex items-center relative;
     }
 
     .block.empty {
@@ -78,7 +95,7 @@
     }
 
     .block > .info {
-        @apply bg-gray-100 p-3 text-sm mr-6;
+        @apply bg-gray-100 em:p-3 em:text-sm em:mr-6;
         position: absolute;
         width: 180px;
         right: 100%;

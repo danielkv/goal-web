@@ -24,8 +24,8 @@ const AppRouter: Component = () => {
                 <div class="h-full">
                     <Header />
                     <Routes>
-                        <Route path="/login" element={<LoginPage />} />
                         <Route path="/" element={<WorksheetList />} />
+                        <Route path="/login" element={<LoginPage />} />
                         <Route path="/worksheet/new" element={<CreateNewDay />} />
                         <Route path="/worksheet/view/:id" element={<Preview />} />
                         <Route path="/worksheet/:id" element={<CreateNewDay />} />
