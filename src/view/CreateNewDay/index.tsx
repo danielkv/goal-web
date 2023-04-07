@@ -1,3 +1,5 @@
+import { FiEye } from 'solid-icons/fi'
+
 import { Component, createEffect, createSignal } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 
@@ -33,6 +35,12 @@ const CreateNewDay: Component = () => {
         if (params.id) loadWorksheet(params.id)
         else setWorksheetStore(createWorksheetValues())
     })
+
+    const handleViewWorksheet = () => {
+        if (!worksheetStore.id) return
+
+        navigate(`/worksheet/view/${worksheetStore.id}`)
+    }
 
     const handleRemovePeace = <Values,>(path: Path) => {
         const listPath = pathToParent(path)
@@ -100,6 +108,16 @@ const CreateNewDay: Component = () => {
             }}
         >
             <div class="flex flex-1 flex-col basis-auto overflow-auto">
+                <div class="h-[80px] bg-gray-500 flex gap-6 items-center px-6 justify-end p-3">
+                    <button
+                        disabled={!worksheetStore.id}
+                        class="bg-gray-100 p-3 rounded-full hover:bg-gray-600"
+                        onClick={handleViewWorksheet}
+                        title="Abrir visualização"
+                    >
+                        <FiEye size={22} />
+                    </button>
+                </div>
                 {error() ? (
                     <div class="flex-1 text-center m-10">{error()}</div>
                 ) : loading() ? (
