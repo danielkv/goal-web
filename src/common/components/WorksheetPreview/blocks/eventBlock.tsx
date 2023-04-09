@@ -14,9 +14,11 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
     return (
         <div class="text-center">
             {props.item.name && <div>{props.item.name}</div>}
-            <div class="font-bold text-base bg-gray-300 px-4 py-2">
-                {eventTypesMap[props.item.event_type]} {getTimeCap(props.item)}
-            </div>
+            {props.item.event_type !== 'not_timed' && (
+                <div class="font-bold text-base bg-gray-300 px-4 py-2">
+                    {eventTypesMap[props.item.event_type]} {getTimeCap(props.item)}
+                </div>
+            )}
 
             <For each={props.item.rounds}>
                 {(round, roundIndex) => {
@@ -48,11 +50,11 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                             )}
 
                             {round.name && <div>{round.name}</div>}
-                            <div>{getRoundsDisplay(round.repeat)}</div>
+                            <div class="font-bold">{getRoundsDisplay(round.repeat)}</div>
                             <For each={round.movements}>
                                 {(movement) => {
                                     const weight = displayWeight(movement.weight)
-                                    const reps = getRoundsDisplay(movement.reps)
+                                    const reps = getRoundsDisplay(movement.reps, '')
                                     const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
                                     return <div>{`${repsDisplay}${movement.name}${weight}`}</div>
                                 }}

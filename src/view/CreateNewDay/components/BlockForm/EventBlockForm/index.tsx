@@ -58,9 +58,9 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
             <div class="flex gap-6">
                 <Field of={form} name="event_type">
                     {(field) => (
-                        <div class="flex flex-col">
+                        <div class="flex flex-col flex-1">
                             <label class="text-sm mb-2">Tipo de evento</label>
-                            <select class="input w-40" {...field.props}>
+                            <select class="input input-full" {...field.props}>
                                 <For each={eventTypes}>
                                     {(item) => (
                                         <option
@@ -101,7 +101,11 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                         )}
                     </Field>
                 </Show>
-                <Show when={getValue(form, 'event_type') !== 'emom'}>
+                <Show
+                    when={['for_time', 'max_weight', 'amrap'].includes(
+                        getValue(form, 'event_type') as string
+                    )}
+                >
                     <Field of={form} name="timecap">
                         {(field) => (
                             <TextInput

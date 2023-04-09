@@ -1,4 +1,4 @@
-export type EventType = 'for_time' | 'max_weight' | 'emom' | 'amrap'
+export type EventType = 'for_time' | 'max_weight' | 'emom' | 'amrap' | 'not_timed'
 
 export type WeightTypes = 'kg' | 'lb' | '%' | 'none'
 
@@ -29,8 +29,12 @@ export type EventBlockEMOM = {
 }
 
 export type EventBlockTimecap = {
-    event_type: Exclude<EventType, 'emom'>
+    event_type: Exclude<EventType, 'emom' | 'not_timed'>
     timecap: number // seconds
+}
+
+export type EventBlockNotTimed = {
+    event_type: 'not_timed'
 }
 
 export type EventBlock = {
@@ -38,7 +42,7 @@ export type EventBlock = {
     name?: string
     rounds: EventRound[]
     event_type: EventType
-} & (EventBlockEMOM | EventBlockTimecap)
+} & (EventBlockEMOM | EventBlockTimecap | EventBlockNotTimed)
 
 export type RestBlock = {
     type: 'rest'

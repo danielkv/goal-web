@@ -1,10 +1,12 @@
+import { isNumber } from 'radash'
+
 import { EventBlock, MovementWeight } from '@models/block'
 import { getTimeFromSeconds } from '@utils/time'
 
 export function displayWeight(weight?: MovementWeight): string {
     if (!weight?.value || weight.type === 'none') return ''
 
-    const value = getRoundsDisplay(weight.value, `${weight.type} `)
+    const value = getRoundsDisplay(weight.value, '', `${weight.type} `)
 
     return ` - ${value}${weight.type}`
 }
@@ -16,32 +18,27 @@ export const getTimeCap = (block: EventBlock) => {
         return ` - Cada ${each} por ${forTime}`
     }
 
+    if (block.event_type === 'not_timed') return ''
+
     const timecap = getTimeFromSeconds(block.timecap)
     return ` - ${timecap}`
 }
 
-export function getRoundsDisplay(_rounds?: string, separator = '-'): string {
+export function getRoundsDisplay(_rounds?: string, suffix = 'Rounds', separator = '-'): string {
     if (!_rounds) return ''
 
+    if (isNumber(Number(_rounds))) return `${_rounds} ${suffix}`
+
     const rounds = _rounds.replace(/([[:alpha:]]+)/g, '')
-    const simpleCalcMatch = rounds.match(/^([\d]+)(\/|\*)([\d]+)$/)
-    const linearMatch = rounds.match(/([\d]+)/g)
+    const sexMatch = rounds.match(/^([\d]+)\/([\d]+)$/)
+    const sequenceMatch = rounds.match(/([\d]+)[\-]+/g)
     const calcMatch = rounds.match(/^([\d]+)(\-|\+)([\d]+)\*([\d]+)$/)
 
-    if (simpleCalcMatch) {
-        const n1 = Number(simpleCalcMatch[1])
-        const n2 = simpleCalcMatch[2]
-        const n3 = Number(simpleCalcMatch[3])
-        let numbers: number[]
+    if (sexMatch) {
+        const masc = Number(sexMatch[1])
+        const fem = Number(sexMatch[2])
 
-        if (n2 === '/') {
-            const res = n1 / n3
-            numbers = Array.from({ length: n3 }).map((_, index) => n1 - index * res)
-        } else {
-            numbers = Array.from({ length: n3 }).map((_, index) => n1 + index * n1)
-        }
-
-        return numbers.join(separator)
+        return `${masc}/${fem}`
     }
 
     if (calcMatch) {
@@ -61,7 +58,7 @@ export function getRoundsDisplay(_rounds?: string, separator = '-'): string {
         return numbers.join(separator)
     }
 
-    if (linearMatch) return rounds.replace(/([^\d]+)/g, separator)
+    if (sequenceMatch) return rounds.replace(/([^\d]+)/g, separator)
 
-    return rounds
+    return _rounds
 }

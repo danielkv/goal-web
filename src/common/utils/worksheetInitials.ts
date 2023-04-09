@@ -36,8 +36,7 @@ export function createEventBlockValues(): EventBlock {
     return {
         type: 'event',
         name: '',
-        event_type: 'for_time',
-        timecap: 600,
+        event_type: 'not_timed',
         rounds: [],
     }
 }
@@ -103,6 +102,7 @@ export const blockTypesMap: Record<Exclude<BlockType, ''>, string> = {
 }
 
 export const eventTypesMap: Record<EventType, string> = {
+    not_timed: 'Sem tempo',
     for_time: 'For Time',
     amrap: 'AMRAP',
     emom: 'EMOM',

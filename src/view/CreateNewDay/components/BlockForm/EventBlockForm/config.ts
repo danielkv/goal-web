@@ -14,6 +14,7 @@ export type TEventBlockForm = Omit<EventBlock, 'type'> & {
 }
 
 export const eventTypes: { key: EventType; label: string }[] = [
+    { key: 'not_timed', label: 'Sem tempo' },
     { key: 'for_time', label: 'For Time' },
     { key: 'amrap', label: 'AMRAP' },
     { key: 'emom', label: 'EMOM' },
@@ -24,7 +25,7 @@ export const eventBlockInitialValues: TEventBlockForm = omit(createEventBlockVal
 
 export const eventBlockFormSchema = z
     .object<ZodShape<TEventBlockForm>>({
-        event_type: z.enum(['for_time', 'max_weight', 'emom', 'amrap']),
+        event_type: z.enum(['for_time', 'max_weight', 'emom', 'amrap', 'not_timed']),
         name: z.optional(z.string()),
         timecap: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
         each: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
@@ -46,7 +47,7 @@ export const eventBlockFormSchema = z
                     message: "Campo 'por' é obrigatório para EMOM",
                     path: ['for'],
                 })
-        } else {
+        } else if (values.event_type !== 'not_timed') {
             if (values.timecap === 1) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
