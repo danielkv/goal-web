@@ -78,7 +78,7 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                     <TextInput
                         {...field.props}
                         class="flex-1"
-                        label="repetir"
+                        label="Rounds"
                         value={field.value}
                         error={field.error}
                     />
