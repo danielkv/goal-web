@@ -1,4 +1,4 @@
-import { Component, For, JSX, createEffect, createMemo, on } from 'solid-js'
+import { Component, For, JSX, Show, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
 import { EventRound } from '@models/block'
@@ -8,6 +8,7 @@ import {
     Form,
     SubmitHandler,
     createForm,
+    getValue,
     insert,
     remove,
     reset,
@@ -116,9 +117,9 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                                 <div class="flex gap-6 items-start">
                                     <Field of={form} name={`${array.name}.${index()}.weight.type`}>
                                         {(field) => (
-                                            <div class="flex flex-col">
+                                            <div class="flex flex-1 flex-col">
                                                 <label class="text-sm mb-2">Tipo de carga</label>
-                                                <select class="input w-40" {...field.props}>
+                                                <select class="input" {...field.props}>
                                                     <For each={weightTypes}>
                                                         {(item) => (
                                                             <option
@@ -133,17 +134,29 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                                             </div>
                                         )}
                                     </Field>
-                                    <Field of={form} name={`${array.name}.${index()}.weight.value`}>
-                                        {(field) => (
-                                            <TextInput
-                                                {...field.props}
-                                                class="flex-1"
-                                                label="Peso"
-                                                value={field.value}
-                                                error={field.error}
-                                            />
-                                        )}
-                                    </Field>
+                                    <Show
+                                        when={
+                                            getValue(
+                                                form,
+                                                `${array.name}.${index()}.weight.type`
+                                            ) !== 'none'
+                                        }
+                                    >
+                                        <Field
+                                            of={form}
+                                            name={`${array.name}.${index()}.weight.value`}
+                                        >
+                                            {(field) => (
+                                                <TextInput
+                                                    {...field.props}
+                                                    class="flex-1"
+                                                    label="Peso"
+                                                    value={field.value}
+                                                    error={field.error}
+                                                />
+                                            )}
+                                        </Field>
+                                    </Show>
                                 </div>
                                 <button
                                     class="btn btn-light self-end"
