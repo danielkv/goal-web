@@ -3,7 +3,7 @@ import { Component, For, createMemo, splitProps } from 'solid-js'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { Group } from '@models/day'
-import { addToPath, pathToNextIndex } from '@utils/paths'
+import { addToPath } from '@utils/paths'
 import { createGroupValues } from '@utils/worksheetInitials'
 
 import BlockPreview from './block'
@@ -28,21 +28,11 @@ const GroupPreview: Component<GroupProps> = (props) => {
         >
             {props.onAdd && props.onRemove && (
                 <PeaceControl
-                    onClickRemove={() => props.onRemove?.(props.thisPath)}
-                    onClickTopAdd={() => props.onAdd?.(props.thisPath, createGroupValues())}
-                    onClickBottomAdd={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), createGroupValues())
-                    }
-                    onClickTopDuplicate={() =>
-                        props.onAdd?.(props.thisPath, createGroupValues(), {
-                            ...props.item,
-                        })
-                    }
-                    onClickBottomDuplicate={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), createGroupValues(), {
-                            ...props.item,
-                        })
-                    }
+                    onAdd={props.onAdd}
+                    onRemove={props.onRemove}
+                    item={props.item}
+                    thisPath={props.thisPath}
+                    createInitialValues={createGroupValues}
                 />
             )}
 

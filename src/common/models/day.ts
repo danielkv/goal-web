@@ -1,4 +1,4 @@
-import { Block } from './block'
+import { Block, EventRound } from './block'
 
 export type Group = {
     name: string
@@ -23,5 +23,7 @@ export type Worksheet = {
     startDate: string // YYYY-MM-DD
     days: Day[]
 }
+
+export type TPeaces = Day | Period | Group | Block | EventRound
 
 export type WorksheetModel = Omit<Worksheet, 'id'> & { id: string }

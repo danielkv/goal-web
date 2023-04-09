@@ -1,35 +1,63 @@
+import cloneDeep from 'clone-deep'
 import { FiCopy, FiPlus, FiTrash2 } from 'solid-icons/fi'
 
-import { Component } from 'solid-js'
+import { Component, JSX } from 'solid-js'
 
-export interface PeaceControlProps {
-    onClickRemove?(): void
-    onClickTopAdd?(): void
-    onClickBottomAdd?(): void
-    onClickTopDuplicate?(): void
-    onClickBottomDuplicate?(): void
+import { Path } from '@interfaces/app'
+import { Controllable } from '@interfaces/preview'
+import { TPeaces } from '@models/day'
+import { pathToNextIndex } from '@utils/paths'
+
+export interface PeaceControlProps extends Required<Omit<Controllable, 'onClickPeace'>> {
+    thisPath: Path
+    item: TPeaces
+    copyOnAddTop?: Partial<TPeaces>
+    copyOnAddBottom?: Partial<TPeaces>
+    createInitialValues: () => TPeaces
 }
 
-const PeaceControl: Component<PeaceControlProps> = (props) => {
+const PeaceControl: Component<PeaceControlProps> = (props): JSX.Element => {
+    const handleClickRemove = () => {
+        props.onRemove(props.thisPath)
+    }
+    const handleClickTopAdd = () => {
+        props.onAdd(props.thisPath, {
+            ...props.createInitialValues(),
+            ...props.copyOnAddTop,
+        } as TPeaces)
+    }
+    const handleClickBottomAdd = () => {
+        props.onAdd(pathToNextIndex(props.thisPath), {
+            ...props.createInitialValues(),
+            ...props.copyOnAddBottom,
+        } as TPeaces)
+    }
+    const handleClickTopDuplicate = () => {
+        props.onAdd(props.thisPath, cloneDeep(props.item))
+    }
+    const handleClickBottomDuplicate = () => {
+        props.onAdd(pathToNextIndex(props.thisPath), cloneDeep(props.item))
+    }
+
     return (
         <>
-            <button class="icon-btn remove" onClick={props.onClickRemove}>
+            <button class="icon-btn remove" onClick={handleClickRemove}>
                 <FiTrash2 />
             </button>
 
-            <button class="icon-btn add top" onClick={props.onClickTopAdd}>
+            <button class="icon-btn add top" onClick={handleClickTopAdd}>
                 <FiPlus />
             </button>
 
-            <button class="icon-btn add bottom" onClick={props.onClickBottomAdd}>
+            <button class="icon-btn add bottom" onClick={handleClickBottomAdd}>
                 <FiPlus />
             </button>
 
-            <button class="icon-btn duplicate top" onClick={props.onClickTopDuplicate}>
+            <button class="icon-btn duplicate top" onClick={handleClickTopDuplicate}>
                 <FiCopy />
             </button>
 
-            <button class="icon-btn duplicate bottom" onClick={props.onClickBottomDuplicate}>
+            <button class="icon-btn duplicate bottom" onClick={handleClickBottomDuplicate}>
                 <FiCopy />
             </button>
         </>

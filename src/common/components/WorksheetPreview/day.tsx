@@ -5,7 +5,7 @@ import { Component, For, createMemo, splitProps } from 'solid-js'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { Day } from '@models/day'
-import { addToPath, pathToNextIndex } from '@utils/paths'
+import { addToPath } from '@utils/paths'
 import { createDayValues } from '@utils/worksheetInitials'
 
 import PeriodPreview from './period'
@@ -30,29 +30,19 @@ const DayPreview: Component<DayProps> = (props) => {
         >
             {props.onAdd && props.onRemove && (
                 <PeaceControl
-                    onClickRemove={() => props.onRemove?.(props.thisPath)}
-                    onClickTopAdd={() =>
-                        props.onAdd?.(props.thisPath, createDayValues(), {
-                            date: dayjs(props.item.date).subtract(1, 'day').format('YYYY-MM-DD'),
-                            name: props.item.name,
-                        })
-                    }
-                    onClickBottomAdd={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), createDayValues(), {
-                            date: dayjs(props.item.date).add(1, 'day').format('YYYY-MM-DD'),
-                            name: props.item.name,
-                        })
-                    }
-                    onClickTopDuplicate={() =>
-                        props.onAdd?.(props.thisPath, createDayValues(), {
-                            ...props.item,
-                        })
-                    }
-                    onClickBottomDuplicate={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), createDayValues(), {
-                            ...props.item,
-                        })
-                    }
+                    onAdd={props.onAdd}
+                    onRemove={props.onRemove}
+                    item={props.item}
+                    thisPath={props.thisPath}
+                    createInitialValues={createDayValues}
+                    copyOnAddBottom={{
+                        date: dayjs(props.item.date).add(1, 'day').format('YYYY-MM-DD'),
+                        name: props.item.name,
+                    }}
+                    copyOnAddTop={{
+                        date: dayjs(props.item.date).subtract(1, 'day').format('YYYY-MM-DD'),
+                        name: props.item.name,
+                    }}
                 />
             )}
 

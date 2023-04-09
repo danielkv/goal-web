@@ -3,7 +3,6 @@ import { Component, Match, Switch, splitProps } from 'solid-js'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { Block, EventBlock, RestBlock, TextBlock } from '@models/block'
-import { pathToNextIndex } from '@utils/paths'
 import { createBlockValues } from '@utils/worksheetInitials'
 
 import EventBlockPreview from './blocks/eventBlock'
@@ -30,19 +29,11 @@ const BlockPreview: Component<BlockProps> = (props) => {
         >
             {props.onAdd && props.onRemove && (
                 <PeaceControl
-                    onClickRemove={() => props.onRemove?.(props.thisPath)}
-                    onClickTopAdd={() => props.onAdd?.(props.thisPath, createBlockValues())}
-                    onClickBottomAdd={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), createBlockValues())
-                    }
-                    onClickTopDuplicate={() =>
-                        props.onAdd?.(props.thisPath, createBlockValues(), { ...props.item })
-                    }
-                    onClickBottomDuplicate={() =>
-                        props.onAdd?.(pathToNextIndex(props.thisPath), createBlockValues(), {
-                            ...props.item,
-                        })
-                    }
+                    onAdd={props.onAdd}
+                    onRemove={props.onRemove}
+                    item={props.item}
+                    thisPath={props.thisPath}
+                    createInitialValues={createBlockValues}
                 />
             )}
             {props.item.info && <div class="info">{props.item.info}</div>}
