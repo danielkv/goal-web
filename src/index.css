@@ -28,8 +28,8 @@
 
 @layer components {
     :root {
-        --page-width: 600px;
-        --page-height: 776.5px;
+        --page-width: 700px;
+        --page-height: 905.5px;
     }
 
     .worksheet {
@@ -47,7 +47,7 @@
     }
 
     .pdf-page {
-        font-size: 22px;
+        font-size: 19px;
     }
 
     .pdf-page .period {
@@ -77,7 +77,7 @@
     }
 
     .group {
-        @apply em:mb-4 flex flex-col items-center;
+        @apply em:mb-2 flex flex-col items-center;
     }
 
     .group > .title {

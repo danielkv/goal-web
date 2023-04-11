@@ -24,28 +24,36 @@ export const getTimeCap = (block: EventBlock) => {
     return ` - ${timecap}`
 }
 
-export function getRoundsDisplay(_rounds?: string, suffix = 'Rounds', separator = '-'): string {
-    if (!_rounds) return ''
+export function getRoundsDisplay(rounds?: string, suffix = 'Rounds', separator = '-'): string {
+    if (!rounds) return ''
 
-    if (isNumber(Number(_rounds))) return `${_rounds} ${suffix}`
+    if (isNumber(Number(rounds))) return `${rounds} ${suffix}`
 
-    const rounds = _rounds.replace(/([[:alpha:]]+)/g, '')
-    const sexMatch = rounds.match(/^([\d]+)\/([\d]+)$/)
-    const sequenceMatch = rounds.match(/([\d]+)[\-]+/g)
-    const calcMatch = rounds.match(/^([\d]+)(\-|\+)([\d]+)\*([\d]+)$/)
+    //const rounds = _rounds.replace(/([[:alpha:]]+)/g, '')
+    const sexMatch = rounds.match(/^([\d\,]+)\/([\d\,]+)$/)
+    const sequenceMatch = rounds.match(/^([\d\,]+)[\-]+$/g)
+    const calcMatch = rounds.match(/^([\d\,]+)(\-|\+)([\d\,]+)\*([\d]+)$/)
+    const rangeMatch = rounds.match(/^([\d\,]+)\>\>([\d\,]+)$/)
+
+    if (rangeMatch) {
+        const masc = Number(rangeMatch[1].replace(',', '.'))
+        const fem = Number(rangeMatch[2].replace(',', '.'))
+
+        return `${masc} a ${fem}`
+    }
 
     if (sexMatch) {
-        const masc = Number(sexMatch[1])
-        const fem = Number(sexMatch[2])
+        const masc = Number(sexMatch[1].replace(',', '.'))
+        const fem = Number(sexMatch[2].replace(',', '.'))
 
         return `${masc}/${fem}`
     }
 
     if (calcMatch) {
-        const n1 = Number(calcMatch[1])
+        const n1 = Number(calcMatch[1].replace(',', '.'))
         const n2 = calcMatch[2]
-        const n3 = Number(calcMatch[3])
-        const n4 = Number(calcMatch[4])
+        const n3 = Number(calcMatch[3].replace(',', '.'))
+        const n4 = Number(calcMatch[4].replace(',', '.'))
 
         let numbers: number[]
 
@@ -60,5 +68,5 @@ export function getRoundsDisplay(_rounds?: string, suffix = 'Rounds', separator 
 
     if (sequenceMatch) return rounds.replace(/([^\d]+)/g, separator)
 
-    return _rounds
+    return rounds
 }
