@@ -1,4 +1,4 @@
-import { Component, Match, Switch, splitProps } from 'solid-js'
+import { Component, Match, Switch, createMemo, splitProps } from 'solid-js'
 
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
@@ -12,14 +12,27 @@ import TextBlockPreview from './blocks/textBlock'
 export interface BlockProps extends WorksheetPeace<Block> {}
 
 const BlockPreview: Component<BlockProps> = (props) => {
-    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onClickPeace'])
+    const [parentProps, controlProps] = splitProps(
+        props,
+        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'],
+        ['onAdd', 'onRemove', 'onMove', 'item', 'thisPath']
+    )
+
+    const isEmpty = createMemo(() => {
+        if (props.item.type === 'event' && !props.item.rounds.length) return true
+        if (props.item.type === 'rest' && !props.item.time) return true
+        if (props.item.type === 'text' && !props.item.text) return true
+        if (props.item.type === '') return true
+
+        return false
+    })
 
     return (
         <div
             class="block"
             classList={{
                 selected: props.currentPath === props.thisPath,
-                empty: props.item.type === '',
+                empty: isEmpty(),
                 hoverable: !!props.onClickPeace,
             }}
             onClick={(e) => {
@@ -27,14 +40,8 @@ const BlockPreview: Component<BlockProps> = (props) => {
                 props.onClickPeace?.(props.thisPath)
             }}
         >
-            {props.onAdd && props.onRemove && (
-                <PeaceControl
-                    onAdd={props.onAdd}
-                    onRemove={props.onRemove}
-                    item={props.item}
-                    thisPath={props.thisPath}
-                    createInitialValues={createBlockValues}
-                />
+            {props.onAdd && props.onRemove && props.onMove && (
+                <PeaceControl {...controlProps} createInitialValues={createBlockValues} />
             )}
             {props.item.info && <div class="info">{props.item.info}</div>}
             <Switch>

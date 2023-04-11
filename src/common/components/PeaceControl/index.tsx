@@ -1,5 +1,5 @@
 import cloneDeep from 'clone-deep'
-import { FiCopy, FiPlus, FiTrash2 } from 'solid-icons/fi'
+import { FiArrowDown, FiArrowUp, FiCopy, FiPlus, FiTrash2 } from 'solid-icons/fi'
 
 import { Component, JSX } from 'solid-js'
 
@@ -8,7 +8,7 @@ import { Controllable } from '@interfaces/preview'
 import { TPeaces } from '@models/day'
 import { pathToNextIndex } from '@utils/paths'
 
-export interface PeaceControlProps extends Required<Omit<Controllable, 'onClickPeace'>> {
+export interface PeaceControlProps extends Omit<Controllable, 'onClickPeace'> {
     thisPath: Path
     item: TPeaces
     copyOnAddTop?: Partial<TPeaces>
@@ -18,25 +18,31 @@ export interface PeaceControlProps extends Required<Omit<Controllable, 'onClickP
 
 const PeaceControl: Component<PeaceControlProps> = (props): JSX.Element => {
     const handleClickRemove = () => {
-        props.onRemove(props.thisPath)
+        props.onRemove?.(props.thisPath)
     }
     const handleClickTopAdd = () => {
-        props.onAdd(props.thisPath, {
+        props.onAdd?.(props.thisPath, {
             ...props.createInitialValues(),
             ...props.copyOnAddTop,
         } as TPeaces)
     }
     const handleClickBottomAdd = () => {
-        props.onAdd(pathToNextIndex(props.thisPath), {
+        props.onAdd?.(pathToNextIndex(props.thisPath), {
             ...props.createInitialValues(),
             ...props.copyOnAddBottom,
         } as TPeaces)
     }
     const handleClickTopDuplicate = () => {
-        props.onAdd(props.thisPath, cloneDeep(props.item))
+        props.onAdd?.(props.thisPath, cloneDeep(props.item))
     }
     const handleClickBottomDuplicate = () => {
-        props.onAdd(pathToNextIndex(props.thisPath), cloneDeep(props.item))
+        props.onAdd?.(pathToNextIndex(props.thisPath), cloneDeep(props.item))
+    }
+    const handleClickTopMove = () => {
+        props.onMove?.(props.thisPath, 'up')
+    }
+    const handleClickBottomMove = () => {
+        props.onMove?.(props.thisPath, 'down')
     }
 
     return (
@@ -59,6 +65,13 @@ const PeaceControl: Component<PeaceControlProps> = (props): JSX.Element => {
 
             <button class="icon-btn duplicate bottom" onClick={handleClickBottomDuplicate}>
                 <FiCopy />
+            </button>
+
+            <button class="icon-btn move top" onClick={handleClickTopMove}>
+                <FiArrowUp />
+            </button>
+            <button class="icon-btn move bottom" onClick={handleClickBottomMove}>
+                <FiArrowDown />
             </button>
         </>
     )

@@ -13,7 +13,11 @@ import PeriodPreview from './period'
 export interface DayProps extends WorksheetPeace<Day> {}
 
 const DayPreview: Component<DayProps> = (props) => {
-    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onClickPeace'])
+    const [parentProps, controlProps] = splitProps(
+        props,
+        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'],
+        ['onAdd', 'onRemove', 'onMove', 'item', 'thisPath']
+    )
 
     return (
         <div
@@ -28,12 +32,9 @@ const DayPreview: Component<DayProps> = (props) => {
                 props.onClickPeace?.(props.thisPath)
             }}
         >
-            {props.onAdd && props.onRemove && (
+            {props.onAdd && props.onRemove && props.onMove && (
                 <PeaceControl
-                    onAdd={props.onAdd}
-                    onRemove={props.onRemove}
-                    item={props.item}
-                    thisPath={props.thisPath}
+                    {...controlProps}
                     createInitialValues={createDayValues}
                     copyOnAddBottom={{
                         date: dayjs(props.item.date).add(1, 'day').format('YYYY-MM-DD'),

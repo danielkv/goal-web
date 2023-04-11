@@ -10,7 +10,13 @@ import { Worksheet } from '@models/day'
 import { useNavigate, useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
-import { getLastIndex, getPeaceFromPath, pathToParent } from '@utils/paths'
+import {
+    findNextIndexPath,
+    findPreviousIndexPath,
+    getLastIndex,
+    getPeaceFromPath,
+    pathToParent,
+} from '@utils/paths'
 import { createWorksheetValues } from '@utils/worksheetInitials'
 
 import Form from './components/Form'
@@ -84,6 +90,39 @@ const CreateNewDay: Component = () => {
         }, 1)
     }
 
+    const handleMovePeace = (path: Path, to: 'up' | 'down') => {
+        const currentListPath = pathToParent(path)
+        const currentIndex = getLastIndex(path)
+
+        const newPath =
+            to === 'up'
+                ? findPreviousIndexPath(worksheetStore, path)
+                : findNextIndexPath(worksheetStore, path)
+
+        if (!newPath) return
+
+        const newListPath = pathToParent(newPath)
+        const newIndex = getLastIndex(newPath)
+
+        setWorksheetStore(
+            produce((current) => {
+                const currentObject = getPeaceFromPath<Record<string, any>>(current, path)
+
+                const currentList = getPeaceFromPath<Record<string, any>[]>(
+                    current,
+                    currentListPath
+                )
+                const newList = getPeaceFromPath<Record<string, any>[]>(current, newListPath)
+
+                currentList.splice(currentIndex, 1)
+                newList.splice(newIndex, 0, currentObject)
+            })
+        )
+        setTimeout(() => {
+            setCurrentPath(newPath)
+        }, 1)
+    }
+
     async function loadWorksheet(worksheetId: string) {
         try {
             setError(null)
@@ -132,6 +171,7 @@ const CreateNewDay: Component = () => {
                             onClickPeace={(key) => setCurrentPath(key)}
                             onAdd={handleAddPeace}
                             onRemove={handleRemovePeace}
+                            onMove={handleMovePeace}
                         />
                         <pre>{JSON.stringify(worksheetStore, null, 4)}</pre>
                     </>

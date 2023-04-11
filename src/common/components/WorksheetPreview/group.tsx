@@ -11,7 +11,11 @@ import BlockPreview from './block'
 export interface GroupProps extends WorksheetPeace<Group> {}
 
 const GroupPreview: Component<GroupProps> = (props) => {
-    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onClickPeace'])
+    const [parentProps, controlProps] = splitProps(
+        props,
+        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'],
+        ['onAdd', 'onRemove', 'onMove', 'item', 'thisPath']
+    )
 
     return (
         <div
@@ -26,14 +30,8 @@ const GroupPreview: Component<GroupProps> = (props) => {
                 props.onClickPeace?.(props.thisPath)
             }}
         >
-            {props.onAdd && props.onRemove && (
-                <PeaceControl
-                    onAdd={props.onAdd}
-                    onRemove={props.onRemove}
-                    item={props.item}
-                    thisPath={props.thisPath}
-                    createInitialValues={createGroupValues}
-                />
+            {props.onAdd && props.onRemove && props.onMove && (
+                <PeaceControl {...controlProps} createInitialValues={createGroupValues} />
             )}
 
             <div class="title">{props.item.name}</div>

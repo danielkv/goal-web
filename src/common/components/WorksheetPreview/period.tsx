@@ -15,7 +15,11 @@ export interface PeriodProps extends WorksheetPeace<Period> {
 }
 
 const PeriodPreview: Component<PeriodProps> = (props) => {
-    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onClickPeace'])
+    const [parentProps, controlProps] = splitProps(
+        props,
+        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'],
+        ['onAdd', 'onRemove', 'onMove', 'item', 'thisPath']
+    )
 
     return (
         <div
@@ -30,14 +34,8 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
                 props.onClickPeace?.(props.thisPath)
             }}
         >
-            {props.onAdd && props.onRemove && (
-                <PeaceControl
-                    onAdd={props.onAdd}
-                    onRemove={props.onRemove}
-                    item={props.item}
-                    thisPath={props.thisPath}
-                    createInitialValues={createPeriodValues}
-                />
+            {props.onAdd && props.onRemove && props.onMove && (
+                <PeaceControl {...controlProps} createInitialValues={createPeriodValues} />
             )}
 
             <div class="header">

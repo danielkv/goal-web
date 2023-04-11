@@ -41,6 +41,63 @@ export function pathToNextIndex(path: Path, count = 1): Path {
     return finalPath
 }
 
+export function pathToPreviousIndex(path: Path, count = 1): Path {
+    const newIndex = getLastIndex(path) - count
+
+    const listPath = pathToParent(path)
+
+    const finalPath = addToPath(listPath, `${newIndex}`)
+
+    return finalPath
+}
+
+export function findNextIndexPath(current: Worksheet, path: Path): Path | null {
+    const currentIndex = getLastIndex(path)
+    if (currentIndex === -1) return null
+
+    const currentList = getPeaceFromPath<object[]>(current, pathToParent(path))
+
+    if (currentIndex >= currentList.length - 1) {
+        const currentPeace = getCurrentPeace(path)
+        const parentPath = pathToParent(path, 2)
+        const nextPreviousPath = findNextIndexPath(current, parentPath)
+        if (nextPreviousPath === null) return null
+
+        const listPath = addToPath(nextPreviousPath, `${currentPeace}`)
+        const list = getPeaceFromPath<object[]>(current, listPath)
+        if (!list) return null
+
+        return addToPath(nextPreviousPath, `${currentPeace}.0`)
+    }
+
+    return pathToNextIndex(path, 1)
+}
+
+export function findPreviousIndexPath(current: Worksheet, path: Path, root = true): Path | null {
+    const currentIndex = getLastIndex(path)
+    if (currentIndex === -1) return null
+
+    if (currentIndex === 0) {
+        const currentPeace = getCurrentPeace(path) // blocks
+        const parentPath = pathToParent(path, 2) // worksheet.days.1.periods.0.groups.0
+
+        const previousIndexPath = findPreviousIndexPath(current, parentPath, false) // worksheet.days.0.periods.0.groups.1
+        if (!previousIndexPath) return null
+
+        const listPath = addToPath(previousIndexPath, `${currentPeace}`)
+        const list = getPeaceFromPath<object[]>(current, listPath)
+        if (!list) return null
+
+        const index = root ? list.length : list.length - 1
+
+        const result = addToPath(listPath, `${index}`)
+
+        return result
+    }
+
+    return pathToPreviousIndex(path, 1)
+}
+
 export function getLastIndex(path: Path): number {
     const arrayPath = path.split('.')
     const lastIndex = arrayPath.reverse().find((ele) => {

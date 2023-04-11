@@ -141,21 +141,25 @@
         position: absolute;
         display: none;
         z-index: 999;
+        left: 50%;
     }
 
     .hoverable > .icon-btn.remove {
         right: -14px;
         top: -14px;
+        left: initial;
     }
 
     .hoverable > .icon-btn.add {
-        left: 50%;
-        margin-left: 6px;
+        margin-left: 22px;
+    }
+
+    .hoverable > .icon-btn.move {
+        margin-left: -14px;
     }
 
     .hoverable > .icon-btn.duplicate {
-        left: 50%;
-        margin-left: -34px;
+        margin-left: -50px;
     }
 
     .hoverable > .icon-btn.top {

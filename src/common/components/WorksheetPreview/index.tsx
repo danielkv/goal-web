@@ -11,7 +11,13 @@ import DayPreview from './day'
 export interface WorksheetPreviewProps extends Omit<WorksheetPeace<Worksheet>, 'thisPath'> {}
 
 const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
-    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onClickPeace'])
+    const [parentProps] = splitProps(props, [
+        'currentPath',
+        'onAdd',
+        'onRemove',
+        'onMove',
+        'onClickPeace',
+    ])
 
     return (
         <div class="worksheet">

@@ -39,12 +39,13 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                 props.onClickPeace?.(roundPath())
                             }}
                         >
-                            {props.onAdd && props.onRemove && (
+                            {props.onAdd && props.onRemove && props.onMove && (
                                 <PeaceControl
                                     onAdd={props.onAdd}
                                     onRemove={props.onRemove}
+                                    onMove={props.onMove}
                                     item={round}
-                                    thisPath={props.thisPath}
+                                    thisPath={roundPath()}
                                     createInitialValues={createEventRoundValues}
                                 />
                             )}
