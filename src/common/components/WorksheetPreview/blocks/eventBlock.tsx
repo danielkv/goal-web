@@ -15,7 +15,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
         <div class="text-center">
             {props.item.name && <div>{props.item.name}</div>}
             {props.item.event_type !== 'not_timed' && (
-                <div class="font-bold text-base bg-gray-300 px-4 py-2">
+                <div class="title">
                     {eventTypesMap[props.item.event_type]} {getTimeCap(props.item)}
                 </div>
             )}

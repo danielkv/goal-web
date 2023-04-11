@@ -43,7 +43,7 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
             <div class="header">
                 <div class="period-square">{getLastIndex(props.thisPath) + 1}</div>
                 <div class="title">{props.item.name || 'WORKSHEET'}</div>
-                <div class="text-right mr-6">
+                <div class="text-right em:mr-6">
                     <small class="flex items-center justify-end gap-3">
                         <span>
                             {dayjs(props.day.date, 'YYYY-MM-DD').format('dddd').toLocaleUpperCase()}
