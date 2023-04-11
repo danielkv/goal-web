@@ -12,6 +12,7 @@ import {
     insert,
     remove,
     reset,
+    setValue,
     zodForm,
 } from '@modular-forms/solid'
 import { createRoundMovementValues } from '@utils/worksheetInitials'
@@ -47,41 +48,22 @@ const RoundForm: Component<BlockFormProps> = (props) => {
         props.onClickNext(newValues)
     }
 
-    const handleClickAddMovement: JSX.CustomEventHandlersCamelCase<HTMLButtonElement>['onClick'] = (
-        e
-    ) => {
+    const handleClickAddMovement: JSX.CustomEventHandlersCamelCase<HTMLButtonElement>['onClick'] = (e) => {
         e.preventDefault()
 
         insert(form, 'movements', { value: createRoundMovementValues() })
     }
 
     return (
-        <Form<TRoundForm>
-            of={form}
-            name="teste"
-            class="flex flex-col gap-6"
-            onSubmit={handleSubmit}
-        >
+        <Form<TRoundForm> of={form} name="teste" class="flex flex-col gap-6" onSubmit={handleSubmit}>
             <Field of={form} name="name">
                 {(field) => (
-                    <TextInput
-                        {...field.props}
-                        class="flex-1"
-                        label="Nome"
-                        value={field.value}
-                        error={field.error}
-                    />
+                    <TextInput {...field.props} class="flex-1" label="Nome" value={field.value} error={field.error} />
                 )}
             </Field>
             <Field of={form} name="repeat">
                 {(field) => (
-                    <TextInput
-                        {...field.props}
-                        class="flex-1"
-                        label="Rounds"
-                        value={field.value}
-                        error={field.error}
-                    />
+                    <TextInput {...field.props} class="flex-1" label="Rounds" value={field.value} error={field.error} />
                 )}
             </Field>
 
@@ -92,15 +74,31 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                         {(_, index) => (
                             <div class="paper flex flex-col gap-6">
                                 <Field of={form} name={`${array.name}.${index()}.name`}>
-                                    {(field) => (
-                                        <TextInput
-                                            {...field.props}
-                                            class="flex-1"
-                                            label="Nome"
-                                            value={field.value}
-                                            error={field.error}
-                                        />
-                                    )}
+                                    {(field) => {
+                                        const handleBlur: JSX.EventHandler<HTMLInputElement, FocusEvent> = (e) => {
+                                            const value = getValue(form, `${array.name}.${index()}.name`)
+
+                                            const match = value?.match(/^([\d]+)\s+(.+)/)
+
+                                            if (!match) return
+
+                                            setValue(form, `${array.name}.${index()}.name`, match[2])
+                                            setValue(form, `${array.name}.${index()}.reps`, match[1])
+
+                                            field.props.onBlur(e)
+                                        }
+
+                                        return (
+                                            <TextInput
+                                                {...field.props}
+                                                onBlur={handleBlur}
+                                                class="flex-1"
+                                                label="Nome"
+                                                value={field.value}
+                                                error={field.error}
+                                            />
+                                        )
+                                    }}
                                 </Field>
                                 <Field of={form} name={`${array.name}.${index()}.reps`}>
                                     {(field) => (
@@ -134,18 +132,8 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                                             </div>
                                         )}
                                     </Field>
-                                    <Show
-                                        when={
-                                            getValue(
-                                                form,
-                                                `${array.name}.${index()}.weight.type`
-                                            ) !== 'none'
-                                        }
-                                    >
-                                        <Field
-                                            of={form}
-                                            name={`${array.name}.${index()}.weight.value`}
-                                        >
+                                    <Show when={getValue(form, `${array.name}.${index()}.weight.type`) !== 'none'}>
+                                        <Field of={form} name={`${array.name}.${index()}.weight.value`}>
                                             {(field) => (
                                                 <TextInput
                                                     {...field.props}
