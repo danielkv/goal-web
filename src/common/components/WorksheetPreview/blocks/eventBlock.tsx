@@ -22,9 +22,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
 
             <For each={props.item.rounds}>
                 {(round, roundIndex) => {
-                    const roundPath = createMemo(() =>
-                        addToPath<EventBlock>(props.thisPath, `rounds.${roundIndex()}`)
-                    )
+                    const roundPath = createMemo(() => addToPath<EventBlock>(props.thisPath, `rounds.${roundIndex()}`))
 
                     return (
                         <div
@@ -57,7 +55,18 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                     const weight = displayWeight(movement.weight)
                                     const reps = getRoundsDisplay(movement.reps, '')
                                     const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
-                                    return <div>{`${repsDisplay}${movement.name}${weight}`}</div>
+                                    const displayMovement = `${repsDisplay}${movement.name}${weight}`
+                                    return (
+                                        <div class="movement" classList={{ withUrl: !!movement.videoUrl }}>
+                                            {movement.videoUrl ? (
+                                                <a href={movement.videoUrl} target="_new">
+                                                    {displayMovement}
+                                                </a>
+                                            ) : (
+                                                displayMovement
+                                            )}
+                                        </div>
+                                    )
                                 }}
                             </For>
                         </div>

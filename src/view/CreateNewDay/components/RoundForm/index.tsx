@@ -72,7 +72,7 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                 {(array) => (
                     <For each={array.items}>
                         {(_, index) => (
-                            <div class="paper flex flex-col gap-6">
+                            <div class="paper flex flex-col gap-3">
                                 <Field of={form} name={`${array.name}.${index()}.name`}>
                                     {(field) => {
                                         const handleBlur: JSX.EventHandler<HTMLInputElement, FocusEvent> = (e) => {
@@ -106,6 +106,18 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                                             {...field.props}
                                             class="flex-1"
                                             label="Repetições"
+                                            value={field.value}
+                                            error={field.error}
+                                        />
+                                    )}
+                                </Field>
+
+                                <Field of={form} name={`${array.name}.${index()}.videoUrl`}>
+                                    {(field) => (
+                                        <TextInput
+                                            {...field.props}
+                                            class="flex-1"
+                                            label="Vídeo"
                                             value={field.value}
                                             error={field.error}
                                         />
