@@ -47,20 +47,16 @@ const DayPreview: Component<DayProps> = (props) => {
                 />
             )}
 
+            <div class="title">
+                <span>{dayjs(props.item.date, 'YYYY-MM-DD').format('dddd').toLocaleUpperCase()}</span> -{' '}
+                {dayjs(props.item.date, 'YYYY-MM-DD').format('DD/MM/YYYY')}
+            </div>
+
             <For each={props.item.periods}>
                 {(period, periodIndex) => {
-                    const periodPath = createMemo(() =>
-                        addToPath<Day>(props.thisPath, `periods.${periodIndex()}`)
-                    )
+                    const periodPath = createMemo(() => addToPath<Day>(props.thisPath, `periods.${periodIndex()}`))
 
-                    return (
-                        <PeriodPreview
-                            day={props.item}
-                            item={period}
-                            thisPath={periodPath()}
-                            {...parentProps}
-                        />
-                    )
+                    return <PeriodPreview day={props.item} item={period} thisPath={periodPath()} {...parentProps} />
                 }}
             </For>
         </div>
