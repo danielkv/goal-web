@@ -8,7 +8,7 @@ name: Deploy to Firebase Hosting on merge
       - main
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: docker-pnpm
     steps:
       - uses: actions/checkout@v3
       - run: pnpm vite build
