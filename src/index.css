@@ -241,6 +241,12 @@
         color: theme('colors.gray.700');
         font-weight: bold;
     }
+
+    input.removeArrows::-webkit-outer-spin-button,
+    input.removeArrows::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 }
 
 code {
