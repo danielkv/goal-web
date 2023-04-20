@@ -21,6 +21,22 @@ export const getWorksheetById = https.onCall(async (worksheetId: string, context
     }
 })
 
+type GetWorksheetDayByIdData = { worksheetId: string; dayId: string }
+export const getWorksheetDayById = https.onCall(async ({ dayId, worksheetId }: GetWorksheetDayByIdData) => {
+    const db = admin.firestore()
+
+    const collection = db.collection(`worksheets/${worksheetId}/days`)
+
+    const doc = await collection.doc(dayId).get()
+
+    if (!doc.exists) throw new Error('Worksheet day not found')
+
+    return {
+        id: doc.id,
+        ...doc.data(),
+    }
+})
+
 export const getWorksheets = https.onCall(async (none: any, context: https.CallableContext) => {
     const db = admin.firestore()
 
