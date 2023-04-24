@@ -2,14 +2,14 @@ import { Component, Match, Switch, createMemo, splitProps } from 'solid-js'
 
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
-import { Block, EventBlock, RestBlock, TextBlock } from '@models/block'
+import { IBlock, IEventBlock, IRestBlock, ITextBlock } from '@models/block'
 import { createBlockValues } from '@utils/worksheetInitials'
 
 import EventBlockPreview from './blocks/eventBlock'
 import RestBlockPreview from './blocks/restBlock'
 import TextBlockPreview from './blocks/textBlock'
 
-export interface BlockProps extends WorksheetPeace<Block> {}
+export interface BlockProps extends WorksheetPeace<IBlock> {}
 
 const BlockPreview: Component<BlockProps> = (props) => {
     const [parentProps, controlProps] = splitProps(
@@ -46,17 +46,13 @@ const BlockPreview: Component<BlockProps> = (props) => {
             {props.item.info && <div class="info">{props.item.info}</div>}
             <Switch>
                 <Match when={props.item.type === 'rest'}>
-                    <RestBlockPreview item={props.item as RestBlock} thisPath={props.thisPath} />
+                    <RestBlockPreview item={props.item as IRestBlock} thisPath={props.thisPath} />
                 </Match>
                 <Match when={props.item.type === 'text'}>
-                    <TextBlockPreview item={props.item as TextBlock} thisPath={props.thisPath} />
+                    <TextBlockPreview item={props.item as ITextBlock} thisPath={props.thisPath} />
                 </Match>
                 <Match when={props.item.type === 'event'}>
-                    <EventBlockPreview
-                        item={props.item as EventBlock}
-                        thisPath={props.thisPath}
-                        {...parentProps}
-                    />
+                    <EventBlockPreview item={props.item as IEventBlock} thisPath={props.thisPath} {...parentProps} />
                 </Match>
             </Switch>
         </div>

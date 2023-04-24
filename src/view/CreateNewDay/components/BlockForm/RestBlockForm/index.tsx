@@ -1,7 +1,7 @@
 import { Component, JSX, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { RestBlock } from '@models/block'
+import { IRestBlock } from '@models/block'
 import { Field, Form, SubmitHandler, createForm, reset, setValue, zodForm } from '@modular-forms/solid'
 import { secondsToStringTime, stringTimeToSeconds } from '@utils/time'
 
@@ -9,7 +9,7 @@ import { TRestBlockForm, restBlockFormSchema } from './config'
 
 export interface RestBlockFormProps {
     onClickNext(data: TRestBlockForm): void
-    block: RestBlock
+    block: IRestBlock
 }
 
 const RestBlockForm: Component<RestBlockFormProps> = (props) => {

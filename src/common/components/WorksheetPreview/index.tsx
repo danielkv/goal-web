@@ -3,21 +3,15 @@ import dayjs from 'dayjs'
 import { Component, For, createMemo, splitProps } from 'solid-js'
 
 import { WorksheetPeace } from '@interfaces/preview'
-import { Worksheet } from '@models/day'
+import { IWorksheet } from '@models/day'
 import { Path } from '@view/CreateNewDay/types'
 
 import DayPreview from './day'
 
-export interface WorksheetPreviewProps extends Omit<WorksheetPeace<Worksheet>, 'thisPath'> {}
+export interface WorksheetPreviewProps extends Omit<WorksheetPeace<IWorksheet>, 'thisPath'> {}
 
 const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
-    const [parentProps] = splitProps(props, [
-        'currentPath',
-        'onAdd',
-        'onRemove',
-        'onMove',
-        'onClickPeace',
-    ])
+    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'])
 
     return (
         <div class="worksheet">
@@ -32,8 +26,7 @@ const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
                     props.onClickPeace?.(`worksheet`)
                 }}
             >
-                {props.item.name} - Início:{' '}
-                {dayjs(props.item.startDate, 'YYYY-MM-DD').format('DD/MM/YYYY')}
+                {props.item.name} - Início: {dayjs(props.item.startDate, 'YYYY-MM-DD').format('DD/MM/YYYY')}
             </h1>
             {props.item.info && <div>{props.item.info}</div>}
             <For each={props.item.days}>

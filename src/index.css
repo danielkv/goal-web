@@ -76,14 +76,14 @@
         @apply em:w-14 em:h-14 em:text-lg font-bold flex items-center justify-center bg-red-500;
     }
 
-    .group {
+    .section {
         @apply em:mb-2 flex flex-col items-center;
     }
 
-    .group > .title {
+    .section > .title {
         @apply bg-red-500 em:px-3 em:py-3 em:text-base min-w-[250px] text-center;
     }
-    .group .block-separator {
+    .section .block-separator {
         @apply border-t-[1px] border-gray-700 em:w-20;
     }
 

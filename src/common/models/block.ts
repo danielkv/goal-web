@@ -1,67 +1,62 @@
-export type EventType = 'for_time' | 'max_weight' | 'emom' | 'amrap' | 'not_timed'
+export type TEventType = 'for_time' | 'max_weight' | 'emom' | 'amrap' | 'not_timed'
 
-export type WeightTypes = 'kg' | 'lb' | '%' | 'none'
+export type TWeightTypes = 'kg' | 'lb' | '%' | 'none'
 
-export type MovementWeight = {
-    type: WeightTypes
+export type TMovementWeight = {
+    type: TWeightTypes
     value: string
 }
 
-export type EventMovement = {
+export type IEventMovement = {
     name: string
     reps: string
-    weight?: MovementWeight
+    weight?: TMovementWeight
     videoUrl?: string
 }
 
-export type EventRound = {
+export type IEventRound = {
     name?: string
     repeat?: string
-    movements: EventMovement[]
+    movements: IEventMovement[]
 }
 
-export type BlockType = 'event' | 'rest' | 'text' | ''
+export type TBlockType = 'event' | 'rest' | 'text' | ''
 
-export type EventBlockEMOM = {
+export type IEventBlockEMOM = {
     event_type: 'emom'
     each: number
     for: number
 }
 
-export type EventBlockTimecap = {
-    event_type: Exclude<EventType, 'emom' | 'not_timed'>
+export type IEventBlockTimecap = {
+    event_type: Exclude<TEventType, 'emom' | 'not_timed'>
     timecap: number // seconds
 }
 
-export type EventBlockNotTimed = {
+export type IEventBlockNotTimed = {
     event_type: 'not_timed'
 }
 
-export type EventBlock = {
+export type IEventBlock = {
     type: 'event'
     name?: string
-    rounds: EventRound[]
-    event_type: EventType
-} & (EventBlockEMOM | EventBlockTimecap | EventBlockNotTimed)
+    rounds: IEventRound[]
+    event_type: TEventType
+} & (IEventBlockEMOM | IEventBlockTimecap | IEventBlockNotTimed)
 
-export type RestBlock = {
+export type IRestBlock = {
     type: 'rest'
     time: number
     text?: string
 }
 
-export type TextBlock = {
+export type ITextBlock = {
     type: 'text'
     text: string
 }
 
-export type EmptyBlock = {
+export type IEmptyBlock = {
     type: ''
 }
 
-export type Block = { info?: string; type: BlockType } & (
-    | EventBlock
-    | RestBlock
-    | TextBlock
-    | EmptyBlock
-)
+export type IBlock = { info?: string; type: TBlockType } & (IEventBlock | IRestBlock | ITextBlock | IEmptyBlock)

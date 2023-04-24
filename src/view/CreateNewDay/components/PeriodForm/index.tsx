@@ -1,14 +1,14 @@
 import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { Period } from '@models/day'
+import { IPeriod } from '@models/day'
 import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TPeriodForm, periodFormSchema } from './config'
 
 export interface PeriodFormProps {
     onClickNext(data: TPeriodForm): void
-    period: Period
+    period: IPeriod
 }
 
 const PeriodForm: Component<PeriodFormProps> = (props) => {
@@ -29,21 +29,10 @@ const PeriodForm: Component<PeriodFormProps> = (props) => {
     }
 
     return (
-        <Form<TPeriodForm>
-            of={form}
-            name="teste"
-            class="flex flex-col gap-4"
-            onSubmit={handleSubmit}
-        >
+        <Form<TPeriodForm> of={form} name="teste" class="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Field of={form} name="name">
                 {(field) => (
-                    <TextInput
-                        {...field.props}
-                        class="flex-1"
-                        label="Nome"
-                        value={field.value}
-                        error={field.error}
-                    />
+                    <TextInput {...field.props} class="flex-1" label="Nome" value={field.value} error={field.error} />
                 )}
             </Field>
             <button class="btn btn-main self-end" type="submit">

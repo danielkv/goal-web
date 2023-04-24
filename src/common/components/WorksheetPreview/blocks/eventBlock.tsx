@@ -2,13 +2,13 @@ import { Component, For, createMemo } from 'solid-js'
 
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
-import { EventBlock } from '@models/block'
+import { IEventBlock } from '@models/block'
 import { addToPath } from '@utils/paths'
 import { createEventRoundValues, eventTypesMap } from '@utils/worksheetInitials'
 
 import { displayWeight, getRoundsDisplay, getTimeCap } from '../utils'
 
-export interface EventBlockPreviewProps extends WorksheetPeace<EventBlock> {}
+export interface EventBlockPreviewProps extends WorksheetPeace<IEventBlock> {}
 
 const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
     return (
@@ -22,7 +22,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
 
             <For each={props.item.rounds}>
                 {(round, roundIndex) => {
-                    const roundPath = createMemo(() => addToPath<EventBlock>(props.thisPath, `rounds.${roundIndex()}`))
+                    const roundPath = createMemo(() => addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`))
 
                     return (
                         <div

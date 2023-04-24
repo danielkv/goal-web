@@ -1,30 +1,30 @@
 import {
-    Block,
-    BlockType,
-    EventBlock,
-    EventMovement,
-    EventRound,
-    EventType,
-    MovementWeight,
-    RestBlock,
-    TextBlock,
+    IBlock,
+    IEventBlock,
+    IEventMovement,
+    IEventRound,
+    IRestBlock,
+    ITextBlock,
+    TBlockType,
+    TEventType,
+    TMovementWeight,
 } from '@models/block'
-import { Day, Group, Period, Worksheet } from '@models/day'
+import { IDay, IPeriod, ISection, IWorksheet } from '@models/day'
 
-export function createMovementWeightValues(): MovementWeight {
+export function createMovementWeightValues(): TMovementWeight {
     return {
         type: 'kg',
         value: '',
     }
 }
 
-export function createRoundMovementValues(): EventMovement {
+export function createRoundMovementValues(): IEventMovement {
     return {
         name: '',
         reps: '',
     }
 }
-export function createEventRoundValues(): EventRound {
+export function createEventRoundValues(): IEventRound {
     return {
         movements: [],
         name: '',
@@ -32,7 +32,7 @@ export function createEventRoundValues(): EventRound {
     }
 }
 
-export function createEventBlockValues(): EventBlock {
+export function createEventBlockValues(): IEventBlock {
     return {
         type: 'event',
         name: '',
@@ -41,36 +41,36 @@ export function createEventBlockValues(): EventBlock {
     }
 }
 
-export function createRestBlockValues(): RestBlock {
+export function createRestBlockValues(): IRestBlock {
     return {
         type: 'rest',
         time: 120,
     }
 }
 
-export function createTextBlockValues(): TextBlock {
+export function createTextBlockValues(): ITextBlock {
     return {
         type: 'text',
         text: '',
     }
 }
 
-export function createBlockValues(): Block {
+export function createBlockValues(): IBlock {
     return { type: '', info: '' }
 }
 
-export function createGroupValues(): Group {
+export function createSectionValues(): ISection {
     return { name: '', blocks: [] }
 }
 
-export function createPeriodValues(): Period {
+export function createPeriodValues(): IPeriod {
     return {
         name: '',
-        groups: [],
+        sections: [],
     }
 }
 
-export function createDayValues(): Day {
+export function createDayValues(): IDay {
     return {
         name: '',
         date: '',
@@ -78,7 +78,7 @@ export function createDayValues(): Day {
     }
 }
 
-export function createWorksheetValues(): Worksheet {
+export function createWorksheetValues(): IWorksheet {
     return {
         name: '',
         startDate: '',
@@ -90,18 +90,18 @@ export const breadCrumbLabelMaps: Record<string, string> = {
     worksheet: 'Planilha',
     periods: 'Período',
     days: 'Dia',
-    groups: 'Grupo',
+    sections: 'Seção',
     blocks: 'Bloco',
     rounds: 'Round',
 }
 
-export const blockTypesMap: Record<Exclude<BlockType, ''>, string> = {
+export const blockTypesMap: Record<Exclude<TBlockType, ''>, string> = {
     event: 'Evento ',
     rest: 'REST',
     text: 'Texto',
 }
 
-export const eventTypesMap: Record<EventType, string> = {
+export const eventTypesMap: Record<TEventType, string> = {
     not_timed: 'Sem tempo',
     for_time: 'For Time',
     amrap: 'AMRAP',

@@ -1,9 +1,9 @@
 import { FUNCTION_CALL } from '@common/providers/firebase'
-import { Worksheet } from '@models/day'
+import { IWorksheet } from '@models/day'
 
-const saveWorksheetFn = FUNCTION_CALL<Worksheet, Worksheet>('saveWorksheet')
+const saveWorksheetFn = FUNCTION_CALL<IWorksheet, IWorksheet>('saveWorksheet')
 
-export async function saveWorksheetUseCase(worksheet: Worksheet): Promise<Worksheet> {
+export async function saveWorksheetUseCase(worksheet: IWorksheet): Promise<IWorksheet> {
     const response = await saveWorksheetFn(worksheet)
 
     return response.data

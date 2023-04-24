@@ -1,7 +1,7 @@
 import { Component, For, Match, Switch, createEffect, createSignal } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { Block, BlockType, EventBlock, RestBlock, TextBlock } from '@models/block'
+import { IBlock, IEventBlock, IRestBlock, ITextBlock, TBlockType } from '@models/block'
 
 import EventBlockForm from './EventBlockForm'
 import RestBlockForm from './RestBlockForm'
@@ -10,11 +10,11 @@ import { TBlockForm, blockTypes } from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TBlockForm): void
-    block: Block
+    block: IBlock
 }
 
 const BlockForm: Component<BlockFormProps> = (props) => {
-    const [type, setType] = createSignal<BlockType>(props.block.type || '')
+    const [type, setType] = createSignal<TBlockType>(props.block.type || '')
     const [info, setInfo] = createSignal<string>(props.block.info || '')
 
     createEffect(() => {
@@ -52,7 +52,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
             <Switch>
                 <Match when={type() === 'event'}>
                     <EventBlockForm
-                        block={props.block as EventBlock}
+                        block={props.block as IEventBlock}
                         onClickNext={(eventBlock) => {
                             if (eventBlock.event_type !== 'emom') {
                                 handleSubmit({
@@ -79,7 +79,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
                 </Match>
                 <Match when={type() === 'rest'}>
                     <RestBlockForm
-                        block={props.block as RestBlock}
+                        block={props.block as IRestBlock}
                         onClickNext={(restBlock) => {
                             handleSubmit({ ...restBlock, type: 'rest', info: info() || undefined })
                         }}
@@ -87,7 +87,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
                 </Match>
                 <Match when={type() === 'text'}>
                     <TextBlockForm
-                        block={props.block as TextBlock}
+                        block={props.block as ITextBlock}
                         onClickNext={(textBlock) => {
                             handleSubmit({ ...textBlock, type: 'text', info: info() || undefined })
                         }}

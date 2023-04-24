@@ -4,14 +4,14 @@ import { Component, For, createMemo, splitProps } from 'solid-js'
 
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
-import { Day, Period } from '@models/day'
+import { IDay, IPeriod } from '@models/day'
 import { addToPath, getLastIndex } from '@utils/paths'
 import { createPeriodValues } from '@utils/worksheetInitials'
 
-import GroupPreview from './group'
+import SectionPreview from './section'
 
-export interface PeriodProps extends WorksheetPeace<Period> {
-    day: Day
+export interface PeriodProps extends WorksheetPeace<IPeriod> {
+    day: IDay
 }
 
 const PeriodPreview: Component<PeriodProps> = (props) => {
@@ -26,7 +26,7 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
             class="period"
             classList={{
                 selected: props.currentPath === props.thisPath,
-                empty: !props.item.groups.length,
+                empty: !props.item.sections.length,
                 hoverable: !!props.onClickPeace,
             }}
             onClick={(e) => {
@@ -43,9 +43,7 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
                 <div class="title">{props.item.name || 'WORKSHEET'}</div>
                 <div class="text-right em:mr-6">
                     <small class="flex items-center justify-end gap-3">
-                        <span>
-                            {dayjs(props.day.date, 'YYYY-MM-DD').format('dddd').toLocaleUpperCase()}
-                        </span>
+                        <span>{dayjs(props.day.date, 'YYYY-MM-DD').format('dddd').toLocaleUpperCase()}</span>
 
                         {dayjs(props.day.date, 'YYYY-MM-DD').format('DD/MM/YYYY')}
                     </small>
@@ -53,13 +51,13 @@ const PeriodPreview: Component<PeriodProps> = (props) => {
                 </div>
             </div>
             <div class="p-6">
-                <For each={props.item.groups}>
-                    {(group, groupIndex) => {
-                        const groupPath = createMemo(() =>
-                            addToPath<Period>(props.thisPath, `groups.${groupIndex()}`)
+                <For each={props.item.sections}>
+                    {(section, sectionIndex) => {
+                        const sectionPath = createMemo(() =>
+                            addToPath<IPeriod>(props.thisPath, `sections.${sectionIndex()}`)
                         )
 
-                        return <GroupPreview item={group} thisPath={groupPath()} {...parentProps} />
+                        return <SectionPreview item={section} thisPath={sectionPath()} {...parentProps} />
                     }}
                 </For>
             </div>

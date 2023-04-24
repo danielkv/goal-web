@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
-import { RestBlock } from '@models/block'
+import { IRestBlock } from '@models/block'
 import { createRestBlockValues } from '@utils/worksheetInitials'
 
-export type TRestBlockForm = Omit<RestBlock, 'type'>
+export type TRestBlockForm = Omit<IRestBlock, 'type'>
 
 export const restBlockInitialValues: TRestBlockForm = createRestBlockValues()
 

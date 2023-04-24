@@ -1,14 +1,14 @@
 import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { TextBlock } from '@models/block'
+import { ITextBlock } from '@models/block'
 import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TRestBlockForm, textBlockFormSchema } from './config'
 
 export interface TextBlockFormProps {
     onClickNext(data: TRestBlockForm): void
-    block: TextBlock
+    block: ITextBlock
 }
 
 const TextBlockForm: Component<TextBlockFormProps> = (props) => {
@@ -29,21 +29,10 @@ const TextBlockForm: Component<TextBlockFormProps> = (props) => {
     }
 
     return (
-        <Form<TRestBlockForm>
-            of={form}
-            name="teste"
-            class="flex flex-col gap-4"
-            onSubmit={handleSubmit}
-        >
+        <Form<TRestBlockForm> of={form} name="teste" class="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Field of={form} name="text">
                 {(field) => (
-                    <TextInput
-                        {...field.props}
-                        class="flex-1"
-                        label="Texto"
-                        value={field.value}
-                        error={field.error}
-                    />
+                    <TextInput {...field.props} class="flex-1" label="Texto" value={field.value} error={field.error} />
                 )}
             </Field>
 

@@ -1,40 +1,39 @@
-import { Block, EventBlock, EventRound, RestBlock, TextBlock } from '@models/block'
-import { Day, Group, Period } from '@models/day'
+import { IBlock, IEventBlock, IEventRound, IRestBlock, ITextBlock } from '@models/block'
+import { IDay, IPeriod, ISection } from '@models/day'
 
-export function isDay(obj: Record<string, any>): obj is Day {
-    if (obj?.hasOwnProperty('name') && obj.hasOwnProperty('date') && obj.hasOwnProperty('periods'))
-        return true
+export function isDay(obj: Record<string, any>): obj is IDay {
+    if (obj?.hasOwnProperty('name') && obj.hasOwnProperty('date') && obj.hasOwnProperty('periods')) return true
     return false
 }
 
-export function isPeriod(obj: Record<string, any>): obj is Period {
-    if (obj?.hasOwnProperty('groups')) return true
+export function isPeriod(obj: Record<string, any>): obj is IPeriod {
+    if (obj?.hasOwnProperty('sections')) return true
     return false
 }
 
-export function isGroup(obj: Record<string, any>): obj is Group {
+export function isSection(obj: Record<string, any>): obj is ISection {
     if (obj?.hasOwnProperty('name') && obj.hasOwnProperty('blocks')) return true
     return false
 }
 
-export function isBlock(obj: Record<string, any>): obj is Block {
+export function isBlock(obj: Record<string, any>): obj is IBlock {
     if (obj?.hasOwnProperty('type') && ['event', 'rest', 'text', ''].includes(obj.type)) return true
     return false
 }
 
-export function isRound(obj: Record<string, any>): obj is EventRound {
+export function isRound(obj: Record<string, any>): obj is IEventRound {
     if (obj?.hasOwnProperty('movements')) return true
     return false
 }
-export function isEventBlock(obj: Record<string, any>): obj is EventBlock {
+export function isEventBlock(obj: Record<string, any>): obj is IEventBlock {
     if (obj?.hasOwnProperty('type') && obj.type === 'event') return true
     return false
 }
-export function isTextBlock(obj: Record<string, any>): obj is TextBlock {
+export function isTextBlock(obj: Record<string, any>): obj is ITextBlock {
     if (obj?.hasOwnProperty('type') && obj.type === 'text') return true
     return false
 }
-export function isRestBlock(obj: Record<string, any>): obj is RestBlock {
+export function isRestBlock(obj: Record<string, any>): obj is IRestBlock {
     if (obj?.hasOwnProperty('type') && obj.type === 'rest') return true
     return false
 }

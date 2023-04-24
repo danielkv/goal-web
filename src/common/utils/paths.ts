@@ -1,15 +1,15 @@
 import { get, isNumber } from 'radash'
 
 import { NestedKeyOf, Path } from '@interfaces/app'
-import { Worksheet } from '@models/day'
+import { IWorksheet } from '@models/day'
 
-export function getPeaceFromPath<T>(object: Worksheet, path: Path, until?: string): T {
+export function getPeaceFromPath<T>(object: IWorksheet, path: Path, until?: string): T {
     let normalizedPath = path.replace(/worksheet.?/, '')
 
     if (until) {
         normalizedPath = splicePath(path, until)
     }
-    const result = get<Worksheet, T>(object, normalizedPath)
+    const result = get<IWorksheet, T>(object, normalizedPath)
 
     return result as T
 }
@@ -51,7 +51,7 @@ export function pathToPreviousIndex(path: Path, count = 1): Path {
     return finalPath
 }
 
-export function findNextIndexPath(current: Worksheet, path: Path): Path | null {
+export function findNextIndexPath(current: IWorksheet, path: Path): Path | null {
     const currentIndex = getLastIndex(path)
     if (currentIndex === -1) return null
 
@@ -73,15 +73,15 @@ export function findNextIndexPath(current: Worksheet, path: Path): Path | null {
     return pathToNextIndex(path, 1)
 }
 
-export function findPreviousIndexPath(current: Worksheet, path: Path, root = true): Path | null {
+export function findPreviousIndexPath(current: IWorksheet, path: Path, root = true): Path | null {
     const currentIndex = getLastIndex(path)
     if (currentIndex === -1) return null
 
     if (currentIndex === 0) {
-        const currentPeace = getCurrentPeace(path) // blocks
-        const parentPath = pathToParent(path, 2) // worksheet.days.1.periods.0.groups.0
+        const currentPeace = getCurrentPeace(path)
+        const parentPath = pathToParent(path, 2)
 
-        const previousIndexPath = findPreviousIndexPath(current, parentPath, false) // worksheet.days.0.periods.0.groups.1
+        const previousIndexPath = findPreviousIndexPath(current, parentPath, false)
         if (!previousIndexPath) return null
 
         const listPath = addToPath(previousIndexPath, `${currentPeace}`)
@@ -121,9 +121,7 @@ export function getCurrentPeace(path: Path): string {
 
 export function extractPaths(path: Path) {
     const regex = /([\w\-]+)/gm
-    const paths = [...path.matchAll(regex)].map((item) =>
-        !Number.isNaN(Number(item[0])) ? Number(item[0]) : item[0]
-    )
+    const paths = [...path.matchAll(regex)].map((item) => (!Number.isNaN(Number(item[0])) ? Number(item[0]) : item[0]))
 
     return paths
 }
@@ -133,7 +131,7 @@ export function getIndexes(path: Path): Record<string, number> {
 
     return extractedPaths.reduce<Record<string, number>>((acc, element, idx) => {
         if (isNumber(element)) return acc
-        if (!['days', 'periods', 'groups', 'blocks', 'rounds'].includes(element)) return acc
+        if (!['days', 'periods', 'sections', 'blocks', 'rounds'].includes(element)) return acc
 
         const arrayIndex = extractedPaths[idx + 1]
         if (arrayIndex !== undefined && isNumber(arrayIndex)) acc[element] = arrayIndex

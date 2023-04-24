@@ -1,9 +1,9 @@
 import { isNumber } from 'radash'
 
-import { EventBlock, MovementWeight } from '@models/block'
+import { IEventBlock, TMovementWeight } from '@models/block'
 import { getTimeFromSeconds } from '@utils/time'
 
-export function displayWeight(weight?: MovementWeight): string {
+export function displayWeight(weight?: TMovementWeight): string {
     if (!weight?.value || weight.type === 'none') return ''
 
     const value = getRoundsDisplay(weight.value, '', `${weight.type} `)
@@ -11,7 +11,7 @@ export function displayWeight(weight?: MovementWeight): string {
     return ` - ${value}${weight.type}`
 }
 
-export const getTimeCap = (block: EventBlock) => {
+export const getTimeCap = (block: IEventBlock) => {
     if (block.event_type === 'emom') {
         const each = getTimeFromSeconds(block.each)
         const forTime = getTimeFromSeconds(block.for)

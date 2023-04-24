@@ -1,7 +1,7 @@
 import { Component, For, JSX, Show, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { EventRound } from '@models/block'
+import { IEventRound } from '@models/block'
 import {
     Field,
     FieldArray,
@@ -21,7 +21,7 @@ import { TRoundForm, eventRoundFormSchema, weightTypes } from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TRoundForm): void
-    round: EventRound
+    round: IEventRound
 }
 
 const RoundForm: Component<BlockFormProps> = (props) => {

@@ -2,10 +2,10 @@ import { omit } from 'radash'
 import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
-import { Day } from '@models/day'
+import { IDay } from '@models/day'
 import { createDayValues } from '@utils/worksheetInitials'
 
-export type TDayForm = Omit<Day, 'periods'>
+export type TDayForm = Omit<IDay, 'periods'>
 
 export const dayForemInitialValues: TDayForm = omit(createDayValues(), ['periods'])
 

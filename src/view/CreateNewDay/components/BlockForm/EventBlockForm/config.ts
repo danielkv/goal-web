@@ -2,18 +2,18 @@ import { omit } from 'radash'
 import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
-import { EventBlock, EventType } from '@models/block'
+import { IEventBlock, TEventType } from '@models/block'
 import { createEventBlockValues } from '@utils/worksheetInitials'
 
 import { eventRoundFormSchema } from '../../RoundForm/config'
 
-export type TEventBlockForm = Omit<EventBlock, 'type'> & {
+export type TEventBlockForm = Omit<IEventBlock, 'type'> & {
     each?: number
     for?: number
     timecap?: number
 }
 
-export const eventTypes: { key: EventType; label: string }[] = [
+export const eventTypes: { key: TEventType; label: string }[] = [
     { key: 'not_timed', label: 'Sem tempo' },
     { key: 'for_time', label: 'For Time' },
     { key: 'amrap', label: 'AMRAP' },

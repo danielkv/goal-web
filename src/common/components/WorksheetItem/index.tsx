@@ -3,10 +3,10 @@ import dayjs from 'dayjs'
 import { Component } from 'solid-js'
 
 import LogoSvg from '@assets/logo.svg?component-solid'
-import { Worksheet } from '@models/day'
+import { IWorksheet } from '@models/day'
 
 export interface WorksheetItemProps {
-    worksheet?: Omit<Worksheet, 'days'>
+    worksheet?: Omit<IWorksheet, 'days'>
     onClick(): void
 }
 

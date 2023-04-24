@@ -1,14 +1,14 @@
 import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { Day } from '@models/day'
+import { IDay } from '@models/day'
 import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TDayForm, dayFormSchema } from './config'
 
 export interface DayFormProps {
     onClickNext(data: TDayForm): void
-    day: Day
+    day: IDay
 }
 
 const DayForm: Component<DayFormProps> = (props) => {
@@ -45,13 +45,7 @@ const DayForm: Component<DayFormProps> = (props) => {
 
             <Field of={form} name="name">
                 {(field) => (
-                    <TextInput
-                        class="flex-1"
-                        label="Nome"
-                        value={field.value}
-                        error={field.error}
-                        {...field.props}
-                    />
+                    <TextInput class="flex-1" label="Nome" value={field.value} error={field.error} {...field.props} />
                 )}
             </Field>
 

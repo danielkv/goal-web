@@ -1,7 +1,7 @@
 import { Component, For, JSX, Show, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import { EventBlock } from '@models/block'
+import { IEventBlock } from '@models/block'
 import { Field, Form, SubmitHandler, createForm, getValue, reset, setValue, zodForm } from '@modular-forms/solid'
 import { secondsToStringTime, stringTimeToSeconds } from '@utils/time'
 
@@ -9,7 +9,7 @@ import { TEventBlockForm, eventBlockFormSchema, eventTypes } from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TEventBlockForm): void
-    block: EventBlock
+    block: IEventBlock
 }
 
 const EventBlockForm: Component<BlockFormProps> = (props) => {

@@ -4,13 +4,13 @@ import { Component, For, createMemo, splitProps } from 'solid-js'
 
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
-import { Day } from '@models/day'
+import { IDay } from '@models/day'
 import { addToPath } from '@utils/paths'
 import { createDayValues } from '@utils/worksheetInitials'
 
 import PeriodPreview from './period'
 
-export interface DayProps extends WorksheetPeace<Day> {}
+export interface DayProps extends WorksheetPeace<IDay> {}
 
 const DayPreview: Component<DayProps> = (props) => {
     const [parentProps, controlProps] = splitProps(
@@ -54,7 +54,7 @@ const DayPreview: Component<DayProps> = (props) => {
 
             <For each={props.item.periods}>
                 {(period, periodIndex) => {
-                    const periodPath = createMemo(() => addToPath<Day>(props.thisPath, `periods.${periodIndex()}`))
+                    const periodPath = createMemo(() => addToPath<IDay>(props.thisPath, `periods.${periodIndex()}`))
 
                     return <PeriodPreview day={props.item} item={period} thisPath={periodPath()} {...parentProps} />
                 }}

@@ -1,9 +1,9 @@
 import { FUNCTION_CALL } from '@common/providers/firebase'
-import { WorksheetModel } from '@models/day'
+import { IWorksheetModel } from '@models/day'
 
-const getWorksheetsFn = FUNCTION_CALL<never, WorksheetModel[]>('getWorksheets')
+const getWorksheetsFn = FUNCTION_CALL<never, IWorksheetModel[]>('getWorksheets')
 
-export async function getWorksheetsUseCase(): Promise<WorksheetModel[]> {
+export async function getWorksheetsUseCase(): Promise<IWorksheetModel[]> {
     const response = await getWorksheetsFn()
 
     return response.data

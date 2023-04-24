@@ -56,3 +56,32 @@ async function getDays(worksheetDocRef: admin.firestore.DocumentReference) {
         id: doc.id,
     }))
 }
+
+// export const remapWorksheets = https.onRequest(async (req, res) => {
+//     const db = admin.firestore()
+
+//     const snapshot = await db.collection('worksheets').get()
+
+//     await db.runTransaction(async (transaction) => {
+//         for (let i = 0; i < snapshot.size; i++) {
+//             const doc = snapshot.docs[i]
+
+//             const dayDocs = await db.collection(`worksheets/${doc.id}/days`).get()
+
+//             dayDocs.forEach((dayDoc) => {
+//                 const final = dayDoc.data()
+
+//                 final.periods = final.periods.map((period: Record<string, any>) => {
+//                     if (period.groups?.length) period.sections = [...period.groups]
+//                     delete period.groups
+
+//                     return period
+//                 })
+
+//                 transaction.set(dayDoc.ref, final)
+//             })
+//         }
+//     })
+
+//     res.status(201).send('OK')
+// })

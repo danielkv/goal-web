@@ -6,7 +6,7 @@ import { createStore, produce } from 'solid-js/store'
 import WorksheetPreview from '@components/WorksheetPreview'
 import { loggedUser } from '@contexts/user/user.context'
 import { Path } from '@interfaces/app'
-import { Worksheet } from '@models/day'
+import { IWorksheet } from '@models/day'
 import { useNavigate, useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
@@ -23,7 +23,7 @@ const CreateNewDay: Component = () => {
 
     const navigate = useNavigate()
 
-    const [worksheetStore, setWorksheetStore] = createStore<Worksheet>(createWorksheetValues())
+    const [worksheetStore, setWorksheetStore] = createStore<IWorksheet>(createWorksheetValues())
 
     createEffect(() => {
         if (!loggedUser()) navigate('/login', { replace: true })
