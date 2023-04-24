@@ -39,20 +39,34 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
             </Field>
             <div class="flex gap-6">
                 <Field of={form} name="event_type">
-                    {(field) => (
-                        <div class="flex flex-col flex-1">
-                            <label class="text-sm mb-2">Tipo de evento</label>
-                            <select class="input input-full" {...field.props}>
-                                <For each={eventTypes}>
-                                    {(item) => (
-                                        <option value={item.key} selected={field.value === item.key}>
-                                            {item.label}
-                                        </option>
-                                    )}
-                                </For>
-                            </select>
-                        </div>
-                    )}
+                    {(field) => {
+                        const handleInput: JSX.EventHandler<HTMLSelectElement, InputEvent> = (e) => {
+                            if ((e.target as any).value === 'tabata') {
+                                setValue(form, 'work', 20)
+                                setValue(form, 'rest', 10)
+                                setValue(form, 'numberOfRounds', 8)
+                            } else if ((e.target as any).value === 'emom') {
+                                setValue(form, 'each', 60)
+                                setValue(form, 'numberOfRounds', 4)
+                            }
+
+                            field.props.onInput(e)
+                        }
+                        return (
+                            <div class="flex flex-col flex-1 min-w-[100px]">
+                                <label class="text-sm mb-2">Tipo de evento</label>
+                                <select class="input input-full" {...field.props} onInput={handleInput}>
+                                    <For each={eventTypes}>
+                                        {(item) => (
+                                            <option value={item.key} selected={field.value === item.key}>
+                                                {item.label}
+                                            </option>
+                                        )}
+                                    </For>
+                                </select>
+                            </div>
+                        )
+                    }}
                 </Field>
                 <Show when={getValue(form, 'event_type') === 'emom'}>
                     <Field of={form} name="each">
@@ -74,11 +88,46 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                             )
                         }}
                     </Field>
-                    <Field of={form} name="for">
+                    <Field of={form} name="numberOfRounds">
+                        {(field) => {
+                            return (
+                                <TextInput
+                                    {...field.props}
+                                    class="flex-1"
+                                    label="Rounds"
+                                    type="number"
+                                    value={field.value}
+                                    error={field.error}
+                                />
+                            )
+                        }}
+                    </Field>
+                </Show>
+                <Show when={getValue(form, 'event_type') === 'tabata'}>
+                    <Field of={form} name="work">
                         {(field) => {
                             const handleInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
                                 const seconds = stringTimeToSeconds((e.target as any).value)
-                                setValue(form, 'for', seconds)
+                                setValue(form, 'work', seconds)
+                            }
+                            return (
+                                <TextInput
+                                    {...field.props}
+                                    onInput={handleInput}
+                                    class="flex-1"
+                                    label="Work"
+                                    type="time"
+                                    value={secondsToStringTime(field.value || 0)}
+                                    error={field.error}
+                                />
+                            )
+                        }}
+                    </Field>
+                    <Field of={form} name="rest">
+                        {(field) => {
+                            const handleInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
+                                const seconds = stringTimeToSeconds((e.target as any).value)
+                                setValue(form, 'rest', seconds)
                             }
 
                             return (
@@ -86,9 +135,23 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                                     {...field.props}
                                     onInput={handleInput}
                                     class="flex-1"
-                                    label="Por"
+                                    label="Rest"
                                     type="time"
                                     value={secondsToStringTime(field.value || 0)}
+                                    error={field.error}
+                                />
+                            )
+                        }}
+                    </Field>
+                    <Field of={form} name="numberOfRounds">
+                        {(field) => {
+                            return (
+                                <TextInput
+                                    {...field.props}
+                                    class="flex-1"
+                                    label="Rounds"
+                                    type="number"
+                                    value={field.value}
                                     error={field.error}
                                 />
                             )

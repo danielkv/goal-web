@@ -107,4 +107,5 @@ export const eventTypesMap: Record<TEventType, string> = {
     amrap: 'AMRAP',
     emom: 'EMOM',
     max_weight: 'Carga máxima',
+    tabata: 'Tabata',
 }

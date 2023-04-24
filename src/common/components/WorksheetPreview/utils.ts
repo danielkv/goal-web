@@ -1,6 +1,7 @@
 import { isNumber } from 'radash'
 
 import { IEventBlock, TMovementWeight } from '@models/block'
+import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
 export function displayWeight(weight?: TMovementWeight): string {
@@ -14,8 +15,13 @@ export function displayWeight(weight?: TMovementWeight): string {
 export const getTimeCap = (block: IEventBlock) => {
     if (block.event_type === 'emom') {
         const each = getTimeFromSeconds(block.each)
-        const forTime = getTimeFromSeconds(block.for)
-        return ` - Cada ${each} por ${forTime}`
+        return ` - Cada ${each} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
+    }
+
+    if (block.event_type === 'tabata') {
+        const work = getTimeFromSeconds(block.work)
+        const rest = getTimeFromSeconds(block.rest)
+        return ` - ${work}/${rest} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
     }
 
     if (block.event_type === 'not_timed') return ''

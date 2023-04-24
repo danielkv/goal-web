@@ -9,8 +9,10 @@ import { eventRoundFormSchema } from '../../RoundForm/config'
 
 export type TEventBlockForm = Omit<IEventBlock, 'type'> & {
     each?: number
-    for?: number
     timecap?: number
+    work?: number
+    rest?: number
+    numberOfRounds?: number
 }
 
 export const eventTypes: { key: TEventType; label: string }[] = [
@@ -18,6 +20,7 @@ export const eventTypes: { key: TEventType; label: string }[] = [
     { key: 'for_time', label: 'For Time' },
     { key: 'amrap', label: 'AMRAP' },
     { key: 'emom', label: 'EMOM' },
+    { key: 'tabata', label: 'Tabata' },
     { key: 'max_weight', label: 'Carga máxima' },
 ]
 
@@ -25,11 +28,13 @@ export const eventBlockInitialValues: TEventBlockForm = omit(createEventBlockVal
 
 export const eventBlockFormSchema = z
     .object<ZodShape<TEventBlockForm>>({
-        event_type: z.enum(['for_time', 'max_weight', 'emom', 'amrap', 'not_timed']),
+        event_type: z.enum(['for_time', 'max_weight', 'emom', 'amrap', 'not_timed', 'tabata']),
         name: z.optional(z.string()),
         timecap: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
         each: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
-        for: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
+        numberOfRounds: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
+        work: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
+        rest: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
         rounds: z.array(eventRoundFormSchema),
     })
     .superRefine((values, ctx) => {
@@ -41,11 +46,11 @@ export const eventBlockFormSchema = z
                     path: ['each'],
                 })
 
-            if (!values.for)
+            if (!values.numberOfRounds)
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: "Campo 'por' é obrigatório para EMOM",
-                    path: ['for'],
+                    path: ['numberOfRounds'],
                 })
         } else if (values.event_type !== 'not_timed') {
             if (values.timecap === 1) {

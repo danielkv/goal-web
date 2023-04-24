@@ -1,4 +1,4 @@
-export type TEventType = 'for_time' | 'max_weight' | 'emom' | 'amrap' | 'not_timed'
+export type TEventType = 'for_time' | 'max_weight' | 'emom' | 'amrap' | 'tabata' | 'not_timed'
 
 export type TWeightTypes = 'kg' | 'lb' | '%' | 'none'
 
@@ -25,11 +25,18 @@ export type TBlockType = 'event' | 'rest' | 'text' | ''
 export type IEventBlockEMOM = {
     event_type: 'emom'
     each: number
-    for: number
+    numberOfRounds: number
+}
+
+export type IEventBlockTabata = {
+    event_type: 'tabata'
+    work: number
+    rest: number
+    numberOfRounds: number
 }
 
 export type IEventBlockTimecap = {
-    event_type: Exclude<TEventType, 'emom' | 'not_timed'>
+    event_type: Exclude<TEventType, 'emom' | 'not_timed' | 'tabata'>
     timecap: number // seconds
 }
 
@@ -42,7 +49,7 @@ export type IEventBlock = {
     name?: string
     rounds: IEventRound[]
     event_type: TEventType
-} & (IEventBlockEMOM | IEventBlockTimecap | IEventBlockNotTimed)
+} & (IEventBlockEMOM | IEventBlockTimecap | IEventBlockNotTimed | IEventBlockTabata)
 
 export type IRestBlock = {
     type: 'rest'

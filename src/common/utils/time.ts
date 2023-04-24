@@ -4,9 +4,11 @@ import { isNumber } from 'radash'
 export function getTimeFromSeconds(seconds: number): string {
     const t = dayjs.duration(seconds, 'seconds')
 
-    if (Number(t.format('ss')) <= 0) return `${t.format("m'")}`
+    if (seconds < 60) return `${seconds}s`
 
-    return t.format("m'ss''")
+    if (seconds % 60 == 0) return `${t.format('m[m]')}`
+
+    return t.format('m[m]ss[s]')
 }
 
 export function stringTimeToSeconds(string: string): number {
@@ -23,8 +25,6 @@ export function stringTimeToSeconds(string: string): number {
 
 export function secondsToStringTime(time: number): string {
     const duration = dayjs.duration(time, 'seconds')
-
-    console.log(time, duration.format('mm:ss'))
 
     return duration.format('mm:ss')
 }
