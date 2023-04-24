@@ -1,7 +1,11 @@
 import { Component, createSignal } from 'solid-js'
 
 import ActivityIndicator from '@components/ActivityIndicator'
+import Emom from '@components/Emom'
 import Header from '@components/Header'
+import Regressive from '@components/Regressive'
+import Stopwatch from '@components/Stopwatch'
+import Tabata from '@components/Tabata'
 import { Route, Routes } from '@solidjs/router'
 import { initialLoadUseCase } from '@useCases/app/initialLoad'
 import Home from '@view/Home'
@@ -34,6 +38,11 @@ const AppRouter: Component = () => {
                         <Route path="/worksheet/new" element={<CreateNewDay />} />
                         <Route path="/worksheet/view/:id" element={<Preview />} />
                         <Route path="/worksheet/:id" element={<CreateNewDay />} />
+
+                        <Route path="/worksheet/stopwatch" element={<Stopwatch />} />
+                        <Route path="/worksheet/regressive" element={<Regressive />} />
+                        <Route path="/worksheet/emom" element={<Emom />} />
+                        <Route path="/worksheet/tabata" element={<Tabata />} />
                     </Routes>
                 </div>
             )}
