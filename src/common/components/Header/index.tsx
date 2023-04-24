@@ -16,7 +16,7 @@ const Header: Component = () => {
     return (
         <>
             {loggedUser() && (
-                <div class="h-[80px] bg-gray-300 flex items-center px-6 justify-between">
+                <div class="h-[80px] bg-gray-800 flex items-center px-6 justify-between">
                     <A href="/">
                         <LogoSvg height={50} />
                     </A>
@@ -24,7 +24,7 @@ const Header: Component = () => {
                     <button
                         onClick={handleSignOut}
                         title="Logout"
-                        class="bg-gray-100 p-3 rounded-full hover:bg-gray-600"
+                        class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
                     >
                         <FiLogOut size={20} />
                     </button>

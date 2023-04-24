@@ -134,10 +134,10 @@ const CreateNewDay: Component = () => {
             }}
         >
             <div class="flex flex-1 flex-col basis-auto overflow-auto">
-                <div class="h-[80px] bg-gray-500 flex gap-6 items-center px-6 justify-end p-3">
+                <div class="h-[80px] bg-gray-700 flex gap-6 items-center px-6 justify-end p-3">
                     <button
                         disabled={!worksheetStore.id}
-                        class="bg-gray-100 p-3 rounded-full hover:bg-gray-600"
+                        class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
                         onClick={handleViewWorksheet}
                         title="Abrir visualização"
                     >
@@ -161,7 +161,7 @@ const CreateNewDay: Component = () => {
                     </>
                 )}
             </div>
-            <div class="bg-gray-500 flex flex-col basis-auto">
+            <div class="bg-gray-700 flex flex-col basis-auto">
                 <Form
                     worksheet={worksheetStore}
                     handleSetWorksheet={setWorksheetStore}

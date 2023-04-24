@@ -12,8 +12,10 @@
 	"devDependencies": {
 		"@trivago/prettier-plugin-sort-imports": "^4.1.1",
 		"@types/clone-deep": "^4.0.1",
+		"@types/events": "^3.0.0",
 		"autoprefixer": "^10.4.14",
 		"postcss": "^8.4.21",
+		"sass": "^1.62.0",
 		"tailwindcss": "^3.3.0",
 		"typescript": "^4.9.5",
 		"vite": "^4.1.1",
@@ -25,6 +27,7 @@
 		"@solidjs/router": "^0.8.2",
 		"clone-deep": "^4.0.1",
 		"dayjs": "^1.11.7",
+		"events": "^3.3.0",
 		"firebase": "^9.19.1",
 		"firebaseui": "^6.0.2",
 		"html2canvas": "^1.4.1",
