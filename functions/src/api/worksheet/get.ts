@@ -40,7 +40,7 @@ export const getWorksheetDayById = https.onCall(async ({ dayId, worksheetId }: G
 export const getWorksheets = https.onCall(async (none: any, context: https.CallableContext) => {
     const db = admin.firestore()
 
-    const snapshot = await db.collection('worksheets').get()
+    const snapshot = await db.collection('worksheets').orderBy('startDate', 'desc').get()
 
     return snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -52,7 +52,7 @@ async function getDays(worksheetDocRef: admin.firestore.DocumentReference) {
     const daysDocs = await worksheetDocRef.collection('days').orderBy('date').get()
 
     return daysDocs.docs.map((doc) => ({
-        id: doc.id,
         ...doc.data(),
+        id: doc.id,
     }))
 }
