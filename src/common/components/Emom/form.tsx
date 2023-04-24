@@ -14,9 +14,9 @@ const EmomForm: Component<RegressiveFormProps> = (props) => {
 
     return (
         <div class="flex flex-col items-center p-6">
-            <h2 class="text-gray-700 font-bold text-lg">Defina qual o tempo</h2>
+            <h2 class="text-gray-200 font-bold text-lg">Defina qual o tempo</h2>
 
-            <div class="text-center text-gray-700 text-[40pt] font-bold">
+            <div class="text-center text-gray-900 text-[40pt] font-bold">
                 <input
                     name="minute"
                     class="bg-[transparent] w-16 text-center removeArrows outline-none"
@@ -38,10 +38,10 @@ const EmomForm: Component<RegressiveFormProps> = (props) => {
                     value={secondTime()}
                 />
             </div>
-            <h2 class="text-gray-700 font-bold text-lg">Quantos rounds</h2>
+            <h2 class="text-gray-300 font-bold text-lg">Quantos rounds</h2>
             <input
                 name="rounds"
-                class="bg-[transparent] w-16 text-center removeArrows outline-none text-gray-700 text-[40pt] font-bold"
+                class="bg-[transparent] w-16 text-center removeArrows outline-none text-gray-900 text-[40pt] font-bold"
                 type="number"
                 onInput={(e) => {
                     setRounds(Number((e.target as any).value))
@@ -49,7 +49,7 @@ const EmomForm: Component<RegressiveFormProps> = (props) => {
                 value={rounds()}
             />
             <button
-                class="bg-gray-100 p-3 rounded-full hover:bg-gray-600"
+                class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
                 onClick={() => {
                     props.handleNext(stringTimeToSeconds(`${minuteTime()}:${secondTime()}`), rounds())
                 }}

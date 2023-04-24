@@ -13,9 +13,9 @@ const RegressiveForm: Component<RegressiveFormProps> = (props) => {
 
     return (
         <div class="flex flex-col items-center p-6">
-            <h2 class="text-gray-700 font-bold text-lg">Defina qual o tempo</h2>
+            <h2 class="text-gray-200 font-bold text-lg">Defina qual o tempo</h2>
 
-            <div class="text-center text-gray-700 text-[40pt] font-bold">
+            <div class="text-center text-gray-900 text-[40pt] font-bold">
                 <input
                     name="minute"
                     class="bg-[transparent] w-16 text-center removeArrows outline-none"
@@ -38,10 +38,9 @@ const RegressiveForm: Component<RegressiveFormProps> = (props) => {
                 />
             </div>
             <button
-                class="bg-gray-100 p-3 rounded-full hover:bg-gray-600"
+                class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
                 onClick={() => {
                     const time = stringTimeToSeconds(`${minuteTime()}:${secondTime()}`)
-                    console.log(time)
                     props.handleNext(time)
                 }}
             >

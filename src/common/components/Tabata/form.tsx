@@ -16,9 +16,9 @@ const TabataForm: Component<RegressiveFormProps> = (props) => {
 
     return (
         <div class="flex flex-col items-center p-6">
-            <h2 class="text-gray-700 font-bold text-lg">Defina qual o tempo de exercício</h2>
+            <h2 class="text-gray-300 font-bold text-lg">Defina qual o tempo de exercício</h2>
 
-            <div class="text-center text-gray-700 text-[40pt] font-bold">
+            <div class="text-center text-gray-900 text-[40pt] font-bold">
                 <input
                     name="minute"
                     class="bg-[transparent] w-16 text-center removeArrows outline-none"
@@ -41,9 +41,9 @@ const TabataForm: Component<RegressiveFormProps> = (props) => {
                 />
             </div>
 
-            <h2 class="text-gray-700 font-bold text-lg">Defina qual o tempo de descanso</h2>
+            <h2 class="text-gray-300 font-bold text-lg">Defina qual o tempo de descanso</h2>
 
-            <div class="text-center text-gray-700 text-[40pt] font-bold">
+            <div class="text-center text-gray-900 text-[40pt] font-bold">
                 <input
                     name="minuteRest"
                     class="bg-[transparent] w-16 text-center removeArrows outline-none"
@@ -65,10 +65,10 @@ const TabataForm: Component<RegressiveFormProps> = (props) => {
                     value={secondTimeRest()}
                 />
             </div>
-            <h2 class="text-gray-700 font-bold text-lg">Quantos rounds</h2>
+            <h2 class="text-gray-300 font-bold text-lg">Quantos rounds</h2>
             <input
                 name="rounds"
-                class="bg-[transparent] w-16 text-center removeArrows outline-none text-gray-700 text-[40pt] font-bold"
+                class="bg-[transparent] w-16 text-center removeArrows outline-none text-gray-900 text-[40pt] font-bold"
                 type="number"
                 onInput={(e) => {
                     setRounds(Number((e.target as any).value))
@@ -76,7 +76,7 @@ const TabataForm: Component<RegressiveFormProps> = (props) => {
                 value={rounds()}
             />
             <button
-                class="bg-gray-100 p-3 rounded-full hover:bg-gray-600"
+                class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
                 onClick={() => {
                     const work = stringTimeToSeconds(`${minuteTimeWork()}:${secondTimeWork()}`)
                     const rest = stringTimeToSeconds(`${minuteTimeRest()}:${secondTimeRest()}`)

@@ -7,10 +7,10 @@ import TabataIcon from '@assets/svg/tabata.svg?component-solid'
 import { A } from '@solidjs/router'
 
 const timers = [
-    { href: '/stopwatch', label: 'Stopwatch', Icon: StopwatchIcon },
-    { href: '/regressive', label: 'Regressive', Icon: RegressiveIcon },
-    { href: '/emom', label: 'EMOM', Icon: EmomIcon },
-    { href: '/tabata', label: 'Tabata', Icon: TabataIcon },
+    { href: '/timer/stopwatch', label: 'Stopwatch', Icon: StopwatchIcon },
+    { href: '/timer/regressive', label: 'Regressive', Icon: RegressiveIcon },
+    { href: '/timer/emom', label: 'EMOM', Icon: EmomIcon },
+    { href: '/timer/tabata', label: 'Tabata', Icon: TabataIcon },
 ]
 
 const Home: Component<{}> = () => {

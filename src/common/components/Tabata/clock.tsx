@@ -36,17 +36,17 @@ const TabataClock: Component<RegressiveProps> = (props) => {
 
     return (
         <div class="flex flex-col items-center p-6">
-            <h2 class="text-gray-700 font-bold text-lg">Cronometro Tabata</h2>
-            <h3 class="text-gray-700 text-sm">Tempo</h3>
-            <div class="text-center text-gray-700 text-[40pt] font-bold">
+            <h2 class="text-gray-200 font-bold text-lg">Cronometro Tabata</h2>
+            <h3 class="text-gray-300 text-sm">Tempo</h3>
+            <div class="text-center text-gray-900 text-[40pt] font-bold">
                 {dayjs.duration(currentTime(), 'second').format('mm:ss')}
             </div>
-            <h3 class="text-gray-700 text-sm">Round</h3>
-            <div class="text-center text-gray-700 text-[40pt] font-bold">{currentRound()}</div>
+            <h3 class="text-gray-300 text-sm">Round</h3>
+            <div class="text-center text-gray-900 text-[40pt] font-bold">{currentRound()}</div>
 
             <div>
                 <button
-                    class="bg-gray-100 p-3 rounded-full hover:bg-gray-600"
+                    class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
                     onClick={() => {
                         if (currentStatus() !== 'running') clock.start()
                         else clock.stop()
@@ -54,7 +54,7 @@ const TabataClock: Component<RegressiveProps> = (props) => {
                 >
                     {currentStatus() === 'running' ? <FiSquare size={40} /> : <FiPlay size={40} />}
                 </button>
-                <button class="bg-gray-100 p-3 rounded-full hover:bg-gray-600" onClick={() => clock.reset()}>
+                <button class="bg-gray-900 p-3 rounded-full hover:bg-gray-700" onClick={() => clock.reset()}>
                     <FiSkipBack size={40} />
                 </button>
             </div>
