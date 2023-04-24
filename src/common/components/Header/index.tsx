@@ -1,3 +1,4 @@
+import { FaSolidClipboardList } from 'solid-icons/fa'
 import { FiLogOut } from 'solid-icons/fi'
 
 import { Component } from 'solid-js'
@@ -20,14 +21,18 @@ const Header: Component = () => {
                     <A href="/">
                         <LogoSvg height={50} />
                     </A>
-
-                    <button
-                        onClick={handleSignOut}
-                        title="Logout"
-                        class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
-                    >
-                        <FiLogOut size={20} />
-                    </button>
+                    <div class="flex gap-3">
+                        <A href="/worksheet" title="Logout" class="bg-gray-900 p-3 rounded-full hover:bg-gray-700">
+                            <FaSolidClipboardList size={20} />
+                        </A>
+                        <button
+                            onClick={handleSignOut}
+                            title="Logout"
+                            class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
+                        >
+                            <FiLogOut size={20} />
+                        </button>
+                    </div>
                 </div>
             )}
         </>
