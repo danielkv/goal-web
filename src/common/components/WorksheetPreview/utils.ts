@@ -42,10 +42,10 @@ export function getRoundsDisplay(rounds?: string, suffix = 'Rounds', separator =
     const rangeMatch = rounds.match(/^([\d\,]+)\>\>([\d\,]+)$/)
 
     if (rangeMatch) {
-        const masc = Number(rangeMatch[1].replace(',', '.'))
-        const fem = Number(rangeMatch[2].replace(',', '.'))
+        const n1 = Number(rangeMatch[1].replace(',', '.'))
+        const n2 = Number(rangeMatch[2].replace(',', '.'))
 
-        return `${masc} a ${fem}`
+        return `${n1} a ${n2}`
     }
 
     if (sexMatch) {
