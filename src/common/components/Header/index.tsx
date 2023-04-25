@@ -22,7 +22,7 @@ const Header: Component = () => {
                         <LogoSvg height={50} />
                     </A>
                     <div class="flex gap-3">
-                        <A href="/worksheet" title="Logout" class="bg-gray-900 p-3 rounded-full hover:bg-gray-700">
+                        <A href="/worksheet" title="Planilhas" class="bg-gray-900 p-3 rounded-full hover:bg-gray-700">
                             <FaSolidClipboardList size={20} />
                         </A>
                         <button
