@@ -209,7 +209,7 @@ const Form: Component<FormProps> = (props) => {
 
                                     const block = getPeaceFromPath<IBlock>(props.worksheet, props.currentPath)
 
-                                    if (block.type === 'event' && !block.repeat.length)
+                                    if (block.type === 'event' && !block.rounds.length)
                                         props.handleSetPath(addToPath<IBlock>(props.currentPath, `rounds.0`))
                                 }}
                             />
@@ -224,12 +224,12 @@ const Form: Component<FormProps> = (props) => {
                                         produce((current) => {
                                             const block = getPeaceFromPath<IEventBlock>(current, listPath)
 
-                                            if (block.repeat.length <= 0)
-                                                return block.repeat.push({
+                                            if (block.rounds.length <= 0)
+                                                return block.rounds.push({
                                                     ...data,
                                                 })
 
-                                            block.repeat[lastIndex] = {
+                                            block.rounds[lastIndex] = {
                                                 ...data,
                                             }
                                         })
