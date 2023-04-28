@@ -31,7 +31,7 @@ const MovementEditor: Component<MovementEditorProps> = (props) => {
     }
 
     return (
-        <div class="flex flex-col">
+        <form onSubmit={handleUpdate} class="flex flex-col">
             <textarea
                 id="textarea"
                 class="w-[400px] bg-[transparent] text-center border-white border rounded-md"
@@ -43,11 +43,11 @@ const MovementEditor: Component<MovementEditorProps> = (props) => {
                 <button class="btn btn-light" onClick={props.onClose}>
                     Cancelar
                 </button>
-                <button class="btn btn-main" onClick={handleUpdate}>
+                <button type="submit" class="btn btn-main">
                     Aplicar
                 </button>
             </div>
-        </div>
+        </form>
     )
 }
 
