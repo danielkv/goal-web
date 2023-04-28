@@ -3,6 +3,7 @@ import { SetStoreFunction, produce } from 'solid-js/store'
 
 import Breadcrumb from '@components/Breadcrumb'
 import { IBreadcrumbItem } from '@components/Breadcrumb/types'
+import { Path } from '@interfaces/app'
 import { IBlock, IEventBlock } from '@models/block'
 import { IDay, IPeriod, ISection, IWorksheet } from '@models/day'
 import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
@@ -23,7 +24,6 @@ import {
     createSectionValues,
     createWorksheetValues,
 } from '@utils/worksheetInitials'
-import { Path } from '@view/CreateNewDay/types'
 import { getBreadcrumbLabel } from '@view/CreateNewDay/utils'
 
 import BlockForm from '../BlockForm'

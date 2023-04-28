@@ -1,5 +1,5 @@
 import cloneDeep from 'clone-deep'
-import { FiArrowDown, FiArrowUp, FiCopy, FiPlus, FiTrash2 } from 'solid-icons/fi'
+import { FiArrowDown, FiArrowUp, FiCopy, FiEdit, FiPlus, FiTrash2 } from 'solid-icons/fi'
 
 import { Component, JSX } from 'solid-js'
 
@@ -54,6 +54,12 @@ const PeaceControl: Component<PeaceControlProps> = (props): JSX.Element => {
             <button class="icon-btn add top" onClick={handleClickTopAdd}>
                 <FiPlus />
             </button>
+
+            {props.onOpenEdit && (
+                <button class="icon-btn updateMovement" onClick={props.onOpenEdit}>
+                    <FiEdit />
+                </button>
+            )}
 
             <button class="icon-btn add bottom" onClick={handleClickBottomAdd}>
                 <FiPlus />

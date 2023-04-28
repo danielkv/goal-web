@@ -10,7 +10,14 @@ import { IWorksheet } from '@models/day'
 import { useNavigate, useParams } from '@solidjs/router'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
-import { findNextIndexPath, findPreviousIndexPath, getLastIndex, getPeaceFromPath, pathToParent } from '@utils/paths'
+import {
+    findNextIndexPath,
+    findPreviousIndexPath,
+    getLastIndex,
+    getPeaceFromPath,
+    pathToParent,
+    setPeaceFromPath,
+} from '@utils/paths'
 import { createWorksheetValues } from '@utils/worksheetInitials'
 
 import Form from './components/Form'
@@ -61,6 +68,16 @@ const CreateNewDay: Component = () => {
         setTimeout(() => {
             setCurrentPath(returnPath)
         }, 1)
+    }
+
+    const handleUpdatePeace = <Value,>(path: Path, newValue: Value) => {
+        setWorksheetStore(
+            produce((current) => {
+                const result = setPeaceFromPath(current, path, newValue)
+
+                return result
+            })
+        )
     }
 
     const handleAddPeace = <Values,>(path: Path, initialValues: Values, override?: Partial<Values>) => {
@@ -157,6 +174,7 @@ const CreateNewDay: Component = () => {
                             onAdd={handleAddPeace}
                             onRemove={handleRemovePeace}
                             onMove={handleMovePeace}
+                            onUpdate={handleUpdatePeace}
                         />
                     </>
                 )}

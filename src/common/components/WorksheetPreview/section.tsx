@@ -13,7 +13,7 @@ export interface SectionProps extends WorksheetPeace<ISection> {}
 const SectionPreview: Component<SectionProps> = (props) => {
     const [parentProps, controlProps] = splitProps(
         props,
-        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'],
+        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onUpdate', 'onClickPeace'],
         ['onAdd', 'onRemove', 'onMove', 'item', 'thisPath']
     )
 

@@ -151,6 +151,13 @@
         left: initial;
     }
 
+    .hoverable > .icon-btn.updateMovement {
+        right: -14px;
+        top: 50%;
+        left: initial;
+        margin-top: -14px;
+    }
+
     .hoverable > .icon-btn.add {
         margin-left: 22px;
     }

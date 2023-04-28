@@ -1,4 +1,4 @@
-import { get, isNumber } from 'radash'
+import { get, isNumber, set } from 'radash'
 
 import { NestedKeyOf, Path } from '@interfaces/app'
 import { IWorksheet } from '@models/day'
@@ -12,6 +12,14 @@ export function getPeaceFromPath<T>(object: IWorksheet, path: Path, until?: stri
     const result = get<IWorksheet, T>(object, normalizedPath)
 
     return result as T
+}
+
+export function setPeaceFromPath<T>(current: IWorksheet, path: Path, newValue: T): IWorksheet {
+    const normalizedPath = path.replace(/worksheet.?/, '')
+
+    const result = set(current, normalizedPath, newValue)
+
+    return result
 }
 
 export function splicePath(path: Path, until: string): Path {

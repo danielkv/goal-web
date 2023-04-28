@@ -1,5 +1,6 @@
-import { Component, For, createMemo } from 'solid-js'
+import { Component, For, createMemo, createSignal } from 'solid-js'
 
+import MovementEditor from '@components/MovementEditor'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { IEventBlock } from '@models/block'
@@ -23,6 +24,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
             <For each={props.item.rounds}>
                 {(round, roundIndex) => {
                     const roundPath = createMemo(() => addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`))
+                    const [editOpen, setEditOpen] = createSignal(false)
 
                     return (
                         <div
@@ -42,6 +44,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                     onAdd={props.onAdd}
                                     onRemove={props.onRemove}
                                     onMove={props.onMove}
+                                    onOpenEdit={() => setEditOpen((prev) => !prev)}
                                     item={round}
                                     thisPath={roundPath()}
                                     createInitialValues={createEventRoundValues}
@@ -50,25 +53,37 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
 
                             {round.name && <div>{round.name}</div>}
                             <div class="font-bold">{getRoundsDisplay(round.repeat)}</div>
-                            <For each={round.movements}>
-                                {(movement) => {
-                                    const weight = displayWeight(movement.weight)
-                                    const reps = getRoundsDisplay(movement.reps, '')
-                                    const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
-                                    const displayMovement = `${repsDisplay}${movement.name}${weight}`
-                                    return (
-                                        <div class="movement" classList={{ withUrl: !!movement.videoUrl }}>
-                                            {movement.videoUrl ? (
-                                                <a href={movement.videoUrl} target="_new">
-                                                    {displayMovement}
-                                                </a>
-                                            ) : (
-                                                displayMovement
-                                            )}
-                                        </div>
-                                    )
-                                }}
-                            </For>
+
+                            {props.onUpdate && editOpen() && (
+                                <MovementEditor
+                                    onUpdate={props.onUpdate}
+                                    onClose={() => setEditOpen(false)}
+                                    thisPath={roundPath()}
+                                    current={round}
+                                />
+                            )}
+
+                            {!editOpen() && (
+                                <For each={round.movements}>
+                                    {(movement) => {
+                                        const weight = displayWeight(movement.weight)
+                                        const reps = getRoundsDisplay(movement.reps, '')
+                                        const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
+                                        const displayMovement = `${repsDisplay}${movement.name}${weight}`
+                                        return (
+                                            <div class="movement" classList={{ withUrl: !!movement.videoUrl }}>
+                                                {movement.videoUrl ? (
+                                                    <a href={movement.videoUrl} target="_new">
+                                                        {displayMovement}
+                                                    </a>
+                                                ) : (
+                                                    displayMovement
+                                                )}
+                                            </div>
+                                        )
+                                    }}
+                                </For>
+                            )}
                         </div>
                     )
                 }}

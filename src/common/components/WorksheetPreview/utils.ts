@@ -1,6 +1,6 @@
 import { isNumber } from 'radash'
 
-import { IEventBlock, TMovementWeight } from '@models/block'
+import { IEventBlock, IEventMovement, TMovementWeight } from '@models/block'
 import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
@@ -9,7 +9,14 @@ export function displayWeight(weight?: TMovementWeight): string {
 
     const value = getRoundsDisplay(weight.value, '', `${weight.type} `)
 
-    return ` - ${value}${weight.type}`
+    return ` - ${value.trim()}${weight.type}`
+}
+
+export function displayMovement(movement: IEventMovement) {
+    const weight = displayWeight(movement.weight)
+    const reps = getRoundsDisplay(movement.reps, '')
+    const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
+    return `${repsDisplay}${movement.name}${weight}`
 }
 
 export const getTimeCap = (block: IEventBlock) => {
@@ -39,7 +46,7 @@ export function getRoundsDisplay(rounds?: string, suffix = 'Rounds', separator =
     const sexMatch = rounds.match(/^([\d\,]+)\/([\d\,]+)$/)
     const sequenceMatch = rounds.match(/^([\d\,]+)[\-]+$/g)
     const calcMatch = rounds.match(/^([\d\,]+)(\-|\+)([\d\,]+)\*([\d]+)$/)
-    const rangeMatch = rounds.match(/^([\d\,]+)\>\>([\d\,]+)$/)
+    const rangeMatch = rounds.match(/^([\d\,]+) a ([\d\,]+)$/)
 
     if (rangeMatch) {
         const n1 = Number(rangeMatch[1].replace(',', '.'))

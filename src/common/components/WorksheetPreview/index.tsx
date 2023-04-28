@@ -2,16 +2,16 @@ import dayjs from 'dayjs'
 
 import { Component, For, createMemo, splitProps } from 'solid-js'
 
+import { Path } from '@interfaces/app'
 import { WorksheetPeace } from '@interfaces/preview'
 import { IWorksheet } from '@models/day'
-import { Path } from '@view/CreateNewDay/types'
 
 import DayPreview from './day'
 
 export interface WorksheetPreviewProps extends Omit<WorksheetPeace<IWorksheet>, 'thisPath'> {}
 
 const WorksheetPreview: Component<WorksheetPreviewProps> = (props) => {
-    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'])
+    const [parentProps] = splitProps(props, ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onUpdate', 'onClickPeace'])
 
     return (
         <div class="worksheet">

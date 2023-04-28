@@ -14,7 +14,7 @@ export interface BlockProps extends WorksheetPeace<IBlock> {}
 const BlockPreview: Component<BlockProps> = (props) => {
     const [parentProps, controlProps] = splitProps(
         props,
-        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onClickPeace'],
+        ['currentPath', 'onAdd', 'onRemove', 'onMove', 'onUpdate', 'onClickPeace'],
         ['onAdd', 'onRemove', 'onMove', 'item', 'thisPath']
     )
 
