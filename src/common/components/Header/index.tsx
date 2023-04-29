@@ -1,5 +1,5 @@
 import { FaSolidClipboardList } from 'solid-icons/fa'
-import { FiLogOut } from 'solid-icons/fi'
+import { FiLogIn, FiLogOut } from 'solid-icons/fi'
 
 import { Component } from 'solid-js'
 
@@ -16,25 +16,35 @@ const Header: Component = () => {
 
     return (
         <>
-            {loggedUser() && (
-                <div class="h-[80px] bg-gray-800 flex items-center px-6 justify-between">
-                    <A href="/">
-                        <LogoSvg height={50} />
-                    </A>
-                    <div class="flex gap-3">
-                        <A href="/worksheet" title="Planilhas" class="bg-gray-900 p-3 rounded-full hover:bg-gray-700">
-                            <FaSolidClipboardList size={20} />
+            <div class="h-[80px] bg-gray-800 flex items-center px-6 justify-between">
+                <A href="/">
+                    <LogoSvg height={50} />
+                </A>
+                <div class="flex gap-3">
+                    {loggedUser() ? (
+                        <>
+                            <A
+                                href="/worksheet"
+                                title="Planilhas"
+                                class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
+                            >
+                                <FaSolidClipboardList size={20} />
+                            </A>
+                            <button
+                                onClick={handleSignOut}
+                                title="Logout"
+                                class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
+                            >
+                                <FiLogOut size={20} />
+                            </button>
+                        </>
+                    ) : (
+                        <A href="/login" title="Login" class="bg-gray-900 p-3 rounded-full hover:bg-gray-700">
+                            <FiLogIn size={20} />
                         </A>
-                        <button
-                            onClick={handleSignOut}
-                            title="Logout"
-                            class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
-                        >
-                            <FiLogOut size={20} />
-                        </button>
-                    </div>
+                    )}
                 </div>
-            )}
+            </div>
         </>
     )
 }
