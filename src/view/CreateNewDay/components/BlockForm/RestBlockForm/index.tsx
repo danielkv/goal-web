@@ -1,9 +1,9 @@
-import { Component, JSX, createEffect, createMemo, on } from 'solid-js'
+import { Component, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
+import TimeInput from '@components/TimeInput'
 import { IRestBlock } from '@models/block'
-import { Field, Form, SubmitHandler, createForm, reset, setValue, zodForm } from '@modular-forms/solid'
-import { secondsToStringTime, stringTimeToSeconds } from '@utils/time'
+import { Field, Form, SubmitHandler, createForm, reset, zodForm } from '@modular-forms/solid'
 
 import { TRestBlockForm, restBlockFormSchema } from './config'
 
@@ -32,23 +32,9 @@ const RestBlockForm: Component<RestBlockFormProps> = (props) => {
     return (
         <Form<TRestBlockForm> of={form} name="teste" class="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Field of={form} name="time">
-                {(field) => {
-                    const handleInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
-                        const seconds = stringTimeToSeconds((e.target as any).value)
-                        setValue(form, 'time', seconds)
-                    }
-                    return (
-                        <TextInput
-                            {...field.props}
-                            onInput={handleInput}
-                            class="flex-1"
-                            label="Tempo"
-                            type="time"
-                            value={secondsToStringTime(field.value || 0)}
-                            error={field.error}
-                        />
-                    )
-                }}
+                {(field) => (
+                    <TimeInput {...field.props} class="flex-1" label="Tempo" value={field.value} error={field.error} />
+                )}
             </Field>
 
             <Field of={form} name="text">

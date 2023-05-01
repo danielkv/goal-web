@@ -2,7 +2,7 @@ import { Component, JSX, splitProps } from 'solid-js'
 
 export interface TextInputProps {
     name: string
-    type?: 'text' | 'email' | 'tel' | 'password' | 'url' | 'number' | 'date' | 'time'
+    type?: 'text' | 'email' | 'tel' | 'password' | 'url' | 'number' | 'date'
     label?: string
     placeholder?: string
     value?: string | number | undefined

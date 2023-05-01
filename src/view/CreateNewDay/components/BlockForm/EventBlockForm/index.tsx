@@ -1,9 +1,9 @@
 import { Component, For, JSX, Show, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
+import TimeInput from '@components/TimeInput'
 import { IEventBlock } from '@models/block'
 import { Field, Form, SubmitHandler, createForm, getValue, reset, setValue, zodForm } from '@modular-forms/solid'
-import { secondsToStringTime, stringTimeToSeconds } from '@utils/time'
 
 import { TEventBlockForm, eventBlockFormSchema, eventTypes } from './config'
 
@@ -70,23 +70,15 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                 </Field>
                 <Show when={getValue(form, 'event_type') === 'emom'}>
                     <Field of={form} name="each">
-                        {(field) => {
-                            const handleInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
-                                const seconds = stringTimeToSeconds((e.target as any).value)
-                                setValue(form, 'each', seconds)
-                            }
-                            return (
-                                <TextInput
-                                    {...field.props}
-                                    onInput={handleInput}
-                                    class="flex-1"
-                                    label="Cada"
-                                    type="time"
-                                    value={secondsToStringTime(field.value || 0)}
-                                    error={field.error}
-                                />
-                            )
-                        }}
+                        {(field) => (
+                            <TimeInput
+                                {...field.props}
+                                class="flex-1"
+                                label="Each"
+                                value={field.value}
+                                error={field.error}
+                            />
+                        )}
                     </Field>
                     <Field of={form} name="numberOfRounds">
                         {(field) => {
@@ -105,43 +97,26 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                 </Show>
                 <Show when={getValue(form, 'event_type') === 'tabata'}>
                     <Field of={form} name="work">
-                        {(field) => {
-                            const handleInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
-                                const seconds = stringTimeToSeconds((e.target as any).value)
-                                setValue(form, 'work', seconds)
-                            }
-                            return (
-                                <TextInput
-                                    {...field.props}
-                                    onInput={handleInput}
-                                    class="flex-1"
-                                    label="Work"
-                                    type="time"
-                                    value={secondsToStringTime(field.value || 0)}
-                                    error={field.error}
-                                />
-                            )
-                        }}
+                        {(field) => (
+                            <TimeInput
+                                {...field.props}
+                                class="flex-1"
+                                label="Work"
+                                value={field.value}
+                                error={field.error}
+                            />
+                        )}
                     </Field>
                     <Field of={form} name="rest">
-                        {(field) => {
-                            const handleInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
-                                const seconds = stringTimeToSeconds((e.target as any).value)
-                                setValue(form, 'rest', seconds)
-                            }
-
-                            return (
-                                <TextInput
-                                    {...field.props}
-                                    onInput={handleInput}
-                                    class="flex-1"
-                                    label="Rest"
-                                    type="time"
-                                    value={secondsToStringTime(field.value || 0)}
-                                    error={field.error}
-                                />
-                            )
-                        }}
+                        {(field) => (
+                            <TimeInput
+                                {...field.props}
+                                class="flex-1"
+                                label="Rest"
+                                value={field.value}
+                                error={field.error}
+                            />
+                        )}
                     </Field>
                     <Field of={form} name="numberOfRounds">
                         {(field) => {
@@ -160,24 +135,15 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                 </Show>
                 <Show when={['for_time', 'max_weight', 'amrap'].includes(getValue(form, 'event_type') as string)}>
                     <Field of={form} name="timecap">
-                        {(field) => {
-                            const handleInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
-                                const seconds = stringTimeToSeconds((e.target as any).value)
-                                setValue(form, 'timecap', seconds)
-                            }
-
-                            return (
-                                <TextInput
-                                    {...field.props}
-                                    onInput={handleInput}
-                                    class="flex-1"
-                                    label="Timecap"
-                                    type="time"
-                                    value={secondsToStringTime(field.value || 0)}
-                                    error={field.error}
-                                />
-                            )
-                        }}
+                        {(field) => (
+                            <TimeInput
+                                {...field.props}
+                                class="flex-1"
+                                label="Timecap"
+                                value={field.value}
+                                error={field.error}
+                            />
+                        )}
                     </Field>
                 </Show>
             </div>
