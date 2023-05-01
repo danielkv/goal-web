@@ -4,7 +4,7 @@ export function textToMovements(text: string): IEventMovement[] {
     const textMovements = text.split('\n')
 
     const regex =
-        /^((?<reps>\d(?:[\d\-\*\,\/]*\d)?)((?<reps_type>x|m)\s|\s)+)(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d]+[A-Z])+(?:\s\-\s(?<weight>\d(?:\d+(?:[\d\-\*\,\/\sa]*\d)?)?)(?<weight_type>kg|%|lb)+)?$/i
+        /^((?<reps>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)((?<reps_type>x|m|km)\s|\s)+)(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+[A-Z])+(?:\s\-\s(?<weight>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?$/i
 
     const movements = textMovements.map<IEventMovement>((movement) => {
         const match = movement.match(regex)
