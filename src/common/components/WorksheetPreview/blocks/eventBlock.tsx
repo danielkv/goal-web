@@ -4,10 +4,11 @@ import MovementEditor from '@components/MovementEditor'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { IEventBlock } from '@models/block'
+import { numberHelper } from '@utils/numbers'
 import { addToPath } from '@utils/paths'
 import { createEventRoundValues, eventTypesMap } from '@utils/worksheetInitials'
 
-import { displayWeight, getRoundsDisplay, getTimeCap } from '../utils'
+import { displayWeight, getTimeCap } from '../utils'
 
 export interface EventBlockPreviewProps extends WorksheetPeace<IEventBlock> {}
 
@@ -52,7 +53,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                             )}
 
                             {round.name && <div>{round.name}</div>}
-                            <div class="font-bold">{getRoundsDisplay(round.repeat)}</div>
+                            <div class="font-bold">{numberHelper.convertNumbers(round.repeat)}</div>
 
                             {props.onUpdate && editOpen() && (
                                 <MovementEditor
@@ -67,7 +68,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                 <For each={round.movements}>
                                     {(movement) => {
                                         const weight = displayWeight(movement.weight)
-                                        const reps = getRoundsDisplay(movement.reps, '')
+                                        const reps = numberHelper.convertNumbers(movement.reps, { suffix: '' })
                                         const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
                                         const displayMovement = `${repsDisplay}${movement.name}${weight}`
                                         return (
