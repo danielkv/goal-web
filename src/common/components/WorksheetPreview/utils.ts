@@ -21,17 +21,21 @@ export function displayMovement(movement: IEventMovement) {
 
 export const getTimeCap = (block: IEventBlock) => {
     if (block.event_type === 'emom') {
+        if (!block.each || !block.numberOfRounds) return ''
         const each = getTimeFromSeconds(block.each)
         return ` - Cada ${each} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
     }
 
     if (block.event_type === 'tabata') {
+        if (!block.work || !block.rest || !block.numberOfRounds) return ''
         const work = getTimeFromSeconds(block.work)
         const rest = getTimeFromSeconds(block.rest)
         return ` - ${work}/${rest} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
     }
 
     if (block.event_type === 'not_timed') return ''
+
+    if (!block.timecap) return ''
 
     const timecap = getTimeFromSeconds(block.timecap)
     return ` - ${timecap}`
