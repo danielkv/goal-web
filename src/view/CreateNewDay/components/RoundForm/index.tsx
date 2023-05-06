@@ -102,6 +102,21 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                 <TimersForm of={form} type={timerType()} />
             </div>
 
+            <Field of={form} name="numberOfRounds">
+                {(field) => {
+                    return (
+                        <TextInput
+                            {...field.props}
+                            class="flex-1"
+                            label="Rounds"
+                            type="number"
+                            value={field.value}
+                            error={field.error}
+                        />
+                    )
+                }}
+            </Field>
+
             <Show when={getValue(form, 'type') === 'rest'}>
                 <Field of={form} name="time">
                     {(field) => (

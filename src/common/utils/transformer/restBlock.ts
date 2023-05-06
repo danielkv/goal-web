@@ -1,23 +1,20 @@
-import dayjs from 'dayjs'
-
 import { IRestBlock } from '@models/block'
 import { getTimeFromSeconds } from '@utils/time'
 
-export class RestBlockTransformer {
+import { BaseTransformer } from './base'
+
+export class RestBlockTransformer extends BaseTransformer {
     toObject(text: string): IRestBlock | null {
-        const regex =
-            /(?<time>(?<t1>\d+)(?<type>m|s)(?:(?<t2>\d+)s)?)\s(?:rest)(?:\s\-\s(?<text>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+))?/
+        const time = this.findRest(text)
+        if (!time) return null
 
-        const match = text.match(regex)
-        if (!match?.groups?.time) return null
-
-        const minutes = match.groups.type === 'm' ? Number(match.groups.t1) : undefined
-        const seconds = match.groups.type === 's' ? Number(match.groups.t1) : Number(match.groups.t2) || undefined
+        const regex = /\s\-\s(?<text>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+)$/
+        const restTextMatch = text.match(regex)
 
         return {
             type: 'rest',
-            time: dayjs.duration({ minutes, seconds }).asSeconds(),
-            text: match.groups.text,
+            time,
+            text: restTextMatch?.groups?.text || '',
         }
     }
 
