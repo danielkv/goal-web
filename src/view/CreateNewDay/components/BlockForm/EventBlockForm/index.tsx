@@ -46,6 +46,20 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                     <TextInput {...field.props} class="flex-1" label="Nome" value={field.value} error={field.error} />
                 )}
             </Field>
+            <Field of={form} name="numberOfRounds">
+                {(field) => {
+                    return (
+                        <TextInput
+                            {...field.props}
+                            class="flex-1"
+                            label="Rounds"
+                            type="number"
+                            value={field.value}
+                            error={field.error}
+                        />
+                    )
+                }}
+            </Field>
             <div class="flex gap-6">
                 <Field of={form} name="event_type">
                     {(field) => {
@@ -57,6 +71,8 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                             } else if ((e.target as any).value === 'emom') {
                                 setValue(form, 'each', 60)
                                 setValue(form, 'numberOfRounds', 4)
+                            } else if ((e.target as any).value === 'max_weight') {
+                                setValue(form, 'numberOfRounds', 1)
                             }
 
                             field.props.onInput(e)
@@ -77,6 +93,7 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                         )
                     }}
                 </Field>
+
                 <TimersForm of={form} type={timerType()} />
             </div>
 

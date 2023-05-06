@@ -1,6 +1,5 @@
 import { Component, Show } from 'solid-js'
 
-import TextInput from '@components/TextInput'
 import TimeInput from '@components/TimeInput'
 import { TTimerType } from '@models/time'
 import { Field, FormState } from '@modular-forms/solid'
@@ -18,25 +17,11 @@ const TimersForm: Component<TimersFormProps> = (props) => {
                         <TimeInput
                             {...field.props}
                             class="flex-1"
-                            label="Each"
+                            label="A Cada"
                             value={field.value}
                             error={field.error}
                         />
                     )}
-                </Field>
-                <Field of={props.of} name="numberOfRounds">
-                    {(field) => {
-                        return (
-                            <TextInput
-                                {...field.props}
-                                class="flex-1"
-                                label="Rounds"
-                                type="number"
-                                value={field.value}
-                                error={field.error}
-                            />
-                        )
-                    }}
                 </Field>
             </Show>
             <Show when={props.type === 'tabata'}>
@@ -61,20 +46,6 @@ const TimersForm: Component<TimersFormProps> = (props) => {
                             error={field.error}
                         />
                     )}
-                </Field>
-                <Field of={props.of} name="numberOfRounds">
-                    {(field) => {
-                        return (
-                            <TextInput
-                                {...field.props}
-                                class="flex-1"
-                                label="Rounds"
-                                type="number"
-                                value={field.value}
-                                error={field.error}
-                            />
-                        )
-                    }}
                 </Field>
             </Show>
             <Show when={['for_time', 'max_weight', 'amrap'].includes(props.type)}>

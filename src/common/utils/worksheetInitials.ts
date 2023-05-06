@@ -27,6 +27,7 @@ export function createRoundMovementValues(): IEventMovement {
 export function createEventRoundValues(): IRound {
     return {
         type: 'not_timed',
+        numberOfRounds: 1,
         movements: [],
     }
 }
@@ -34,6 +35,7 @@ export function createEventRoundValues(): IRound {
 export function createEventBlockValues(): IEventBlock {
     return {
         type: 'event',
+        numberOfRounds: 1,
         name: '',
         event_type: 'not_timed',
         rounds: [],

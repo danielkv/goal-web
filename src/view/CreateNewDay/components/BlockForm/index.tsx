@@ -61,7 +61,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
                                         event_type: eventBlock.event_type,
                                         rounds: eventBlock.rounds,
                                         each: eventBlock.each || 0,
-                                        numberOfRounds: eventBlock.numberOfRounds || 0,
+                                        numberOfRounds: eventBlock.numberOfRounds || 1,
                                         info: info(),
                                         name: eventBlock.name,
                                     })
@@ -72,7 +72,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
                                         type: 'event',
                                         event_type: eventBlock.event_type,
                                         rounds: eventBlock.rounds,
-                                        numberOfRounds: eventBlock.numberOfRounds || 0,
+                                        numberOfRounds: eventBlock.numberOfRounds || 1,
                                         rest: eventBlock.rest || 0,
                                         work: eventBlock.work || 0,
                                         info: info(),
@@ -83,6 +83,7 @@ const BlockForm: Component<BlockFormProps> = (props) => {
                                     handleSubmit({
                                         type: 'event',
                                         event_type: eventBlock.event_type,
+                                        numberOfRounds: eventBlock.numberOfRounds || 1,
                                         rounds: eventBlock.rounds,
                                         timecap: eventBlock.timecap || 0,
                                         info: info(),

@@ -37,6 +37,7 @@ export type IRoundNotTimed = {
 
 export type IRound = {
     type: TTimerType | 'rest'
+    numberOfRounds?: number
     movements: IEventMovement[]
 } & (IRoundTimecap | IRoundEMOM | IRoundTabata | IRoundRest | IRoundNotTimed)
 
@@ -64,6 +65,7 @@ export type IEventBlock = {
     name?: string
     rounds: IRound[]
     event_type: TEventType
+    numberOfRounds?: number
 } & (IEventBlockEMOM | IEventBlockTimecap | IEventBlockNotTimed | IEventBlockTabata)
 
 export type IRestBlock = {
