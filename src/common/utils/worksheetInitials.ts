@@ -2,14 +2,14 @@ import {
     IBlock,
     IEventBlock,
     IEventMovement,
-    IEventRound,
     IRestBlock,
+    IRound,
     ITextBlock,
     TBlockType,
-    TEventType,
     TMovementWeight,
 } from '@models/block'
 import { IDay, IPeriod, ISection, IWorksheet } from '@models/day'
+import { TTimerType } from '@models/time'
 
 export function createMovementWeightValues(): TMovementWeight {
     return {
@@ -24,11 +24,10 @@ export function createRoundMovementValues(): IEventMovement {
         reps: '',
     }
 }
-export function createEventRoundValues(): IEventRound {
+export function createEventRoundValues(): IRound {
     return {
+        type: 'not_timed',
         movements: [],
-        name: '',
-        repeat: '',
     }
 }
 
@@ -101,11 +100,20 @@ export const blockTypesMap: Record<Exclude<TBlockType, ''>, string> = {
     text: 'Texto',
 }
 
-export const eventTypesMap: Record<TEventType, string> = {
+export const timerTypes: Record<TTimerType, string> = {
     not_timed: 'Sem tempo',
     for_time: 'For Time',
     amrap: 'AMRAP',
     emom: 'EMOM',
-    max_weight: 'Carga máxima',
     tabata: 'Tabata',
+}
+
+export const eventTypes = {
+    ...timerTypes,
+    max_weight: 'Carga máxima',
+}
+
+export const roundTypes = {
+    ...timerTypes,
+    rest: 'Rest',
 }

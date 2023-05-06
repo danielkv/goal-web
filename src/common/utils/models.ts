@@ -1,4 +1,4 @@
-import { IBlock, IEventBlock, IEventRound, IRestBlock, ITextBlock } from '@models/block'
+import { IBlock, IEventBlock, IRestBlock, IRound, ITextBlock } from '@models/block'
 import { IDay, IPeriod, ISection } from '@models/day'
 
 export function isDay(obj: Record<string, any>): obj is IDay {
@@ -21,7 +21,7 @@ export function isBlock(obj: Record<string, any>): obj is IBlock {
     return false
 }
 
-export function isRound(obj: Record<string, any>): obj is IEventRound {
+export function isRound(obj: Record<string, any>): obj is IRound {
     if (obj?.hasOwnProperty('movements')) return true
     return false
 }

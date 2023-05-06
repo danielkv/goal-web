@@ -1,8 +1,7 @@
 import { omit } from 'radash'
 import { z } from 'zod'
 
-import { ZodShape } from '@interfaces/app'
-import { IEventBlock, TEventType } from '@models/block'
+import { IEventBlock } from '@models/block'
 import { createEventBlockValues } from '@utils/worksheetInitials'
 
 import { eventRoundFormSchema } from '../../RoundForm/config'
@@ -15,20 +14,11 @@ export type TEventBlockForm = Omit<IEventBlock, 'type'> & {
     numberOfRounds?: number
 }
 
-export const eventTypes: { key: TEventType; label: string }[] = [
-    { key: 'not_timed', label: 'Sem tempo' },
-    { key: 'for_time', label: 'For Time' },
-    { key: 'amrap', label: 'AMRAP' },
-    { key: 'emom', label: 'EMOM' },
-    { key: 'tabata', label: 'Tabata' },
-    { key: 'max_weight', label: 'Carga máxima' },
-]
-
 export const eventBlockInitialValues: TEventBlockForm = omit(createEventBlockValues(), ['type'])
 
 export const eventBlockFormSchema = z
-    .object<ZodShape<TEventBlockForm>>({
-        event_type: z.enum(['for_time', 'max_weight', 'emom', 'amrap', 'not_timed', 'tabata']),
+    .object({
+        event_type: z.string(),
         name: z.optional(z.string()),
         timecap: z.optional(z.number({ invalid_type_error: 'Número inválido' })),
         each: z.optional(z.number({ invalid_type_error: 'Número inválido' })),

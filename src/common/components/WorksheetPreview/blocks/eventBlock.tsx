@@ -5,7 +5,7 @@ import { WorksheetPeace } from '@interfaces/preview'
 import { IEventBlock } from '@models/block'
 import { numberHelper } from '@utils/numbers'
 import { addToPath } from '@utils/paths'
-import { createEventRoundValues, eventTypesMap } from '@utils/worksheetInitials'
+import { createEventRoundValues, eventTypes } from '@utils/worksheetInitials'
 
 import { displayWeight, getTimeCap } from '../utils'
 
@@ -17,7 +17,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
             {props.item.name && <div>{props.item.name}</div>}
             {props.item.event_type !== 'not_timed' && (
                 <div class="title">
-                    {eventTypesMap[props.item.event_type]} {getTimeCap(props.item)}
+                    {eventTypes[props.item.event_type]} {getTimeCap(props.item)}
                 </div>
             )}
 
@@ -48,9 +48,6 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                     createInitialValues={createEventRoundValues}
                                 />
                             )}
-
-                            {round.name && <div>{round.name}</div>}
-                            <div class="font-bold">{numberHelper.convertNumbers(round.repeat)}</div>
 
                             <For each={round.movements}>
                                 {(movement) => {
