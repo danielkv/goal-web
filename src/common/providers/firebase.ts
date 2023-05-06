@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { ProviderId, getAuth } from 'firebase/auth'
 import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions'
 
-const useEmulator = import.meta.env.PROD ? false : true
+const useEmulator = import.meta.env.PROD ? false : false
 
 export const FIREBASE_APP = initializeApp({
     apiKey: import.meta.env.VITE_APP_APIKEY,
