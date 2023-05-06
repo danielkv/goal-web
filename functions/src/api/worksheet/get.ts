@@ -2,6 +2,7 @@ import * as admin from 'firebase-admin'
 import { https } from 'firebase-functions'
 
 import { init } from '../../helpers'
+import { getDays } from '../../utils/getDays'
 
 init()
 
@@ -47,15 +48,6 @@ export const getWorksheets = https.onCall(async (none: any, context: https.Calla
         ...doc.data(),
     }))
 })
-
-async function getDays(worksheetDocRef: admin.firestore.DocumentReference) {
-    const daysDocs = await worksheetDocRef.collection('days').orderBy('date').get()
-
-    return daysDocs.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-    }))
-}
 
 // export const remapWorksheets = https.onRequest(async (req, res) => {
 //     const db = admin.firestore()

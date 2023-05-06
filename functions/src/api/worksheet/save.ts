@@ -2,16 +2,44 @@ import * as admin from 'firebase-admin'
 import { https } from 'firebase-functions'
 
 import { init } from '../../helpers'
+import { getDays } from '../../utils/getDays'
 
 init()
 
-export const saveWorksheet = https.onCall(
-    (worksheet: Record<string, any>, context: https.CallableContext) => {
-        // if (worksheet.id) return updateWorksheetUseCase(worksheet)
+export const duplicateWorksheet = https.onCall(async (worksheetId: string) => {
+    const db = admin.firestore()
+    const collection = db.collection('worksheets')
+    const doc = await collection.doc(worksheetId).get()
+    if (!doc.exists) throw new Error('Worksheet not found')
 
-        return createWorksheetUseCase(worksheet)
+    const worksheet: Record<string, any> = {
+        days: await getDays(doc.ref),
+        ...doc.data(),
     }
-)
+
+    delete worksheet.id
+    worksheet.name = `Cópia de ${worksheet.name}`
+    if (worksheet.days) {
+        worksheet.days.map((day: Record<string, any>) => {
+            delete day.id
+            return day
+        })
+    } else {
+        worksheet.days = []
+    }
+
+    return createWorksheetUseCase(worksheet)
+})
+
+export const removeWorksheet = https.onCall(async (worksheetId: string) => {
+    const db = admin.firestore()
+    const collection = db.collection('worksheets')
+    await collection.doc(worksheetId).delete()
+})
+
+export const saveWorksheet = https.onCall((worksheet: Record<string, any>, context: https.CallableContext) => {
+    return createWorksheetUseCase(worksheet)
+})
 
 function createWorksheetUseCase({ days, ...worksheet }: Record<string, any>) {
     const db = admin.firestore()
