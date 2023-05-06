@@ -1,6 +1,6 @@
 import { IBlock } from '@models/block'
 
-import { EventBlockTransformer, blockTransformer } from './eventblock'
+import { EventBlockTransformer, eventBlockTransformer } from './eventblock'
 import { RestBlockTransformer, restBlockTransformer } from './restBlock'
 import { TextBlockTransformer, textBlockTransformer } from './textBlock'
 
@@ -42,7 +42,7 @@ export class SectionTransformer {
         const matchText = this.textBlockTransformer.toObject(text)
         if (matchText) return matchText
 
-        const matchEvent = blockTransformer.toObject(text)
+        const matchEvent = eventBlockTransformer.toObject(text)
         if (matchEvent) return matchEvent
 
         return {
@@ -52,4 +52,8 @@ export class SectionTransformer {
     }
 }
 
-export const sectionTransformer = new SectionTransformer(blockTransformer, restBlockTransformer, textBlockTransformer)
+export const sectionTransformer = new SectionTransformer(
+    eventBlockTransformer,
+    restBlockTransformer,
+    textBlockTransformer
+)

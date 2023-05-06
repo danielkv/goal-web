@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 
 import { TTimerType } from '@models/time'
+import { getTimeFromSeconds } from '@utils/time'
 
 export abstract class BaseTransformer {
     protected timeRegex = /^((?<t1>\d+)(?<t1_type>m|s)(?:(?<t2>\d+)s)?)/i
@@ -46,5 +47,9 @@ export abstract class BaseTransformer {
         if (!match?.groups?.time) return null
 
         return this.extractTime('for_time', match?.groups?.time)
+    }
+
+    protected displayRest(time: number): string {
+        return `${getTimeFromSeconds(time)} Rest`
     }
 }

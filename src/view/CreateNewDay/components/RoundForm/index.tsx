@@ -98,6 +98,20 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                 }}
             </Field>
 
+            <Show when={getValue(form, 'type') === 'rest'}>
+                <Field of={form} name="time">
+                    {(field) => (
+                        <TimeInput
+                            {...field.props}
+                            class="flex-1"
+                            label="Tempo"
+                            value={field.value}
+                            error={field.error}
+                        />
+                    )}
+                </Field>
+            </Show>
+
             <div class="flex flex-row gap-4">
                 <TimersForm of={form} type={timerType()} />
             </div>
@@ -116,20 +130,6 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                     )
                 }}
             </Field>
-
-            <Show when={getValue(form, 'type') === 'rest'}>
-                <Field of={form} name="time">
-                    {(field) => (
-                        <TimeInput
-                            {...field.props}
-                            class="flex-1"
-                            label="Timecap"
-                            value={field.value}
-                            error={field.error}
-                        />
-                    )}
-                </Field>
-            </Show>
 
             <Show when={getValue(form, 'type') !== 'rest'}>
                 <div class="section-title">Movimentos</div>

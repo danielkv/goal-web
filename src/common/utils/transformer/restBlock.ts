@@ -24,6 +24,10 @@ export class RestBlockTransformer extends BaseTransformer {
 
         return `${time} Rest${text}`
     }
+
+    display(obj: IRestBlock): string {
+        return this.displayRest(obj.time)
+    }
 }
 
 export const restBlockTransformer = new RestBlockTransformer()

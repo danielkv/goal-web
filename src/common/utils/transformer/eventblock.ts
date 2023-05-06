@@ -1,5 +1,7 @@
 import { IEventBlock, IRound, TEventType } from '@models/block'
+import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
+import { eventTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
 import { RoundTransformer, roundTransformer } from './round'
@@ -129,6 +131,29 @@ export class EventBlockTransformer extends BaseTransformer {
 
         return type
     }
+
+    displayType(block: IEventBlock): string {
+        if (block.event_type === 'emom') {
+            if (!block.each || !block.numberOfRounds) return ''
+            const each = getTimeFromSeconds(block.each)
+            return ` - Cada ${each} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
+        }
+
+        if (block.event_type === 'tabata') {
+            if (!block.work || !block.rest || !block.numberOfRounds) return ''
+            const work = getTimeFromSeconds(block.work)
+            const rest = getTimeFromSeconds(block.rest)
+            return ` - ${work}/${rest} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
+        }
+
+        if (block.event_type === 'not_timed') return ''
+
+        if (!block.timecap) return ''
+
+        const timecap = getTimeFromSeconds(block.timecap)
+        const numberOfRounds = block.numberOfRounds && block.numberOfRounds > 1 ? `${block.numberOfRounds} rounds` : ''
+        return `${numberOfRounds} ${eventTypes[block.event_type]} - ${timecap}`
+    }
 }
 
-export const blockTransformer = new EventBlockTransformer(roundTransformer)
+export const eventBlockTransformer = new EventBlockTransformer(roundTransformer)

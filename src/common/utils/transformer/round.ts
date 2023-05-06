@@ -1,6 +1,8 @@
-import { IRound } from '@models/block'
+import { IRound, IRoundRest } from '@models/block'
 import { TTimerType } from '@models/time'
+import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
+import { roundTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
 import { MovementTransformer, movementTransformer } from './movement'
@@ -17,10 +19,13 @@ export class RoundTransformer extends BaseTransformer {
         const regex = /^round\:\s(?<rounds>\d+)(?:\s(?<type>emom|for time|amrap|tabata)(?:\s(?<time>.*))?)?/i
         const match = text.match(regex)
 
-        console.log(match)
-
         if (match?.groups) {
-            const textMovements = text.replace(match[0], '').trim().split(this.breakline)
+            const extractedText = text.replace(match[0], '').trim()
+
+            const restRound = this.checkRestRound(extractedText)
+            if (restRound) return { ...restRound, movements: [] }
+
+            const textMovements = extractedText.split(this.breakline)
             if (!textMovements.length) return null
 
             const movements = textMovements.map((t) => this.movementTransformer.toObject(t))
@@ -69,6 +74,9 @@ export class RoundTransformer extends BaseTransformer {
             }
         }
 
+        const restRound = this.checkRestRound(text)
+        if (restRound) return { ...restRound, movements: [] }
+
         const textMovements = text.split(this.breakline)
         const movements = textMovements.map((t) => this.movementTransformer.toObject(t))
 
@@ -79,7 +87,7 @@ export class RoundTransformer extends BaseTransformer {
     }
 
     toString(obj: IRound): string {
-        if (obj.type === 'rest') return ''
+        if (obj.type === 'rest') return this.displayRest(obj.time)
 
         let text = obj.numberOfRounds ? `round: ${obj.numberOfRounds}` : ''
 
@@ -90,14 +98,17 @@ export class RoundTransformer extends BaseTransformer {
         return text
     }
 
-    // toString(obj: IEventBlock): string {
-    //     let text = obj.numberOfRounds ? `bloco: ${obj.numberOfRounds}` : ''
-    //     const timeString = this.eventTimeToString(obj)
-    //     if (text && timeString) text += ` ${this.typeToString(obj.event_type)} ${timeString}`
-    //     if (text) text += '\n'
-    //     text += obj.rounds.map((o) => this.roundTransformer.toString(o)).join(this.breakline)
-    //     return text
-    // }
+    private checkRestRound(text: string): IRoundRest | null {
+        const match = text.match(this.restRegex)
+        if (!match?.groups?.time) return null
+
+        const time = this.extractTime('for_time', match.groups.time)
+
+        return {
+            type: 'rest',
+            time,
+        }
+    }
 
     private eventTimeToString(obj: IRound): string | null {
         switch (obj.type) {
@@ -132,6 +143,44 @@ export class RoundTransformer extends BaseTransformer {
         if (type === 'for_time') return 'for time'
 
         return type
+    }
+
+    display(obj: IRound): string {
+        if (obj.type !== 'rest') return ''
+
+        return this.displayRest(obj.time)
+    }
+
+    displayType(round: IRound): string {
+        if (round.type === 'rest') return ''
+        const time = this.displayTime(round)
+        const numberOfRounds = round.numberOfRounds && round.numberOfRounds > 1 ? `${round.numberOfRounds} rounds` : ''
+        const type = round.type && round.type != 'not_timed' ? roundTypes[round.type] : ''
+        if (!numberOfRounds && !type) return ''
+        return `${numberOfRounds} ${type}${time}`.trim()
+    }
+
+    private displayTime(round: IRound): string {
+        if (round.type === 'emom') {
+            if (!round.each || !round.numberOfRounds) return ''
+            const each = getTimeFromSeconds(round.each)
+            return ` - Cada ${each} por ${round.numberOfRounds} ${pluralize(round.numberOfRounds, 'round')}`
+        }
+
+        if (round.type === 'tabata') {
+            if (!round.work || !round.rest || !round.numberOfRounds) return ''
+            const work = getTimeFromSeconds(round.work)
+            const rest = getTimeFromSeconds(round.rest)
+            return ` - ${work}/${rest} por ${round.numberOfRounds} ${pluralize(round.numberOfRounds, 'round')}`
+        }
+
+        if (round.type === 'not_timed') return ''
+        if (round.type === 'rest') return ''
+        if (!round.type) return ''
+
+        const timecap = getTimeFromSeconds(round.timecap)
+
+        return ` - ${timecap}`
     }
 }
 
