@@ -43,11 +43,14 @@ const RoundForm: Component<BlockFormProps> = (props) => {
     const handleSubmit: SubmitHandler<TRoundForm> = (values) => {
         const newValues = {
             ...values,
-            movements: values.movements.map((mov) => {
-                if (mov.weight?.type === 'none') delete mov.weight
-                return mov
-            }),
+            numberOfRounds: Number.isNaN(values.numberOfRounds) ? 1 : values.numberOfRounds || 1,
+            movements:
+                values.movements?.map((mov) => {
+                    if (mov.weight?.type === 'none') delete mov.weight
+                    return mov
+                }) || [],
         }
+
         props.onClickNext(newValues)
     }
 
@@ -77,13 +80,15 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                         } else if ((e.target as any).value === 'emom') {
                             setValue(form, 'each', 60)
                             setValue(form, 'numberOfRounds', 4)
+                        } else if ((e.target as any).value === 'rest') {
+                            reset(form, { initialValues: { type: 'rest', time: 0, movements: [] } })
                         }
 
                         field.props.onInput(e)
                     }
                     return (
                         <div class="flex flex-col flex-1 min-w-[100px]">
-                            <label class="text-sm mb-2">Tipo de evento</label>
+                            <label class="text-sm mb-2">Tipo de round</label>
                             <select class="input input-full" {...field.props} onInput={handleInput}>
                                 <For each={Object.entries(roundTypes)}>
                                     {([key, label]) => (
@@ -116,22 +121,21 @@ const RoundForm: Component<BlockFormProps> = (props) => {
                 <TimersForm of={form} type={timerType()} />
             </div>
 
-            <Field of={form} name="numberOfRounds">
-                {(field) => {
-                    return (
-                        <TextInput
-                            {...field.props}
-                            class="flex-1"
-                            label="Rounds"
-                            type="number"
-                            value={field.value}
-                            error={field.error}
-                        />
-                    )
-                }}
-            </Field>
-
             <Show when={getValue(form, 'type') !== 'rest'}>
+                <Field of={form} name="numberOfRounds">
+                    {(field) => {
+                        return (
+                            <TextInput
+                                {...field.props}
+                                class="flex-1"
+                                label="Rounds"
+                                type="number"
+                                value={field.value}
+                                error={field.error}
+                            />
+                        )
+                    }}
+                </Field>
                 <div class="section-title">Movimentos</div>
                 <FieldArray of={form} name="movements">
                     {(array) => (
