@@ -32,11 +32,13 @@ export type IRoundRest = {
 }
 
 export type IRoundNotTimed = {
-    type: 'not_timed'
+    type: 'not_timed' | 'complex'
 }
 
+export type TRoundTypes = TTimerType | 'rest' | 'complex'
+
 export type IRound = {
-    type: TTimerType | 'rest'
+    type: TRoundTypes
     numberOfRounds?: number
     movements: IEventMovement[]
 } & (IRoundTimecap | IRoundEMOM | IRoundTabata | IRoundRest | IRoundNotTimed)

@@ -1,4 +1,5 @@
-import { IEventMovement, TWeightTypes } from '@models/block'
+import { IEventMovement, TMovementWeight, TWeightTypes } from '@models/block'
+import { numberHelper } from '@utils/numbers'
 
 export class MovementTransformer {
     toObject(text: string): IEventMovement {
@@ -25,6 +26,29 @@ export class MovementTransformer {
         const reps = obj.reps ? `${obj.reps.trim()} ` : ''
 
         return `${reps}${obj.name}${weight}`
+    }
+
+    displayWeight(weight?: TMovementWeight): string {
+        if (!weight?.value || weight.type === 'none') return ''
+
+        const value = numberHelper.convertNumbers(weight.value, { suffix: '', separator: `${weight.type} ` })
+
+        return ` - ${value.trim()}${weight.type}`
+    }
+
+    displayMovement(obj: IEventMovement) {
+        const reps = numberHelper.convertNumbers(obj.reps, { suffix: '' })
+        const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
+        const displayMovement = `${repsDisplay}${obj.name}`
+
+        return displayMovement
+    }
+
+    display(obj: IEventMovement) {
+        const weight = this.displayWeight(obj.weight)
+        const movement = this.displayMovement(obj)
+
+        return `${movement}${weight}`
     }
 }
 

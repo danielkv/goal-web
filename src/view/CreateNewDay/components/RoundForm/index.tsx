@@ -62,8 +62,8 @@ const RoundForm: Component<BlockFormProps> = (props) => {
 
     const timerType = createMemo<TTimerType>(() => {
         const value = getValue(form, 'type') || 'not_timed'
-
         if (value === 'rest') return 'not_timed'
+        if (value === 'complex') return 'not_timed'
 
         return value
     })
