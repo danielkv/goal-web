@@ -13,7 +13,7 @@ export class SectionTransformer {
     ) {}
 
     toObject(text: string): IBlock[] {
-        const textBlocks = text.split(this.breakline)
+        const textBlocks = text.trim().toLocaleLowerCase().split(this.breakline)
 
         return textBlocks.map((t) => this.typeToObject(t))
     }

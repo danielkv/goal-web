@@ -23,7 +23,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                 {(round, roundIndex) => {
                     const roundPath = createMemo(() => addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`))
 
-                    const title = createMemo(() => roundTransformer.displayType(round))
+                    const title = createMemo(() => roundTransformer.displayTitle(round))
 
                     return (
                         <div

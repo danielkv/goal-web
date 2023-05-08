@@ -1,4 +1,4 @@
-import { IRound, IRoundEMOM, IRoundRest, IRoundTabata, IRoundTimecap } from '@models/block'
+import { IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
 import { TTimerType } from '@models/time'
 import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
@@ -17,14 +17,14 @@ export class RoundTransformer extends BaseTransformer {
     }
 
     toObject(text: string): IRound | null {
-        const regex = /^round\:\s(?<rounds>\d+)(?:\s(?<type>emom|for time|amrap|tabata)(?:\s(?<time>.*))?)?/i
+        const regex = /^round\:(?:\s(?<rounds>\d+))?(?:\s(?<type>emom|for time|amrap|tabata)(?:\s(?<time>.*))?)?\n/im
         const match = text.match(regex)
 
         if (match?.groups) {
             const extractedText = text.replace(match[0], '').trim()
 
-            const restRound = this.checkRestRound(extractedText)
-            if (restRound) return { ...restRound, movements: [] }
+            const restRoundTime = this.findRest(text)
+            if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
             const extractedMovements = this.textMovementsToRound(extractedText)
             if (!extractedMovements) return null
@@ -34,24 +34,26 @@ export class RoundTransformer extends BaseTransformer {
                     ? 'complex'
                     : this.tranformType(match.groups.type as TRoundTypeTransform)
 
+            const numberOfRounds = Number(match.groups.rounds || 1)
+
             switch (type) {
                 case 'tabata': {
-                    const time = this.extractTime(type, match.groups.time)
+                    const [work, rest] = this.extractTimeByType(type, match.groups.time)
 
                     return {
                         type,
-                        numberOfRounds: Number(match.groups.rounds),
-                        rest: time[1],
-                        work: time[1],
+                        numberOfRounds,
+                        work,
+                        rest,
                         movements: extractedMovements.movements,
                     }
                 }
                 case 'emom': {
-                    const time = this.extractTime(type, match.groups.time)
+                    const time = this.extractTimeByType(type, match.groups.time)
 
                     return {
                         type,
-                        numberOfRounds: Number(match.groups.rounds),
+                        numberOfRounds,
                         each: time,
                         movements: extractedMovements.movements,
                     }
@@ -60,16 +62,16 @@ export class RoundTransformer extends BaseTransformer {
                 case 'complex': {
                     return {
                         type,
-                        numberOfRounds: Number(match.groups.rounds),
+                        numberOfRounds,
                         movements: extractedMovements.movements,
                     }
                 }
                 default: {
-                    const time = this.extractTime(type, match.groups.time)
+                    const time = this.extractTimeByType(type, match.groups.time)
 
                     return {
                         type,
-                        numberOfRounds: Number(match.groups.rounds),
+                        numberOfRounds,
                         timecap: time,
                         movements: extractedMovements.movements,
                     }
@@ -77,8 +79,8 @@ export class RoundTransformer extends BaseTransformer {
             }
         }
 
-        const restRound = this.checkRestRound(text)
-        if (restRound) return { ...restRound, movements: [] }
+        const restRoundTime = this.findRest(text)
+        if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
         return this.textMovementsToRound(text)
     }
@@ -88,12 +90,18 @@ export class RoundTransformer extends BaseTransformer {
 
         if (obj.type === 'complex') return this.displayComplex(obj)
 
-        let text = obj.numberOfRounds ? `round: ${obj.numberOfRounds}` : ''
-
+        const rounds = obj.numberOfRounds && obj.numberOfRounds > 1 ? ` ${obj.numberOfRounds}` : null
+        const type = this.typeToString(obj.type)
         const timeString = this.eventTimeToString(obj)
-        if (text && timeString) text += ` ${this.typeToString(obj.type)} ${timeString}`
+
+        const title =
+            rounds || type ? `round:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}` : ''
+
+        let text = title
         if (text) text += '\n'
+
         text += obj.movements.map((o) => this.movementTransformer.toString(o)).join(this.breakline)
+
         return text
     }
 
@@ -127,31 +135,22 @@ export class RoundTransformer extends BaseTransformer {
         }
     }
 
-    private checkRestRound(text: string): IRoundRest | null {
-        const match = text.match(this.restRegex)
-        if (!match?.groups?.time) return null
-
-        const time = this.extractTime('for_time', match.groups.time)
-
-        return {
-            type: 'rest',
-            time,
-        }
-    }
-
     private eventTimeToString(obj: IRound): string | null {
         switch (obj.type) {
             case 'tabata': {
+                if (!obj.work || !obj.rest) return null
                 const work = getTimeFromSeconds(obj.work)
                 const rest = getTimeFromSeconds(obj.rest)
                 return `${work}/${rest}`
             }
             case 'emom': {
+                if (!obj.each) return null
                 const each = getTimeFromSeconds(obj.each)
                 return each
             }
             case 'for_time':
             case 'amrap': {
+                if (!obj.timecap) return null
                 const time = getTimeFromSeconds(obj.timecap)
                 return time
             }
@@ -167,8 +166,8 @@ export class RoundTransformer extends BaseTransformer {
         return type
     }
 
-    private typeToString(type: TTimerType): TRoundTypeTransform | '' {
-        if (!type || type === 'not_timed') return ''
+    private typeToString(type: TTimerType): TRoundTypeTransform | null {
+        if (!type || type === 'not_timed') return null
         if (type === 'for_time') return 'for time'
 
         return type
@@ -189,7 +188,7 @@ export class RoundTransformer extends BaseTransformer {
         return `${complex}${weight}`
     }
 
-    displayType(round: IRound): string {
+    displayTitle(round: IRound): string {
         if (round.type === 'rest') return ''
         if (round.type === 'complex') return ''
         const time =
@@ -214,6 +213,8 @@ export class RoundTransformer extends BaseTransformer {
             const rest = getTimeFromSeconds(round.rest)
             return ` - ${work}/${rest} por ${round.numberOfRounds} ${pluralize(round.numberOfRounds, 'round')}`
         }
+
+        if (!round.timecap) return ''
 
         const timecap = getTimeFromSeconds(round.timecap)
 

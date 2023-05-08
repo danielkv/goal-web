@@ -28,7 +28,7 @@ export class EventBlockTransformer extends BaseTransformer {
 
             switch (event_type) {
                 case 'tabata': {
-                    const time = this.extractTime(event_type, match.groups.time)
+                    const time = this.extractTimeByType(event_type, match.groups.time)
 
                     return {
                         type: 'event',
@@ -40,7 +40,7 @@ export class EventBlockTransformer extends BaseTransformer {
                     }
                 }
                 case 'emom': {
-                    const time = this.extractTime(event_type, match.groups.time)
+                    const time = this.extractTimeByType(event_type, match.groups.time)
 
                     return {
                         type: 'event',
@@ -59,7 +59,7 @@ export class EventBlockTransformer extends BaseTransformer {
                     }
                 }
                 default: {
-                    const time = this.extractTime(
+                    const time = this.extractTimeByType(
                         event_type === 'max_weight' ? 'for_time' : event_type,
                         match.groups.time
                     )
