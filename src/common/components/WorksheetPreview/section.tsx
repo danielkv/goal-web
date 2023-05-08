@@ -20,14 +20,6 @@ const SectionPreview: Component<SectionProps> = (props) => {
         ['onAdd', 'onRemove', 'onMove', 'item', 'thisPath']
     )
 
-    document.addEventListener('keydown', (e) => {
-        if (props.currentPath !== props.thisPath) return
-        if (e.key === 'Enter') {
-            e.preventDefault()
-            setEditorOpen(true)
-        }
-    })
-
     return (
         <div
             class="section"

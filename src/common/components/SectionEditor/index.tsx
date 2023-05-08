@@ -52,6 +52,7 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
     const handleKeyDown: JSX.CustomEventHandlersCamelCase<HTMLTextAreaElement>['onKeyDown'] = (e) => {
         switch (e.key) {
             case 'Enter': {
+                if (!e.ctrlKey) return
                 e.preventDefault()
                 return updateForm()
             }
