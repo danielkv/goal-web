@@ -8,6 +8,7 @@ export type ITabataTimer = {
 
 export type ITimecapTimer = {
     timecap: number // seconds
+    numberOfRounds: number
 }
 
 export type IEMOMTimer = {

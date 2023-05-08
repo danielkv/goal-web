@@ -12,18 +12,20 @@ import { createEventRoundValues } from '@utils/worksheetInitials'
 export interface EventBlockPreviewProps extends WorksheetPeace<IEventBlock> {}
 
 const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
+    const eventTitle = createMemo(() => eventBlockTransformer.displayTitle(props.item))
+
     return (
         <div class="text-center">
             {props.item.name && <div>{props.item.name}</div>}
-            {props.item.event_type !== 'not_timed' && (
-                <div class="title">{eventBlockTransformer.displayType(props.item)}</div>
-            )}
+            <Show when={!!eventTitle()}>
+                <div class="title">{eventTitle()}</div>
+            </Show>
 
             <For each={props.item.rounds}>
                 {(round, roundIndex) => {
                     const roundPath = createMemo(() => addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`))
 
-                    const title = createMemo(() => roundTransformer.displayTitle(round))
+                    const roundTitle = createMemo(() => roundTransformer.displayTitle(round))
 
                     return (
                         <div
@@ -48,8 +50,8 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                     createInitialValues={createEventRoundValues}
                                 />
                             )}
-                            <Show when={!!title()}>
-                                <div class="title">{title()}</div>
+                            <Show when={!!roundTitle()}>
+                                <div class="title">{roundTitle()}</div>
                             </Show>
 
                             <Show when={round.type == 'rest'}>{roundTransformer.displayRestRound(round)}</Show>

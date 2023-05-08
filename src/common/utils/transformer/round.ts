@@ -1,7 +1,5 @@
 import { IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
 import { TTimerType } from '@models/time'
-import { pluralize } from '@utils/strings'
-import { getTimeFromSeconds } from '@utils/time'
 import { roundTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
@@ -92,7 +90,7 @@ export class RoundTransformer extends BaseTransformer {
 
         const rounds = obj.numberOfRounds && obj.numberOfRounds > 1 ? ` ${obj.numberOfRounds}` : null
         const type = this.typeToString(obj.type)
-        const timeString = this.eventTimeToString(obj)
+        const timeString = this.roundTimerToString(obj)
 
         const title =
             rounds || type ? `round:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}` : ''
@@ -135,30 +133,6 @@ export class RoundTransformer extends BaseTransformer {
         }
     }
 
-    private eventTimeToString(obj: IRound): string | null {
-        switch (obj.type) {
-            case 'tabata': {
-                if (!obj.work || !obj.rest) return null
-                const work = getTimeFromSeconds(obj.work)
-                const rest = getTimeFromSeconds(obj.rest)
-                return `${work}/${rest}`
-            }
-            case 'emom': {
-                if (!obj.each) return null
-                const each = getTimeFromSeconds(obj.each)
-                return each
-            }
-            case 'for_time':
-            case 'amrap': {
-                if (!obj.timecap) return null
-                const time = getTimeFromSeconds(obj.timecap)
-                return time
-            }
-            default:
-                return null
-        }
-    }
-
     private tranformType(type?: TRoundTypeTransform): TTimerType {
         if (!type) return 'not_timed'
         if (type === 'for time') return 'for_time'
@@ -192,33 +166,43 @@ export class RoundTransformer extends BaseTransformer {
         if (round.type === 'rest') return ''
         if (round.type === 'complex') return ''
         const time =
-            round.type === 'amrap' || round.type === 'for_time' || round.type === 'emom' ? this.displayTime(round) : ''
+            round.type === 'amrap' || round.type === 'for_time' || round.type === 'emom' || round.type === 'tabata'
+                ? this.displayRoundTimer(round)
+                : ''
 
-        const numberOfRounds = round.numberOfRounds && round.numberOfRounds > 1 ? `${round.numberOfRounds} rounds` : ''
+        const numberOfRounds = !time ? super.displayNumberOfRounds(round.numberOfRounds) : ''
+
         const type = round.type && round.type != 'not_timed' ? roundTypes[round.type] : ''
         if (!numberOfRounds && !type) return ''
         return `${numberOfRounds} ${type}${time}`.trim()
     }
 
-    private displayTime(round: IRoundTimecap | IRoundEMOM | IRoundTabata): string {
-        if (round.type === 'emom') {
-            if (!round.each || !round.numberOfRounds) return ''
-            const each = getTimeFromSeconds(round.each)
-            return ` - Cada ${each} por ${round.numberOfRounds} ${pluralize(round.numberOfRounds, 'round')}`
+    private roundTimerToString(obj: IRound): string | null {
+        switch (obj.type) {
+            case 'tabata':
+                return super.timerToString('tabata', obj.work, obj.rest)
+
+            case 'emom':
+                return super.timerToString('emom', obj.each)
+
+            case 'for_time':
+            case 'amrap':
+                return super.timerToString('emom', obj.timecap)
+
+            default:
+                return super.timerToString('not_timed')
         }
+    }
 
-        if (round.type === 'tabata') {
-            if (!round.work || !round.rest || !round.numberOfRounds) return ''
-            const work = getTimeFromSeconds(round.work)
-            const rest = getTimeFromSeconds(round.rest)
-            return ` - ${work}/${rest} por ${round.numberOfRounds} ${pluralize(round.numberOfRounds, 'round')}`
+    private displayRoundTimer(round: IRoundTimecap | IRoundEMOM | IRoundTabata): string {
+        switch (round.type) {
+            case 'emom':
+                return super.displayTimer('emom', round.numberOfRounds, round.each)
+            case 'tabata':
+                return super.displayTimer('tabata', round.numberOfRounds, round.work, round.rest)
+            default:
+                return super.displayTimer(round.type, round.numberOfRounds, round.timecap)
         }
-
-        if (!round.timecap) return ''
-
-        const timecap = getTimeFromSeconds(round.timecap)
-
-        return ` - ${timecap}`
     }
 }
 

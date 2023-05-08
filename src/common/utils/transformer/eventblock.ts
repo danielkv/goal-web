@@ -1,6 +1,4 @@
-import { IEventBlock, IRound, TEventType } from '@models/block'
-import { pluralize } from '@utils/strings'
-import { getTimeFromSeconds } from '@utils/time'
+import { IEventBlock, IEventBlockEMOM, IEventBlockTabata, IEventBlockTimecap, IRound, TEventType } from '@models/block'
 import { eventTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
@@ -87,33 +85,12 @@ export class EventBlockTransformer extends BaseTransformer {
 
     toString(obj: IEventBlock): string {
         let text = obj.numberOfRounds ? `bloco: ${obj.numberOfRounds}` : ''
-        const timeString = this.eventTimeToString(obj)
+        const timeString = this.eventTimerToString(obj)
+
         if (text && timeString) text += ` ${this.eventTypeToString(obj.event_type)} ${timeString}`
         if (text) text += '\n'
         text += obj.rounds.map((o) => this.roundTransformer.toString(o)).join(this.breakline)
         return text
-    }
-
-    private eventTimeToString(obj: IEventBlock): string | null {
-        switch (obj.event_type) {
-            case 'tabata': {
-                const work = getTimeFromSeconds(obj.work)
-                const rest = getTimeFromSeconds(obj.rest)
-                return `${work}/${rest}`
-            }
-            case 'emom': {
-                const each = getTimeFromSeconds(obj.each)
-                return each
-            }
-            case 'for_time':
-            case 'amrap':
-            case 'max_weight': {
-                const time = getTimeFromSeconds(obj.timecap)
-                return time
-            }
-            default:
-                return null
-        }
     }
 
     private tranformEventType(type?: TEventTypeTransform): TEventType {
@@ -132,27 +109,51 @@ export class EventBlockTransformer extends BaseTransformer {
         return type
     }
 
-    displayType(block: IEventBlock): string {
-        if (block.event_type === 'emom') {
-            if (!block.each || !block.numberOfRounds) return ''
-            const each = getTimeFromSeconds(block.each)
-            return ` - Cada ${each} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
+    displayTitle(block: IEventBlock): string {
+        const time =
+            block.event_type === 'amrap' ||
+            block.event_type === 'for_time' ||
+            block.event_type === 'emom' ||
+            block.event_type === 'tabata'
+                ? this.displayEventTimer(block)
+                : ''
+
+        const numberOfRounds = !time ? super.displayNumberOfRounds(block.numberOfRounds) : ''
+        const type = block.event_type && block.event_type != 'not_timed' ? eventTypes[block.event_type] : ''
+
+        if (!numberOfRounds && !type) return ''
+        return `${numberOfRounds} ${type}${time}`.trim()
+    }
+
+    private eventTimerToString(obj: IEventBlock): string | null {
+        switch (obj.event_type) {
+            case 'tabata': {
+                return super.timerToString('tabata', obj.work, obj.rest)
+            }
+            case 'emom': {
+                return super.timerToString('emom', obj.each)
+            }
+            case 'for_time':
+            case 'amrap':
+            case 'max_weight': {
+                return super.timerToString('emom', obj.timecap)
+            }
+            default:
+                return super.timerToString('not_timed')
         }
+    }
 
-        if (block.event_type === 'tabata') {
-            if (!block.work || !block.rest || !block.numberOfRounds) return ''
-            const work = getTimeFromSeconds(block.work)
-            const rest = getTimeFromSeconds(block.rest)
-            return ` - ${work}/${rest} por ${block.numberOfRounds} ${pluralize(block.numberOfRounds, 'round')}`
+    private displayEventTimer(block: IEventBlockTimecap | IEventBlockEMOM | IEventBlockTabata): string {
+        switch (block.event_type) {
+            case 'emom':
+                return super.displayTimer('emom', block.numberOfRounds, block.each)
+            case 'tabata':
+                return super.displayTimer('tabata', block.numberOfRounds, block.work, block.rest)
+            case 'max_weight':
+                return super.displayTimer('for_time', block.numberOfRounds, block.timecap)
+            default:
+                return super.displayTimer(block.event_type, block.numberOfRounds, block.timecap)
         }
-
-        if (block.event_type === 'not_timed') return ''
-
-        if (!block.timecap) return ''
-
-        const timecap = getTimeFromSeconds(block.timecap)
-        const numberOfRounds = block.numberOfRounds && block.numberOfRounds > 1 ? `${block.numberOfRounds} rounds` : ''
-        return `${numberOfRounds} ${eventTypes[block.event_type]} - ${timecap}`
     }
 }
 
