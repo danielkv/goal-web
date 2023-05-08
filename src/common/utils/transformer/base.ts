@@ -86,7 +86,6 @@ export abstract class BaseTransformer {
         t1?: number | never,
         t2?: never | number
     ): string | null {
-        console.log(rounds, t1, t2)
         if (!rounds) return null
 
         if (type === 'emom') {

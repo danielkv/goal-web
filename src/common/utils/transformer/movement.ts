@@ -4,14 +4,18 @@ import { numberHelper } from '@utils/numbers'
 export class MovementTransformer {
     toObject(text: string): IEventMovement {
         const regex =
-            /^((?<reps>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)((?<reps_type>x|m|km|s|min)\s|\s)+)(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+[A-Z])+(?:\s\-\s(?<weight>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?$/i
+            /^(?<reps>((?<reps_number>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)((?<reps_type>x|m|km|s|mi|min|sec)\s|\s)+)|max)(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+[A-Z])+(?:\s\-\s(?<weight>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?$/i
 
         const match = text.match(regex)
         if (!match?.groups) return { name: text.trim(), reps: '' }
 
+        const reps = match.groups.reps_number
+            ? `${match.groups.reps_number.trim()}${match.groups.reps_type || ''}`
+            : match.groups.reps
+
         return {
             name: match.groups.name.trim(),
-            reps: `${match.groups.reps.trim()}${match.groups.reps_type || ''}`,
+            reps,
             weight: match.groups.weight
                 ? {
                       value: match.groups.weight.trim(),
@@ -37,9 +41,8 @@ export class MovementTransformer {
     }
 
     displayMovement(obj: IEventMovement) {
-        const reps = numberHelper.convertNumbers(obj.reps, { suffix: '' })
-        const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
-        const displayMovement = `${repsDisplay}${obj.name}`
+        const reps = this.displayReps(obj)
+        const displayMovement = `${reps}${obj.name}`
 
         return displayMovement
     }
@@ -49,6 +52,12 @@ export class MovementTransformer {
         const movement = this.displayMovement(obj)
 
         return `${movement}${weight}`
+    }
+
+    private displayReps(obj: IEventMovement) {
+        const reps = numberHelper.convertNumbers(obj.reps, { suffix: '' })
+        const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
+        return repsDisplay
     }
 }
 

@@ -2,7 +2,7 @@ import { ITextBlock } from '@models/block'
 
 export class TextBlockTransformer {
     toObject(text: string): ITextBlock | null {
-        const regex = /^(?<text>[:alpha:].*)$/
+        const regex = /^(?<text>[A-Za-z].*)$/i
 
         const match = text.match(regex)
         if (!match?.groups?.text) return null

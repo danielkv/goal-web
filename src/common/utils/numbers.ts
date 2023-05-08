@@ -15,7 +15,7 @@ class NumberHelper {
     }
 
     public getEnding(number: string): string | null {
-        const match = number.trim().match(/(?<ending>km|m|x|s|min|kg|%|lb)$/)
+        const match = number.trim().match(/(?<ending>x|m|km|s|mi|min|sec|kg|%|lb)$/)
 
         return match?.groups?.ending || null
     }
@@ -63,12 +63,14 @@ class NumberHelper {
 
     public convertNumbers(number?: string, opts?: Partial<TOpts>): string {
         if (!number) return ''
+        if (number === 'max') return 'max'
 
         const calculatedOpts = this.getOpts(opts)
 
         const ending = this.getEnding(number)
         const _number = this.clearNumber(number, ending)
-        if (!Number.isNaN(Number(_number))) return `${_number} ${calculatedOpts.suffix}`
+
+        if (!Number.isNaN(Number(_number))) return `${_number}${ending || ''} ${calculatedOpts.suffix}`
 
         const calcMatch = this.convertCalcMatch(_number, opts)
         if (calcMatch) return this.addSuffix(calcMatch, ending || calculatedOpts.suffix)

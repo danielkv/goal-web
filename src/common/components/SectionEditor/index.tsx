@@ -2,6 +2,7 @@ import { Component, JSX, createEffect, createSignal } from 'solid-js'
 
 import { Path } from '@interfaces/app'
 import { ISection, TPeaces } from '@models/day'
+import { getErrorMessage } from '@utils/errors'
 import { sectionTransformer } from '@utils/transformer/section'
 
 export interface SectionEditorProps {
@@ -21,26 +22,30 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
     const handleUpdate: JSX.CustomEventHandlersCamelCase<HTMLFormElement>['onSubmit'] = (e) => {
         e.preventDefault()
 
-        const text: string = (document.querySelector('#textarea') as any).value
-        if (!text) return
+        try {
+            const text: string = (document.querySelector('#textarea') as any).value
+            if (!text) return
 
-        const blocks = sectionTransformer.toObject(text)
+            const blocks = sectionTransformer.toObject(text)
 
-        const section: ISection = {
-            ...props.current,
-            blocks,
+            const section: ISection = {
+                ...props.current,
+                blocks,
+            }
+
+            props.onUpdate?.(props.thisPath, section)
+
+            props.onClose()
+        } catch (err) {
+            alert(getErrorMessage(err))
         }
-
-        props.onUpdate?.(props.thisPath, section)
-
-        props.onClose()
     }
 
     return (
-        <form onSubmit={handleUpdate} class="flex flex-col">
+        <form onSubmit={handleUpdate} class="flex w-full flex-col">
             <textarea
                 id="textarea"
-                class="w-[400px] bg-[transparent] text-center border-white border rounded-md"
+                class="w-full bg-[transparent] text-center border-white border rounded-md"
                 rows={15}
             >
                 {text()}
