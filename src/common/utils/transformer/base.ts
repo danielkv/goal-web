@@ -9,7 +9,7 @@ export abstract class BaseTransformer {
     protected tabataTimeRegex =
         /^(?<work>(?<t1>\d+)(?<t1_type>m(?:in)?|s(?:ec)?)(?:(?<t2>\d+)s(?:ec)?)?)\/(?<rest>(?<t3>\d+)(?<t3_type>m(?:in)?|s(?:ec)?)(?:(?<t4>\d+)s(?:ec)?)?)/i
     protected restRegex =
-        /^(?:(?:rest\s)(?<time1>(\d+)\s?(m(?:in)?|s(?:ec)?)(?:(\d+)\s?s(?:ec)?)?))|(?:(?<time2>(\d+)\s?(m(?:in)?|s(?:ec)?)(?:(\d+)\s?s(?:ec)?)?)(?:\s(?:rest)))$/i
+        /^((?:(?:rest\s)(?<time1>(\d+)\s?(m(?:in)?|s(?:ec)?)(?:(\d+)\s?s(?:ec)?)?))|(?:(?<time2>(\d+)\s?(m(?:in)?|s(?:ec)?)(?:(\d+)\s?s(?:ec)?)?)(?:\s(?:rest))))$/i
 
     protected extractTimeByType(type: Extract<TTimerType, 'tabata'>, time: string): [number, number]
     protected extractTimeByType(type: Exclude<TTimerType, 'tabata'>, time: string): number
@@ -106,10 +106,13 @@ export abstract class BaseTransformer {
         const timecap = getTimeFromSeconds(t1)
         const roundsDisplay = rounds > 1 ? ` - ${this.displayNumberOfRounds(rounds)}` : ''
 
-        return ` - TC: ${timecap}${roundsDisplay}`
+        return ` - ${timecap}${roundsDisplay}`
     }
 
-    protected displayNumberOfRounds(rounds?: number): string {
-        return rounds && rounds > 1 ? `${rounds} rounds` : ''
+    protected displayNumberOfRounds(rounds?: number, suffix = 'rounds'): string {
+        if (!rounds) return ''
+        if (rounds <= 1) return ''
+        if (!suffix) return String(rounds)
+        return `${rounds} ${suffix}`
     }
 }

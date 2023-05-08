@@ -13,7 +13,7 @@ export class EventBlockTransformer extends BaseTransformer {
     }
 
     toObject(text: string): IEventBlock | null {
-        const regex = /^bloco\:\s(?<rounds>\d+)(?:\s(?<type>emom|for time|max|amrap|tabata)(?:\s(?<time>.*))?)?/i
+        const regex = /^bloco\:(?:\s(?<rounds>\d+))?(?:\s(?<type>emom|for time|max|amrap|tabata)(?:\s(?<time>.*))?)?/i
         const match = text.match(regex)
 
         if (match?.groups) {
@@ -24,16 +24,18 @@ export class EventBlockTransformer extends BaseTransformer {
 
             const event_type = this.tranformEventType(match.groups.type as TEventTypeTransform)
 
+            const numberOfRounds = Number(match.groups.rounds || 1)
+
             switch (event_type) {
                 case 'tabata': {
-                    const time = this.extractTimeByType(event_type, match.groups.time)
+                    const [work, rest] = this.extractTimeByType(event_type, match.groups.time)
 
                     return {
                         type: 'event',
-                        numberOfRounds: Number(match.groups.rounds),
+                        numberOfRounds,
                         event_type,
-                        rest: time[1],
-                        work: time[1],
+                        rest,
+                        work,
                         rounds,
                     }
                 }
@@ -42,7 +44,7 @@ export class EventBlockTransformer extends BaseTransformer {
 
                     return {
                         type: 'event',
-                        numberOfRounds: Number(match.groups.rounds),
+                        numberOfRounds,
                         event_type,
                         each: time,
                         rounds,
@@ -51,7 +53,7 @@ export class EventBlockTransformer extends BaseTransformer {
                 case 'not_timed': {
                     return {
                         type: 'event',
-                        numberOfRounds: Number(match.groups.rounds),
+                        numberOfRounds,
                         event_type,
                         rounds,
                     }
@@ -64,7 +66,7 @@ export class EventBlockTransformer extends BaseTransformer {
 
                     return {
                         type: 'event',
-                        numberOfRounds: Number(match.groups.rounds),
+                        numberOfRounds,
                         event_type,
                         timecap: time,
                         rounds,
@@ -84,13 +86,27 @@ export class EventBlockTransformer extends BaseTransformer {
     }
 
     toString(obj: IEventBlock): string {
-        let text = obj.numberOfRounds ? `bloco: ${obj.numberOfRounds}` : ''
+        const title = this.titleToString(obj)
+
+        let text = title || ''
+        if (text) text += '\n'
+
+        text += obj.rounds.map((o) => this.roundTransformer.toString(o)).join(this.breakline)
+
+        if (!text) return ''
+
+        return text
+    }
+
+    private titleToString(obj: IEventBlock): string | null {
+        const rounds = obj.numberOfRounds && obj.numberOfRounds > 1 ? ` ${obj.numberOfRounds}` : null
+
+        const type = this.typeToString(obj.event_type)
         const timeString = this.eventTimerToString(obj)
 
-        if (text && timeString) text += ` ${this.eventTypeToString(obj.event_type)} ${timeString}`
-        if (text) text += '\n'
-        text += obj.rounds.map((o) => this.roundTransformer.toString(o)).join(this.breakline)
-        return text
+        if (!rounds && !type) return null
+
+        return `bloco:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}`
     }
 
     private tranformEventType(type?: TEventTypeTransform): TEventType {
@@ -101,7 +117,7 @@ export class EventBlockTransformer extends BaseTransformer {
         return type
     }
 
-    private eventTypeToString(type: TEventType): TEventTypeTransform | '' {
+    private typeToString(type: TEventType): TEventTypeTransform | '' {
         if (!type || type === 'not_timed') return ''
         if (type === 'max_weight') return 'max'
         if (type === 'for_time') return 'for time'

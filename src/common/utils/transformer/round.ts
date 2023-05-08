@@ -86,21 +86,40 @@ export class RoundTransformer extends BaseTransformer {
     toString(obj: IRound): string {
         if (obj.type === 'rest') return this.displayRest(obj.time)
 
-        if (obj.type === 'complex') return this.displayComplex(obj)
+        const title = this.titleToString(obj)
 
-        const rounds = obj.numberOfRounds && obj.numberOfRounds > 1 ? ` ${obj.numberOfRounds}` : null
-        const type = this.typeToString(obj.type)
-        const timeString = this.roundTimerToString(obj)
+        if (obj.type === 'complex') {
+            if (title) return `${title}\n${this.displayComplex(obj)}`
+            return this.displayComplex(obj)
+        }
 
-        const title =
-            rounds || type ? `round:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}` : ''
-
-        let text = title
+        let text = title || ''
         if (text) text += '\n'
 
         text += obj.movements.map((o) => this.movementTransformer.toString(o)).join(this.breakline)
 
+        if (!text) return ''
+
         return text
+    }
+
+    private titleToString(obj: IRound): string | null {
+        const rounds = obj.numberOfRounds && obj.numberOfRounds > 1 ? ` ${obj.numberOfRounds}` : null
+
+        if (obj.type === 'rest') return null
+
+        if (obj.type === 'complex') {
+            const displayRounds = super.displayNumberOfRounds(obj.numberOfRounds, '')
+            if (!displayRounds) return null
+            return `round: ${displayRounds}`
+        }
+
+        const type = this.typeToString(obj.type)
+        const timeString = this.roundTimerToString(obj)
+
+        if (!rounds && !type) return null
+
+        return `round:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}`
     }
 
     private textMovementsToRound(text: string): IRound | null {
@@ -164,7 +183,7 @@ export class RoundTransformer extends BaseTransformer {
 
     displayTitle(round: IRound): string {
         if (round.type === 'rest') return ''
-        if (round.type === 'complex') return ''
+        if (round.type === 'complex') return super.displayNumberOfRounds(round.numberOfRounds)
         const time =
             round.type === 'amrap' || round.type === 'for_time' || round.type === 'emom' || round.type === 'tabata'
                 ? this.displayRoundTimer(round)
