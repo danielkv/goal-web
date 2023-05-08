@@ -1,4 +1,4 @@
-import { Component, JSX, createEffect, createSignal } from 'solid-js'
+import { Component, JSX, createEffect, createSignal, onMount } from 'solid-js'
 
 import { Path } from '@interfaces/app'
 import { ISection, TPeaces } from '@models/day'
@@ -19,9 +19,7 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
         setText(sectionTransformer.toString(props.current.blocks))
     })
 
-    const handleUpdate: JSX.CustomEventHandlersCamelCase<HTMLFormElement>['onSubmit'] = (e) => {
-        e.preventDefault()
-
+    const updateForm = () => {
         try {
             const text: string = (document.querySelector('#textarea') as any).value
             if (!text) return
@@ -41,10 +39,34 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
         }
     }
 
+    const handleUpdate: JSX.CustomEventHandlersCamelCase<HTMLFormElement>['onSubmit'] = (e) => {
+        e.preventDefault()
+
+        updateForm()
+    }
+    onMount(() => {
+        const element = document.querySelector('#textarea') as HTMLInputElement
+        element.focus()
+    })
+
+    const handleKeyDown: JSX.CustomEventHandlersCamelCase<HTMLTextAreaElement>['onKeyDown'] = (e) => {
+        switch (e.key) {
+            case 'Enter': {
+                e.preventDefault()
+                return updateForm()
+            }
+            case 'Escape': {
+                e.preventDefault()
+                return props.onClose()
+            }
+        }
+    }
+
     return (
         <form onSubmit={handleUpdate} class="flex w-full flex-col">
             <textarea
                 id="textarea"
+                onKeyDown={handleKeyDown}
                 class="w-full bg-[transparent] text-center border-white border rounded-md"
                 rows={15}
             >
