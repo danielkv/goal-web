@@ -3,7 +3,7 @@ import { Component, For, JSX, createEffect, createMemo, on } from 'solid-js'
 import TextInput from '@components/TextInput'
 import TimersForm from '@components/TimersForm'
 import { IEventBlock } from '@models/block'
-import { TTimerType } from '@models/time'
+import { TTimerTypes } from '@models/time'
 import { Field, Form, SubmitHandler, createForm, getValue, reset, setValue, zodForm } from '@modular-forms/solid'
 import { eventTypes } from '@utils/worksheetInitials'
 
@@ -32,7 +32,7 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
         props.onClickNext(newValues)
     }
 
-    const timerType = createMemo<TTimerType>(() => {
+    const timerType = createMemo<TTimerTypes>(() => {
         const value = getValue(form, 'event_type') || 'not_timed'
 
         if (value === 'max_weight') return 'for_time'

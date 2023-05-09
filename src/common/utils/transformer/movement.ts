@@ -1,7 +1,7 @@
-import { IEventMovement, TMovementWeight, TWeightTypes } from '@models/block'
-import { numberHelper } from '@utils/numbers'
+import { IEventMovement, IMovementWeight, TWeightTypes } from '@models/block'
 
 import { BaseTransformer } from './base'
+import { numberHelper } from './numbers'
 
 export class MovementTransformer extends BaseTransformer {
     private repsRegex = this.mergeRegex([
@@ -37,7 +37,9 @@ export class MovementTransformer extends BaseTransformer {
         }
     }
 
-    protected extractWeight(text: string): TMovementWeight | undefined {
+    protected extractWeight(text?: string): IMovementWeight | undefined {
+        if (!text) return undefined
+
         const match = text.match(this.weightRegex)
         if (!match?.groups?.weight) return undefined
 
@@ -65,11 +67,11 @@ export class MovementTransformer extends BaseTransformer {
         return `${reps}${obj.name}${weight}`
     }
 
-    weightToString(weight?: TMovementWeight): string {
+    weightToString(weight?: IMovementWeight): string {
         return weight ? ` - ${weight.value}${weight.type}` : ''
     }
 
-    displayWeight(weight?: TMovementWeight): string {
+    displayWeight(weight?: IMovementWeight): string {
         if (!weight?.value || weight.type === 'none') return ''
 
         const value = numberHelper.convertNumbers(weight.value, { suffix: '', separator: `${weight.type} ` })

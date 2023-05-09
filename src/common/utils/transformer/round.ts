@@ -1,5 +1,5 @@
 import { IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
-import { TTimerType } from '@models/time'
+import { TTimerTypes } from '@models/time'
 import { roundTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
@@ -158,14 +158,14 @@ export class RoundTransformer extends BaseTransformer {
         }
     }
 
-    private tranformType(type?: TRoundTypeTransform): TTimerType {
+    private tranformType(type?: TRoundTypeTransform): TTimerTypes {
         if (!type) return 'not_timed'
         if (type === 'for time') return 'for_time'
 
         return type
     }
 
-    private typeToString(type: TTimerType): TRoundTypeTransform | null {
+    private typeToString(type: TTimerTypes): TRoundTypeTransform | null {
         if (!type || type === 'not_timed') return null
         if (type === 'for_time') return 'for time'
 

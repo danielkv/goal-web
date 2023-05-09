@@ -1,4 +1,4 @@
-export type TTimerType = 'for_time' | 'emom' | 'amrap' | 'tabata' | 'not_timed'
+export type TTimerTypes = 'for_time' | 'emom' | 'amrap' | 'tabata' | 'not_timed'
 
 export type ITabataTimer = {
     work: number

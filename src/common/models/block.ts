@@ -1,8 +1,8 @@
-import { IEMOMTimer, ITabataTimer, ITimecapTimer, TTimerType } from './time'
+import { IEMOMTimer, ITabataTimer, ITimecapTimer, TTimerTypes } from './time'
 
 export type TWeightTypes = 'kg' | 'lb' | '%' | 'none'
 
-export type TMovementWeight = {
+export type IMovementWeight = {
     type: TWeightTypes
     value: string
 }
@@ -10,12 +10,12 @@ export type TMovementWeight = {
 export type IEventMovement = {
     name: string
     reps: string
-    weight?: TMovementWeight
+    weight?: IMovementWeight
     videoUrl?: string
 }
 
 export type IRoundTimecap = {
-    type: Exclude<TTimerType, 'emom' | 'not_timed' | 'tabata'>
+    type: Exclude<TTimerTypes, 'emom' | 'not_timed' | 'tabata'>
 } & ITimecapTimer
 
 export type IRoundEMOM = {
@@ -35,7 +35,7 @@ export type IRoundNotTimed = {
     type: 'not_timed' | 'complex'
 }
 
-export type TRoundTypes = TTimerType | 'rest' | 'complex'
+export type TRoundTypes = TTimerTypes | 'rest' | 'complex'
 
 export type IRound = {
     type: TRoundTypes
@@ -53,7 +53,7 @@ export type IEventBlockTabata = {
     event_type: 'tabata'
 } & ITabataTimer
 
-export type TEventType = TTimerType | 'max_weight'
+export type TEventType = TTimerTypes | 'max_weight'
 export type IEventBlockTimecap = {
     event_type: 'for_time' | 'amrap' | 'max_weight'
 } & ITimecapTimer

@@ -4,7 +4,7 @@ import TextInput from '@components/TextInput'
 import TimeInput from '@components/TimeInput'
 import TimersForm from '@components/TimersForm'
 import { IRound } from '@models/block'
-import { TTimerType } from '@models/time'
+import { TTimerTypes } from '@models/time'
 import {
     Field,
     FieldArray,
@@ -60,7 +60,7 @@ const RoundForm: Component<BlockFormProps> = (props) => {
         insert(form, 'movements', { value: createRoundMovementValues() })
     }
 
-    const timerType = createMemo<TTimerType>(() => {
+    const timerType = createMemo<TTimerTypes>(() => {
         const value = getValue(form, 'type') || 'not_timed'
         if (value === 'rest') return 'not_timed'
         if (value === 'complex') return 'not_timed'

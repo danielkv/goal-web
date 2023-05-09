@@ -2,16 +2,16 @@ import {
     IBlock,
     IEventBlock,
     IEventMovement,
+    IMovementWeight,
     IRestBlock,
     IRound,
     ITextBlock,
     TBlockType,
-    TMovementWeight,
 } from '@models/block'
 import { IDay, IPeriod, ISection, IWorksheet } from '@models/day'
-import { TTimerType } from '@models/time'
+import { TTimerTypes } from '@models/time'
 
-export function createMovementWeightValues(): TMovementWeight {
+export function createMovementWeightValues(): IMovementWeight {
     return {
         type: 'kg',
         value: '',
@@ -102,7 +102,7 @@ export const blockTypesMap: Record<Exclude<TBlockType, ''>, string> = {
     text: 'Texto',
 }
 
-export const timerTypes: Record<TTimerType, string> = {
+export const timerTypes: Record<TTimerTypes, string> = {
     not_timed: 'Sem tempo',
     for_time: 'For Time',
     amrap: 'AMRAP',

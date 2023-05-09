@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { TTimerType } from '@models/time'
+import { TTimerTypes } from '@models/time'
 import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
@@ -33,9 +33,9 @@ export abstract class BaseTransformer extends RegexHelper {
     ])
     protected tabataTimeRegex = this.mergeRegex(['(?<work>', this.timeRegex, ')/(?<rest>', this.timeRegex, ')'])
 
-    protected extractTimeByType(type: Extract<TTimerType, 'tabata'>, time: string): [number, number]
-    protected extractTimeByType(type: Exclude<TTimerType, 'tabata'>, time: string): number
-    protected extractTimeByType(type: TTimerType, time: string): number | [number, number] {
+    protected extractTimeByType(type: Extract<TTimerTypes, 'tabata'>, time: string): [number, number]
+    protected extractTimeByType(type: Exclude<TTimerTypes, 'tabata'>, time: string): number
+    protected extractTimeByType(type: TTimerTypes, time: string): number | [number, number] {
         if (!time) return 0
 
         if (type === 'tabata') {
@@ -78,7 +78,7 @@ export abstract class BaseTransformer extends RegexHelper {
     protected timerToString(type: 'tabata', work: number, rest: number): string
     protected timerToString(type: 'for_time' | 'amrap', timecap: number): string
     protected timerToString(type: 'not_timed'): null
-    protected timerToString(type: TTimerType, t1?: number | never, t2?: never | number): string | null {
+    protected timerToString(type: TTimerTypes, t1?: number | never, t2?: never | number): string | null {
         switch (type) {
             case 'tabata': {
                 if (!t1 || !t2) return null
@@ -103,7 +103,7 @@ export abstract class BaseTransformer extends RegexHelper {
     protected displayTimer(type: 'for_time' | 'amrap', rounds: number, timecap: number): string
     protected displayTimer(type: 'not_timed'): null
     protected displayTimer(
-        type: TTimerType,
+        type: TTimerTypes,
         rounds?: number | never,
         t1?: number | never,
         t2?: never | number

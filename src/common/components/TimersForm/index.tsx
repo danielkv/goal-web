@@ -1,12 +1,12 @@
 import { Component, Show } from 'solid-js'
 
 import TimeInput from '@components/TimeInput'
-import { TTimerType } from '@models/time'
+import { TTimerTypes } from '@models/time'
 import { Field, FormState } from '@modular-forms/solid'
 
 export interface TimersFormProps {
     of: FormState<any>
-    type: TTimerType
+    type: TTimerTypes
 }
 const TimersForm: Component<TimersFormProps> = (props) => {
     return (
