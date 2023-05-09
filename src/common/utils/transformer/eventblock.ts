@@ -8,12 +8,10 @@ type TEventTypeTransform = 'emom' | 'for time' | 'max' | 'amrap' | 'tabata'
 
 export class EventBlockTransformer extends BaseTransformer {
     private breakline = '\n\n'
-    private titleRegex = this.mergeRegex([
-        '^bloco:',
-        '(?:\\s(?<rounds>\\d+))?(?:\\s(?<type>',
-        this.timerTypeRegex,
-        '|max)(?:\\s(?<time>.*))?)?',
-    ])
+    private titleRegex = this.mergeRegex(
+        ['^bloco:', '(?:\\s(?<rounds>\\d+))?(?:\\s(?<type>', this.timerTypeRegex, '|max)(?:\\s(?<time>.*))?)?\n'],
+        'im'
+    )
     constructor(private roundTransformer: RoundTransformer) {
         super()
     }
