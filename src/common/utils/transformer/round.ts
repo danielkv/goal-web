@@ -10,13 +10,21 @@ type TRoundTypeTransform = 'emom' | 'for time' | 'amrap' | 'tabata'
 export class RoundTransformer extends BaseTransformer {
     private breakline = '\n'
     private complexSplit = ' + '
+
+    private movementRegex = this.mergeRegex(['^(?:(?:', this.numberRegex, ')?)+(?<name>', this.movementNameRegex, ')+'])
+
+    private complexRegex = this.mergeRegex(['^(?<movements>', this.movementRegex, ')(?<weight>', this.weightRegex, ')'])
+    private titleRegex = this.mergeRegex(
+        ['^round:', '(?:\\s(?<rounds>\\d+))?', '(?:\\s(?<type>', this.timerTypeRegex, ')(?:\\s(?<time>.*))?)?\n'],
+        'im'
+    )
+
     constructor(private movementTransformer: MovementTransformer) {
         super()
     }
 
     toObject(text: string): IRound | null {
-        const regex = /^round\:(?:\s(?<rounds>\d+))?(?:\s(?<type>emom|for time|amrap|tabata)(?:\s(?<time>.*))?)?\n/im
-        const match = text.match(regex)
+        const match = text.match(this.titleRegex)
 
         if (match?.groups) {
             const extractedText = text.replace(match[0], '').trim()
@@ -123,15 +131,12 @@ export class RoundTransformer extends BaseTransformer {
     }
 
     private textMovementsToRound(text: string): IRound | null {
-        const complexRegex =
-            /^(?<movements>(?:(?:\d+(?:[\d\-\*\,\/\sa\?]*)?)?)+(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+\(\)]+[A-Z\)])+)(?<weight>(?:\s\-\s((?:(\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?)$/i
-
         const textMovements = text.split(this.breakline)
         if (!textMovements.length) return null
 
         if (textMovements.length === 1) {
             const textToMatch = textMovements[0]
-            const match = textToMatch.match(complexRegex)
+            const match = textToMatch.match(this.complexRegex)
 
             if (match?.groups?.movements) {
                 const complexMovements = match?.groups?.movements.split(this.complexSplit)

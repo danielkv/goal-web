@@ -4,12 +4,34 @@ import { TTimerType } from '@models/time'
 import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
-export abstract class BaseTransformer {
+import { RegexHelper } from './RegexHelper'
+
+export abstract class BaseTransformer extends RegexHelper {
     protected timeRegex = /^((?<t1>\d+)\s?(?<t1_type>m(?:in)?|s(?:ec)?)(?:(?<t2>\d+)\s?s(?:ec)?)?)$/i
-    protected tabataTimeRegex =
-        /^(?<work>(?<t1>\d+)(?<t1_type>m(?:in)?|s(?:ec)?)(?:(?<t2>\d+)s(?:ec)?)?)\/(?<rest>(?<t3>\d+)(?<t3_type>m(?:in)?|s(?:ec)?)(?:(?<t4>\d+)s(?:ec)?)?)/i
-    protected restRegex =
-        /^((?:(?:rest\s)(?<time1>(\d+)\s?(m(?:in)?|s(?:ec)?)(?:(\d+)\s?s(?:ec)?)?))|(?:(?<time2>(\d+)\s?(m(?:in)?|s(?:ec)?)(?:(\d+)\s?s(?:ec)?)?)(?:\s(?:rest))))$/i
+
+    protected numberRegex = /(\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?/
+    protected movementNameRegex = /[a-zA-Z\u00C0-\u00FF\s\'\d+\(\)]+[A-Z\)]/
+    protected weightTypeRegex = /kg|%|lb/i
+
+    protected weightRegex = this.mergeRegex([
+        '(?:\\s\\-\\s((?<weight>',
+        this.numberRegex,
+        ')?)',
+        '(?<weight_type>',
+        this.weightTypeRegex,
+        ')+)?',
+    ])
+
+    protected repsTypeRegex = /x|m|km|s|mi|min|sec/i
+    protected timerTypeRegex = /emom|for time|amrap|tabata/i
+    protected restRegex = this.mergeRegex([
+        '^((?:(?:rest\\s)(?<time1>',
+        this.timeRegex,
+        '))|(?:(?<time2>',
+        this.timeRegex,
+        ')(?:\\s(?:rest))))',
+    ])
+    protected tabataTimeRegex = this.mergeRegex(['(?<work>', this.timeRegex, ')/(?<rest>', this.timeRegex, ')'])
 
     protected extractTimeByType(type: Extract<TTimerType, 'tabata'>, time: string): [number, number]
     protected extractTimeByType(type: Exclude<TTimerType, 'tabata'>, time: string): number

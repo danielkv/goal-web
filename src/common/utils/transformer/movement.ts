@@ -1,28 +1,61 @@
 import { IEventMovement, TMovementWeight, TWeightTypes } from '@models/block'
 import { numberHelper } from '@utils/numbers'
 
-export class MovementTransformer {
-    toObject(text: string): IEventMovement {
-        const regex =
-            /^(?<reps>((?<reps_number>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)((?<reps_type>x|m|km|s|mi|min|sec)\s|\s)+)|max)(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+\(\)]+[A-Z\)])+(?:\s\-\s(?<weight>(?:(?:\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?$/i
+import { BaseTransformer } from './base'
 
-        const match = text.match(regex)
+export class MovementTransformer extends BaseTransformer {
+    private repsRegex = this.mergeRegex([
+        '(?:(?<reps_number>(?:',
+        this.numberRegex,
+        ')((?<reps_type>',
+        this.repsTypeRegex,
+        ')?)+)|max)\\s',
+    ])
+
+    private movementRegex = this.mergeRegex([
+        '^(?<reps>',
+        this.repsRegex,
+        ')(?<name>',
+        this.movementNameRegex,
+        ')+(?<weight>',
+        this.weightRegex,
+        ')?',
+    ])
+
+    toObject(text: string): IEventMovement {
+        const match = text.match(this.movementRegex)
+
         if (!match?.groups) return { name: text.trim(), reps: '' }
+
+        const reps = this.extractReps(match.groups.reps)
+        const weight = this.extractWeight(match.groups.weight)
+
+        return {
+            name: match.groups.name.trim(),
+            reps,
+            weight,
+        }
+    }
+
+    protected extractWeight(text: string): TMovementWeight | undefined {
+        const match = text.match(this.weightRegex)
+        if (!match?.groups?.weight) return undefined
+
+        return {
+            value: match.groups.weight.trim(),
+            type: match.groups.weight_type.trim() as TWeightTypes,
+        }
+    }
+
+    protected extractReps(text: string): string {
+        const match = text.match(this.repsRegex)
+        if (!match?.groups) return text
 
         const reps = match.groups.reps_number
             ? `${match.groups.reps_number.trim()}${match.groups.reps_type || ''}`
             : match.groups.reps
 
-        return {
-            name: match.groups.name.trim(),
-            reps,
-            weight: match.groups.weight
-                ? {
-                      value: match.groups.weight.trim(),
-                      type: match.groups.weight_type.trim() as TWeightTypes,
-                  }
-                : undefined,
-        }
+        return reps
     }
 
     toString(obj: IEventMovement): string {

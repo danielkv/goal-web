@@ -7,7 +7,6 @@ export class RestBlockTransformer extends BaseTransformer {
     toObject(text: string): IRestBlock | null {
         const time = this.findRest(text)
         if (!time) return null
-        console.log(text, time)
 
         const regex = /\s\-\s(?<text>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+)$/
         const restTextMatch = text.match(regex)

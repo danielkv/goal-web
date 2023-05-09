@@ -8,13 +8,18 @@ type TEventTypeTransform = 'emom' | 'for time' | 'max' | 'amrap' | 'tabata'
 
 export class EventBlockTransformer extends BaseTransformer {
     private breakline = '\n\n'
+    private titleRegex = this.mergeRegex([
+        '^bloco:',
+        '(?:\\s(?<rounds>\\d+))?(?:\\s(?<type>',
+        this.timerTypeRegex,
+        '|max)(?:\\s(?<time>.*))?)?',
+    ])
     constructor(private roundTransformer: RoundTransformer) {
         super()
     }
 
     toObject(text: string): IEventBlock | null {
-        const regex = /^bloco\:(?:\s(?<rounds>\d+))?(?:\s(?<type>emom|for time|max|amrap|tabata)(?:\s(?<time>.*))?)?/i
-        const match = text.match(regex)
+        const match = text.match(this.titleRegex)
 
         if (match?.groups) {
             const textRounds = text.replace(match[0], '').trim().split(this.breakline)
@@ -130,6 +135,7 @@ export class EventBlockTransformer extends BaseTransformer {
             block.event_type === 'amrap' ||
             block.event_type === 'for_time' ||
             block.event_type === 'emom' ||
+            block.event_type === 'max_weight' ||
             block.event_type === 'tabata'
                 ? this.displayEventTimer(block)
                 : ''
