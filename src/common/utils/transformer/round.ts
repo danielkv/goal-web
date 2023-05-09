@@ -90,7 +90,7 @@ export class RoundTransformer extends BaseTransformer {
 
         if (obj.type === 'complex') {
             if (title) return `${title}\n${this.displayComplex(obj)}`
-            return this.displayComplex(obj)
+            return this.complexToString(obj)
         }
 
         let text = title || ''
@@ -124,7 +124,7 @@ export class RoundTransformer extends BaseTransformer {
 
     private textMovementsToRound(text: string): IRound | null {
         const complexRegex =
-            /^(?<movements>(?:(?:\d+(?:[\d\-\*\,\/\sa\?]*)?)?)+(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+[A-Z])+)(?<weight>(?:\s\-\s((?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?)$/i
+            /^(?<movements>(?:(?:\d+(?:[\d\-\*\,\/\sa\?]*)?)?)+(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+\(\)]+[A-Z\)])+)(?<weight>(?:\s\-\s((?:(\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?)$/i
 
         const textMovements = text.split(this.breakline)
         if (!textMovements.length) return null
@@ -140,6 +140,7 @@ export class RoundTransformer extends BaseTransformer {
                         type: 'complex',
                         movements: complexMovements.map((movement) => {
                             const movementText = `${movement}${match.groups?.weight || ''}`
+
                             return this.movementTransformer.toObject(movementText)
                         }),
                     }
@@ -177,6 +178,15 @@ export class RoundTransformer extends BaseTransformer {
 
         const complex = obj.movements.map((m) => this.movementTransformer.displayMovement(m)).join(this.complexSplit)
         const weight = this.movementTransformer.displayWeight(obj.movements[0].weight)
+
+        return `${complex}${weight}`
+    }
+
+    private complexToString(obj: IRound): string {
+        if (obj.type !== 'complex') return ''
+
+        const complex = obj.movements.map((m) => this.movementTransformer.displayMovement(m)).join(this.complexSplit)
+        const weight = this.movementTransformer.weightToString(obj.movements[0].weight)
 
         return `${complex}${weight}`
     }

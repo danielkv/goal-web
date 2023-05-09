@@ -58,7 +58,7 @@ class NumberHelper {
 
         const calculatedOpts = this.getOpts(opts)
 
-        return number.replace(/([^\d^\,^\/]+)/g, calculatedOpts.separator)
+        return number.replace(/([^\d^\,^\?^\/]+)/g, calculatedOpts.separator)
     }
 
     public convertNumbers(number?: string, opts?: Partial<TOpts>): string {

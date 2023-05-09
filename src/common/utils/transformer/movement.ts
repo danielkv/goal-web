@@ -4,7 +4,7 @@ import { numberHelper } from '@utils/numbers'
 export class MovementTransformer {
     toObject(text: string): IEventMovement {
         const regex =
-            /^(?<reps>((?<reps_number>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)((?<reps_type>x|m|km|s|mi|min|sec)\s|\s)+)|max)(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+]+[A-Z])+(?:\s\-\s(?<weight>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?$/i
+            /^(?<reps>((?<reps_number>(?:\d+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)((?<reps_type>x|m|km|s|mi|min|sec)\s|\s)+)|max)(?<name>[a-zA-Z\u00C0-\u00FF\s\'\d\+\(\)]+[A-Z\)])+(?:\s\-\s(?<weight>(?:(?:\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?)?)(?<weight_type>kg|%|lb)+)?$/i
 
         const match = text.match(regex)
         if (!match?.groups) return { name: text.trim(), reps: '' }
@@ -26,10 +26,14 @@ export class MovementTransformer {
     }
 
     toString(obj: IEventMovement): string {
-        const weight = obj.weight ? ` - ${obj.weight.value}${obj.weight.type}` : ''
+        const weight = this.weightToString(obj.weight)
         const reps = obj.reps ? `${obj.reps.trim()} ` : ''
 
         return `${reps}${obj.name}${weight}`
+    }
+
+    weightToString(weight?: TMovementWeight): string {
+        return weight ? ` - ${weight.value}${weight.type}` : ''
     }
 
     displayWeight(weight?: TMovementWeight): string {
