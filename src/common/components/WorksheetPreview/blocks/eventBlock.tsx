@@ -25,7 +25,11 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                 {(round, roundIndex) => {
                     const roundPath = createMemo(() => addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`))
 
-                    const roundTitle = createMemo(() => roundTransformer.displayTitle(round))
+                    const matchSequenceReps = createMemo(() => roundTransformer.matchSequenceReps(round.movements))
+
+                    const roundTitle = createMemo(() =>
+                        roundTransformer.displayTitle(round, matchSequenceReps()?.join('-'))
+                    )
 
                     return (
                         <div
@@ -61,7 +65,10 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                             <Show when={!['rest', 'complex'].includes(round.type)}>
                                 <For each={round.movements}>
                                     {(movement) => {
-                                        const displayMovement = movementTransformer.display(movement)
+                                        const displayMovement = movementTransformer.display(
+                                            movement,
+                                            !!matchSequenceReps()
+                                        )
 
                                         return (
                                             <div class="movement" classList={{ withUrl: !!movement.videoUrl }}>

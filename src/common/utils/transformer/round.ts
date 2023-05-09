@@ -1,9 +1,12 @@
-import { IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
+import cloneDeep from 'clone-deep'
+
+import { IEventMovement, IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
 import { TTimerTypes } from '@models/time'
 import { roundTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
 import { MovementTransformer, movementTransformer } from './movement'
+import { numberHelper } from './numbers'
 
 type TRoundTypeTransform = 'emom' | 'for time' | 'amrap' | 'tabata'
 
@@ -15,7 +18,15 @@ export class RoundTransformer extends BaseTransformer {
 
     private complexRegex = this.mergeRegex(['^(?<movements>', this.movementRegex, ')(?<weight>', this.weightRegex, ')'])
     private titleRegex = this.mergeRegex(
-        ['^round:', '(?:\\s(?<rounds>\\d+))?', '(?:\\s(?<type>', this.timerTypeRegex, ')(?:\\s(?<time>.*))?)?\n'],
+        [
+            '^round:',
+            '(?:\\s(?<rounds>(',
+            this.numberRegex,
+            ')+))?',
+            '(?:\\s(?<type>',
+            this.timerTypeRegex,
+            ')(?:\\s(?<time>.*))?)?\n',
+        ],
         'im'
     )
 
@@ -32,15 +43,15 @@ export class RoundTransformer extends BaseTransformer {
             const restRoundTime = this.findRest(text)
             if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
-            const extractedMovements = this.textMovementsToRound(extractedText)
+            const { numberOfRounds, reps } = this.extractRounds(match.groups.rounds)
+
+            const extractedMovements = this.textMovementsToRound(extractedText, reps)
             if (!extractedMovements) return null
 
             const type =
                 extractedMovements.type === 'complex'
                     ? 'complex'
                     : this.tranformType(match.groups.type as TRoundTypeTransform)
-
-            const numberOfRounds = Number(match.groups.rounds || 1)
 
             switch (type) {
                 case 'tabata': {
@@ -91,28 +102,70 @@ export class RoundTransformer extends BaseTransformer {
         return this.textMovementsToRound(text)
     }
 
+    private extractRounds(roundsText?: string) {
+        if (!roundsText) return { numberOfRounds: 1 }
+        if (!Number.isNaN(Number(roundsText))) return { numberOfRounds: Number(roundsText) }
+
+        const match = roundsText.match(numberHelper.sequenceRegex)
+        if (!match) return { numberOfRounds: 1 }
+
+        const reps = roundsText.split('-')
+
+        return { numberOfRounds: reps.length, reps }
+    }
+
     toString(obj: IRound): string {
         if (obj.type === 'rest') return this.displayRest(obj.time)
 
-        const title = this.titleToString(obj)
+        let title = this.titleToString(obj)
 
         if (obj.type === 'complex') {
             if (title) return `${title}\n${this.displayComplex(obj)}`
             return this.complexToString(obj)
         }
 
+        const round = cloneDeep(obj)
+
+        const matchingReps = this.matchSequenceReps(obj.movements)
+
+        if (matchingReps) {
+            round.movements.forEach((movement) => {
+                movement.reps = ''
+            })
+            title = this.titleToString(obj, matchingReps)
+        }
+
         let text = title || ''
         if (text) text += '\n'
 
-        text += obj.movements.map((o) => this.movementTransformer.toString(o)).join(this.breakline)
+        text += round.movements.map((o) => this.movementTransformer.toString(o)).join(this.breakline)
 
         if (!text) return ''
 
         return text
     }
 
-    private titleToString(obj: IRound): string | null {
-        const rounds = obj.numberOfRounds && obj.numberOfRounds > 1 ? ` ${obj.numberOfRounds}` : null
+    matchSequenceReps(movements: IEventMovement[]): string[] | null {
+        if (movements.length > 1) return null
+
+        const compareReps = movements[0]?.reps
+        if (!compareReps) return null
+
+        if (!compareReps.includes('-')) return null
+
+        const match = compareReps.match(numberHelper.sequenceRegex)
+        if (!match) return null
+        if (!movements.every((movement) => movement.reps === compareReps)) return null
+
+        return compareReps.split('-')
+    }
+
+    private titleToString(obj: IRound, roundReps?: string[]): string | null {
+        const rounds = roundReps
+            ? ` ${roundReps.join('-')}`
+            : obj.numberOfRounds && obj.numberOfRounds > 1
+            ? ` ${obj.numberOfRounds}`
+            : null
 
         if (obj.type === 'rest') return null
 
@@ -130,7 +183,7 @@ export class RoundTransformer extends BaseTransformer {
         return `round:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}`
     }
 
-    private textMovementsToRound(text: string): IRound | null {
+    private textMovementsToRound(text: string, roundReps?: string[]): IRound | null {
         const textMovements = text.split(this.breakline)
         if (!textMovements.length) return null
 
@@ -154,7 +207,7 @@ export class RoundTransformer extends BaseTransformer {
 
         return {
             type: 'not_timed',
-            movements: textMovements.map((movement) => this.movementTransformer.toObject(movement)),
+            movements: textMovements.map((movement) => this.movementTransformer.toObject(movement, roundReps)),
         }
     }
 
@@ -196,19 +249,20 @@ export class RoundTransformer extends BaseTransformer {
         return `${complex}${weight}`
     }
 
-    displayTitle(round: IRound): string {
+    displayTitle(round: IRound, roundReps?: string | null): string {
         if (round.type === 'rest') return ''
         if (round.type === 'complex') return super.displayNumberOfRounds(round.numberOfRounds)
         const time =
             round.type === 'amrap' || round.type === 'for_time' || round.type === 'emom' || round.type === 'tabata'
-                ? this.displayRoundTimer(round)
+                ? this.displayRoundTimer(round) || ''
                 : ''
 
         const numberOfRounds = !time ? super.displayNumberOfRounds(round.numberOfRounds) : ''
+        const suffix = roundReps ? ` ${roundReps}` : ''
 
         const type = round.type && round.type != 'not_timed' ? roundTypes[round.type] : ''
         if (!numberOfRounds && !type) return ''
-        return `${numberOfRounds} ${type}${time}`.trim()
+        return `${numberOfRounds} ${type}${time}${suffix}`.trim()
     }
 
     private roundTimerToString(obj: IRound): string | null {

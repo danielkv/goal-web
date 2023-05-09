@@ -123,10 +123,12 @@ export abstract class BaseTransformer extends RegexHelper {
             return ` - ${work}/${rest} por ${rounds} ${pluralize(rounds, 'round')}`
         }
 
-        if (!t1) return null
+        if (t1 === undefined) return null
 
-        const timecap = getTimeFromSeconds(t1)
+        const timecap = t1 === 0 ? '' : getTimeFromSeconds(t1)
         const roundsDisplay = rounds > 1 ? ` - ${this.displayNumberOfRounds(rounds)}` : ''
+
+        if (!timecap && !roundsDisplay) return null
 
         return ` - ${timecap}${roundsDisplay}`
     }

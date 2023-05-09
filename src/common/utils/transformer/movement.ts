@@ -15,19 +15,19 @@ export class MovementTransformer extends BaseTransformer {
     private movementRegex = this.mergeRegex([
         '^(?<reps>',
         this.repsRegex,
-        ')(?<name>',
+        ')?(?<name>',
         this.movementNameRegex,
         ')+(?<weight>',
         this.weightRegex,
         ')?',
     ])
 
-    toObject(text: string): IEventMovement {
+    toObject(text: string, roundReps?: string[]): IEventMovement {
         const match = text.match(this.movementRegex)
 
         if (!match?.groups) return { name: text.trim(), reps: '' }
 
-        const reps = this.extractReps(match.groups.reps)
+        const reps = this.extractReps(match.groups.reps, roundReps)
         const weight = this.extractWeight(match.groups.weight)
 
         return {
@@ -49,7 +49,11 @@ export class MovementTransformer extends BaseTransformer {
         }
     }
 
-    protected extractReps(text: string): string {
+    protected extractReps(text?: string, roundReps?: string[]): string {
+        if (roundReps) return roundReps.join('-')
+
+        if (!text) return ''
+
         const match = text.match(this.repsRegex)
         if (!match?.groups) return text
 
@@ -79,16 +83,16 @@ export class MovementTransformer extends BaseTransformer {
         return ` - ${value.trim()}${weight.type}`
     }
 
-    displayMovement(obj: IEventMovement) {
+    displayMovement(obj: IEventMovement, hideReps?: boolean) {
         const reps = this.displayReps(obj)
-        const displayMovement = `${reps}${obj.name}`
+        const displayMovement = `${!hideReps ? reps : ''}${obj.name}`
 
         return displayMovement
     }
 
-    display(obj: IEventMovement) {
+    display(obj: IEventMovement, hideReps?: boolean) {
         const weight = this.displayWeight(obj.weight)
-        const movement = this.displayMovement(obj)
+        const movement = this.displayMovement(obj, hideReps)
 
         return `${movement}${weight}`
     }

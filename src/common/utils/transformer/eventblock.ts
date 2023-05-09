@@ -135,7 +135,7 @@ export class EventBlockTransformer extends BaseTransformer {
             block.event_type === 'emom' ||
             block.event_type === 'max_weight' ||
             block.event_type === 'tabata'
-                ? this.displayEventTimer(block)
+                ? this.displayEventTimer(block) || ''
                 : ''
 
         const numberOfRounds = !time ? super.displayNumberOfRounds(block.numberOfRounds) : ''
