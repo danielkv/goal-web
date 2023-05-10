@@ -1,31 +1,35 @@
-import { Component, For, createMemo, createSignal } from 'solid-js'
+import { Component, For, Show, createMemo } from 'solid-js'
 
-import MovementEditor from '@components/MovementEditor'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { IEventBlock } from '@models/block'
-import { numberHelper } from '@utils/numbers'
 import { addToPath } from '@utils/paths'
-import { createEventRoundValues, eventTypesMap } from '@utils/worksheetInitials'
-
-import { displayWeight, getTimeCap } from '../utils'
+import { eventBlockTransformer } from '@utils/transformer/eventblock'
+import { movementTransformer } from '@utils/transformer/movement'
+import { roundTransformer } from '@utils/transformer/round'
+import { createEventRoundValues } from '@utils/worksheetInitials'
 
 export interface EventBlockPreviewProps extends WorksheetPeace<IEventBlock> {}
 
 const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
+    const eventTitle = createMemo(() => eventBlockTransformer.displayTitle(props.item))
+
     return (
         <div class="text-center">
             {props.item.name && <div>{props.item.name}</div>}
-            {props.item.event_type !== 'not_timed' && (
-                <div class="title">
-                    {eventTypesMap[props.item.event_type]} {getTimeCap(props.item)}
-                </div>
-            )}
+            <Show when={!!eventTitle()}>
+                <div class="title">{eventTitle()}</div>
+            </Show>
 
             <For each={props.item.rounds}>
                 {(round, roundIndex) => {
                     const roundPath = createMemo(() => addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`))
-                    const [editOpen, setEditOpen] = createSignal(false)
+
+                    const matchSequenceReps = createMemo(() => roundTransformer.findSequenceReps(round.movements))
+
+                    const roundTitle = createMemo(() =>
+                        roundTransformer.displayTitle(round, matchSequenceReps()?.join('-'))
+                    )
 
                     return (
                         <div
@@ -45,32 +49,27 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                     onAdd={props.onAdd}
                                     onRemove={props.onRemove}
                                     onMove={props.onMove}
-                                    onOpenEdit={() => setEditOpen((prev) => !prev)}
                                     item={round}
                                     thisPath={roundPath()}
                                     createInitialValues={createEventRoundValues}
                                 />
                             )}
+                            <Show when={!!roundTitle()}>
+                                <div class="title">{roundTitle()}</div>
+                            </Show>
 
-                            {round.name && <div>{round.name}</div>}
-                            <div class="font-bold">{numberHelper.convertNumbers(round.repeat)}</div>
-
-                            {props.onUpdate && editOpen() && (
-                                <MovementEditor
-                                    onUpdate={props.onUpdate}
-                                    onClose={() => setEditOpen(false)}
-                                    thisPath={roundPath()}
-                                    current={round}
-                                />
-                            )}
-
-                            {!editOpen() && (
+                            <Show when={round.type == 'rest'}>{roundTransformer.displayRestRound(round)}</Show>
+                            <Show when={round.type == 'complex'}>
+                                <div class="movement">{roundTransformer.displayComplex(round)}</div>
+                            </Show>
+                            <Show when={!['rest', 'complex'].includes(round.type)}>
                                 <For each={round.movements}>
                                     {(movement) => {
-                                        const weight = displayWeight(movement.weight)
-                                        const reps = numberHelper.convertNumbers(movement.reps, { suffix: '' })
-                                        const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
-                                        const displayMovement = `${repsDisplay}${movement.name}${weight}`
+                                        const displayMovement = movementTransformer.display(
+                                            movement,
+                                            !!matchSequenceReps()
+                                        )
+
                                         return (
                                             <div class="movement" classList={{ withUrl: !!movement.videoUrl }}>
                                                 {movement.videoUrl ? (
@@ -84,7 +83,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                         )
                                     }}
                                 </For>
-                            )}
+                            </Show>
                         </div>
                     )
                 }}

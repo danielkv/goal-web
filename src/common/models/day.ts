@@ -1,4 +1,4 @@
-import { IBlock, IEventRound } from './block'
+import { IBlock, IRound } from './block'
 
 export type ISection = {
     name: string
@@ -24,6 +24,6 @@ export type IWorksheet = {
     days: IDay[]
 }
 
-export type TPeaces = IDay | IPeriod | ISection | IBlock | IEventRound
+export type TPeaces = IDay | IPeriod | ISection | IBlock | IRound
 
 export type IWorksheetModel = Omit<IWorksheet, 'id'> & { id: string }

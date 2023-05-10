@@ -4,6 +4,11 @@ type TOpts = {
 }
 
 class NumberHelper {
+    public readonly calcRegexRegex = /^([\d\,]+)(\-|\+)([\d\,]+)\*([\d]+)$/
+    public readonly endingRegex = /(?<ending>x|m|km|s|mi|min|sec|kg|%|lb)$/
+    public readonly rangeRegex = /^([\d\,]+) a ([\d\,]+)$/
+    public readonly sequenceRegex = /(?:\d+(\,\d+)?)(?:\/\d+(\,\d+)?)?/g
+
     private getOpts(opts?: Partial<TOpts>): TOpts {
         return { suffix: 'Rounds', separator: '-', ...opts }
     }
@@ -15,13 +20,13 @@ class NumberHelper {
     }
 
     public getEnding(number: string): string | null {
-        const match = number.trim().match(/(?<ending>km|m|x|s|min|kg|%|lb)$/)
+        const match = number.trim().match(this.endingRegex)
 
         return match?.groups?.ending || null
     }
 
     public convertCalcMatch(number: string, opts?: Partial<TOpts>): string | null {
-        const calcMatch = number.match(/^([\d\,]+)(\-|\+)([\d\,]+)\*([\d]+)$/)
+        const calcMatch = number.match(this.calcRegexRegex)
         if (!calcMatch) return null
 
         const calculatedOpts = this.getOpts(opts)
@@ -43,7 +48,7 @@ class NumberHelper {
     }
 
     public convertRangeMatch(number: string, opts?: Partial<TOpts>): string | null {
-        const rangeMatch = number.match(/^([\d\,]+) a ([\d\,]+)$/)
+        const rangeMatch = number.match(this.rangeRegex)
         if (!rangeMatch) return null
 
         const n1 = Number(rangeMatch[1].replace(',', '.'))
@@ -53,22 +58,24 @@ class NumberHelper {
     }
 
     public convertSequenceMatch(number: string, opts?: Partial<TOpts>): string | null {
-        const sequenceMatch = number.match(/((?:\d+\,?\d+?)(?:\/\d+\,?\d+?)?)?/g)
+        const sequenceMatch = number.match(this.sequenceRegex)
         if (!sequenceMatch) return null
 
         const calculatedOpts = this.getOpts(opts)
 
-        return number.replace(/([^\d^\,^\/]+)/g, calculatedOpts.separator)
+        return number.replace(/([^\d^\,^\?^\/]+)/g, calculatedOpts.separator)
     }
 
     public convertNumbers(number?: string, opts?: Partial<TOpts>): string {
         if (!number) return ''
+        if (number === 'max') return 'max'
 
         const calculatedOpts = this.getOpts(opts)
 
         const ending = this.getEnding(number)
         const _number = this.clearNumber(number, ending)
-        if (!Number.isNaN(Number(_number))) return `${_number} ${calculatedOpts.suffix}`
+
+        if (!Number.isNaN(Number(_number))) return `${_number}${ending || ''} ${calculatedOpts.suffix}`
 
         const calcMatch = this.convertCalcMatch(_number, opts)
         if (calcMatch) return this.addSuffix(calcMatch, ending || calculatedOpts.suffix)

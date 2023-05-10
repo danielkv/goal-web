@@ -1,11 +1,13 @@
-import { Component, For, JSX, Show, createEffect, createMemo, on } from 'solid-js'
+import { Component, For, JSX, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
-import TimeInput from '@components/TimeInput'
+import TimersForm from '@components/TimersForm'
 import { IEventBlock } from '@models/block'
+import { TTimerTypes } from '@models/time'
 import { Field, Form, SubmitHandler, createForm, getValue, reset, setValue, zodForm } from '@modular-forms/solid'
+import { eventTypes } from '@utils/worksheetInitials'
 
-import { TEventBlockForm, eventBlockFormSchema, eventTypes } from './config'
+import { TEventBlockForm, eventBlockFormSchema } from './config'
 
 export interface BlockFormProps {
     onClickNext(data: TEventBlockForm): void
@@ -30,12 +32,33 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
         props.onClickNext(newValues)
     }
 
+    const timerType = createMemo<TTimerTypes>(() => {
+        const value = getValue(form, 'event_type') || 'not_timed'
+
+        if (value === 'max_weight') return 'for_time'
+
+        return value
+    })
     return (
         <Form<TEventBlockForm> of={form} name="teste" class="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Field of={form} name="name">
                 {(field) => (
                     <TextInput {...field.props} class="flex-1" label="Nome" value={field.value} error={field.error} />
                 )}
+            </Field>
+            <Field of={form} name="numberOfRounds">
+                {(field) => {
+                    return (
+                        <TextInput
+                            {...field.props}
+                            class="flex-1"
+                            label="Rounds"
+                            type="number"
+                            value={field.value}
+                            error={field.error}
+                        />
+                    )
+                }}
             </Field>
             <div class="flex gap-6">
                 <Field of={form} name="event_type">
@@ -48,6 +71,8 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                             } else if ((e.target as any).value === 'emom') {
                                 setValue(form, 'each', 60)
                                 setValue(form, 'numberOfRounds', 4)
+                            } else if ((e.target as any).value === 'max_weight') {
+                                setValue(form, 'numberOfRounds', 1)
                             }
 
                             field.props.onInput(e)
@@ -56,10 +81,10 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                             <div class="flex flex-col flex-1 min-w-[100px]">
                                 <label class="text-sm mb-2">Tipo de evento</label>
                                 <select class="input input-full" {...field.props} onInput={handleInput}>
-                                    <For each={eventTypes}>
-                                        {(item) => (
-                                            <option value={item.key} selected={field.value === item.key}>
-                                                {item.label}
+                                    <For each={Object.entries(eventTypes)}>
+                                        {([key, label]) => (
+                                            <option value={key} selected={field.value === key}>
+                                                {label}
                                             </option>
                                         )}
                                     </For>
@@ -68,84 +93,8 @@ const EventBlockForm: Component<BlockFormProps> = (props) => {
                         )
                     }}
                 </Field>
-                <Show when={getValue(form, 'event_type') === 'emom'}>
-                    <Field of={form} name="each">
-                        {(field) => (
-                            <TimeInput
-                                {...field.props}
-                                class="flex-1"
-                                label="Each"
-                                value={field.value}
-                                error={field.error}
-                            />
-                        )}
-                    </Field>
-                    <Field of={form} name="numberOfRounds">
-                        {(field) => {
-                            return (
-                                <TextInput
-                                    {...field.props}
-                                    class="flex-1"
-                                    label="Rounds"
-                                    type="number"
-                                    value={field.value}
-                                    error={field.error}
-                                />
-                            )
-                        }}
-                    </Field>
-                </Show>
-                <Show when={getValue(form, 'event_type') === 'tabata'}>
-                    <Field of={form} name="work">
-                        {(field) => (
-                            <TimeInput
-                                {...field.props}
-                                class="flex-1"
-                                label="Work"
-                                value={field.value}
-                                error={field.error}
-                            />
-                        )}
-                    </Field>
-                    <Field of={form} name="rest">
-                        {(field) => (
-                            <TimeInput
-                                {...field.props}
-                                class="flex-1"
-                                label="Rest"
-                                value={field.value}
-                                error={field.error}
-                            />
-                        )}
-                    </Field>
-                    <Field of={form} name="numberOfRounds">
-                        {(field) => {
-                            return (
-                                <TextInput
-                                    {...field.props}
-                                    class="flex-1"
-                                    label="Rounds"
-                                    type="number"
-                                    value={field.value}
-                                    error={field.error}
-                                />
-                            )
-                        }}
-                    </Field>
-                </Show>
-                <Show when={['for_time', 'max_weight', 'amrap'].includes(getValue(form, 'event_type') as string)}>
-                    <Field of={form} name="timecap">
-                        {(field) => (
-                            <TimeInput
-                                {...field.props}
-                                class="flex-1"
-                                label="Timecap"
-                                value={field.value}
-                                error={field.error}
-                            />
-                        )}
-                    </Field>
-                </Show>
+
+                <TimersForm of={form} type={timerType()} />
             </div>
 
             <button class="btn btn-main self-end" type="submit">

@@ -1,10 +1,17 @@
 import { z } from 'zod'
 
 import { ZodShape } from '@interfaces/app'
-import { IEventMovement, IEventRound, TMovementWeight, TWeightTypes } from '@models/block'
+import { IEventMovement, IMovementWeight, IRound, TWeightTypes } from '@models/block'
 import { createEventRoundValues } from '@utils/worksheetInitials'
 
-export type TRoundForm = IEventRound
+export type TRoundForm = IRound & {
+    each?: number
+    timecap?: number
+    work?: number
+    rest?: number
+    time?: number
+    numberOfRounds?: number
+}
 
 export const roundInitialValues: TRoundForm = createEventRoundValues()
 
@@ -15,9 +22,8 @@ export const weightTypes: { key: TWeightTypes; label: string }[] = [
     { key: 'lb', label: 'Libras' },
 ]
 
-export const eventRoundFormSchema = z.object<ZodShape<TRoundForm>>({
-    name: z.string(),
-    repeat: z.optional(z.string()),
+export const eventRoundFormSchema = z.object({
+    type: z.string(),
     movements: z.array(
         z.object<ZodShape<IEventMovement>>({
             name: z
@@ -30,7 +36,7 @@ export const eventRoundFormSchema = z.object<ZodShape<TRoundForm>>({
             videoUrl: z.optional(z.string()),
             weight: z.optional(
                 z
-                    .object<ZodShape<TMovementWeight>>({
+                    .object<ZodShape<IMovementWeight>>({
                         type: z.enum(['none', 'kg', 'lb', '%']),
                         value: z.custom<string>(),
                     })
