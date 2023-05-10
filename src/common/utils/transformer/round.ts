@@ -128,21 +128,13 @@ export class RoundTransformer extends BaseTransformer {
 
         const matchingReps = this.findSequenceReps(obj.movements)
 
-        if (matchingReps) {
-            round.movements.forEach((movement) => {
-                movement.reps = ''
-            })
-            title = this.titleToString(obj, matchingReps)
-        }
+        if (matchingReps) title = this.titleToString(obj, matchingReps)
 
-        let text = title || ''
-        if (text) text += '\n'
+        const movements = round.movements
+            .map((o) => this.movementTransformer.toString(o, !matchingReps))
+            .join(this.breakline)
 
-        text += round.movements.map((o) => this.movementTransformer.toString(o)).join(this.breakline)
-
-        if (!text) return ''
-
-        return text
+        return this.displayArray([title, movements], '\n')
     }
 
     findSequenceReps(movements: IEventMovement[]): string[] | null {
@@ -163,9 +155,9 @@ export class RoundTransformer extends BaseTransformer {
 
     private titleToString(obj: IRound, roundReps?: string[]): string | null {
         const rounds = roundReps
-            ? ` ${roundReps.join('-')}`
+            ? roundReps.join('-')
             : obj.numberOfRounds && obj.numberOfRounds > 1
-            ? ` ${obj.numberOfRounds}`
+            ? obj.numberOfRounds
             : null
 
         if (obj.type === 'rest') return null
@@ -181,7 +173,7 @@ export class RoundTransformer extends BaseTransformer {
 
         if (!rounds && !type) return null
 
-        return `round:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}`
+        return this.displayArray([rounds, type, timeString], ' ', 'round: ')
     }
 
     private textMovementsToRound(text: string, roundReps?: string[]): IRound | null {
@@ -247,7 +239,7 @@ export class RoundTransformer extends BaseTransformer {
         const complex = obj.movements.map((m) => this.movementTransformer.displayMovement(m)).join(this.complexSplit)
         const weight = this.movementTransformer.displayWeight(obj.movements[0].weight)
 
-        return `${complex}${weight}`
+        return this.displayArray([complex, weight], ' - ')
     }
 
     private complexToString(obj: IRound): string {
@@ -256,7 +248,7 @@ export class RoundTransformer extends BaseTransformer {
         const complex = obj.movements.map((m) => this.movementTransformer.displayMovement(m)).join(this.complexSplit)
         const weight = this.movementTransformer.weightToString(obj.movements[0].weight)
 
-        return `${complex}${weight}`
+        return this.displayArray([complex, weight], ' - ')
     }
 
     displayTitle(round: IRound, roundReps?: string | null): string {
@@ -267,12 +259,11 @@ export class RoundTransformer extends BaseTransformer {
                 ? this.displayRoundTimer(round) || ''
                 : ''
 
-        const numberOfRounds = !time ? super.displayNumberOfRounds(round.numberOfRounds) : ''
-        const suffix = roundReps ? ` ${roundReps}` : ''
+        const numberOfRounds = roundReps ? roundReps : !time ? super.displayNumberOfRounds(round.numberOfRounds) : ''
 
         const type = round.type && round.type != 'not_timed' ? roundTypes[round.type] : ''
-        if (!numberOfRounds && !type) return ''
-        return `${numberOfRounds} ${type}${time}${suffix}`.trim()
+
+        return this.displayArray([numberOfRounds, type, time])
     }
 
     private roundTimerToString(obj: IRound): string | null {

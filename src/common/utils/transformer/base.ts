@@ -113,29 +113,35 @@ export abstract class BaseTransformer extends RegexHelper {
         if (type === 'emom') {
             if (!t1) return null
             const each = getTimeFromSeconds(t1)
-            return ` - Cada ${each} por ${rounds} ${pluralize(rounds, 'round')}`
+            return `Cada ${each} por ${rounds} ${pluralize(rounds, 'round')}`
         }
 
         if (type === 'tabata') {
             if (!t1 || !t2) return null
             const work = getTimeFromSeconds(t1)
             const rest = getTimeFromSeconds(t2)
-            return ` - ${work}/${rest} por ${rounds} ${pluralize(rounds, 'round')}`
+            return `${work}/${rest} por ${rounds} ${pluralize(rounds, 'round')}`
         }
 
         if (t1 === undefined) return null
 
         const timecap = t1 === 0 ? '' : getTimeFromSeconds(t1)
-        const roundsDisplay = rounds > 1 ? ` ${this.displayNumberOfRounds(rounds)}` : ''
+        const roundsDisplay = rounds > 1 ? this.displayNumberOfRounds(rounds) : ''
 
-        if (!timecap.trim() && !roundsDisplay.trim()) return null
-
-        return ` - ${[timecap, roundsDisplay].filter((info) => info).join(' - ')}`
+        return this.displayArray([timecap.trim(), roundsDisplay.trim()], ' - ')
     }
 
     protected displayNumberOfRounds(rounds?: number, suffix = 'rounds', prefix?: string): string {
         if (!rounds) return ''
         if (rounds <= 1) return ''
-        return `${[prefix, rounds, suffix].filter((part) => part).join(' ')}`
+        return this.displayArray([prefix, rounds, suffix])
+    }
+
+    displayArray(array: any[], separator = ' ', prefix = '', suffix = ''): string {
+        const text = array.filter((part) => part).join(separator)
+
+        if (!text) return ''
+
+        return `${prefix}${text}${suffix}`
     }
 }
