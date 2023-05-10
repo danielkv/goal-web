@@ -138,7 +138,7 @@ export class EventBlockTransformer extends BaseTransformer {
                 ? this.displayEventTimer(block) || ''
                 : ''
 
-        const numberOfRounds = !time ? super.displayNumberOfRounds(block.numberOfRounds) : ''
+        const numberOfRounds = !time ? super.displayNumberOfRounds(block.numberOfRounds, 'x', 'Repetir') : ''
         const type = block.event_type && block.event_type != 'not_timed' ? eventTypes[block.event_type] : ''
 
         if (!numberOfRounds && !type) return ''

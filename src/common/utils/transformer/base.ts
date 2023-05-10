@@ -133,10 +133,9 @@ export abstract class BaseTransformer extends RegexHelper {
         return ` - ${[timecap, roundsDisplay].filter((info) => info).join(' - ')}`
     }
 
-    protected displayNumberOfRounds(rounds?: number, suffix = 'rounds'): string {
+    protected displayNumberOfRounds(rounds?: number, suffix = 'rounds', prefix?: string): string {
         if (!rounds) return ''
         if (rounds <= 1) return ''
-        if (!suffix) return String(rounds)
-        return `${rounds} ${suffix}`
+        return `${[prefix, rounds, suffix].filter((part) => part).join(' ')}`
     }
 }
