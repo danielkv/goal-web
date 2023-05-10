@@ -5,7 +5,7 @@ import { numberHelper } from './numbers'
 
 export class MovementTransformer extends BaseTransformer {
     private repsRegex = this.mergeRegex([
-        '(?:(?<reps_number>(?:',
+        '(?:((?<reps_number>',
         this.numberRegex,
         ')((?<reps_type>',
         this.repsTypeRegex,

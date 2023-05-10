@@ -126,11 +126,11 @@ export abstract class BaseTransformer extends RegexHelper {
         if (t1 === undefined) return null
 
         const timecap = t1 === 0 ? '' : getTimeFromSeconds(t1)
-        const roundsDisplay = rounds > 1 ? ` - ${this.displayNumberOfRounds(rounds)}` : ''
+        const roundsDisplay = rounds > 1 ? ` ${this.displayNumberOfRounds(rounds)}` : ''
 
-        if (!timecap && !roundsDisplay) return null
+        if (!timecap.trim() && !roundsDisplay.trim()) return null
 
-        return ` - ${timecap}${roundsDisplay}`
+        return ` - ${[timecap, roundsDisplay].filter((info) => info).join(' - ')}`
     }
 
     protected displayNumberOfRounds(rounds?: number, suffix = 'rounds'): string {

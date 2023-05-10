@@ -20,7 +20,7 @@ export class EventBlockTransformer extends BaseTransformer {
         const match = text.match(this.titleRegex)
 
         if (match?.groups) {
-            const textRounds = text.replace(match[0], '').trim().split(this.breakline)
+            const textRounds = text.replace(match[0].replaceAll('\n', ''), '').trim().split(this.breakline)
             if (!textRounds.length) return null
 
             const rounds = textRounds.map((t) => this.roundTransformer.toObject(t)).filter((r) => r) as IRound[]

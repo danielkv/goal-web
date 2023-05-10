@@ -25,7 +25,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                 {(round, roundIndex) => {
                     const roundPath = createMemo(() => addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`))
 
-                    const matchSequenceReps = createMemo(() => roundTransformer.matchSequenceReps(round.movements))
+                    const matchSequenceReps = createMemo(() => roundTransformer.findSequenceReps(round.movements))
 
                     const roundTitle = createMemo(() =>
                         roundTransformer.displayTitle(round, matchSequenceReps()?.join('-'))

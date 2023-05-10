@@ -38,18 +38,18 @@ export class RoundTransformer extends BaseTransformer {
         const match = text.match(this.titleRegex)
 
         if (match?.groups) {
-            const extractedText = text.replace(match[0], '').trim()
+            const extractedText = text.replace(match[0].replaceAll('\n', ''), '').trim()
 
             const restRoundTime = this.findRest(text)
             if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
             const { numberOfRounds, reps } = this.extractRounds(match.groups.rounds)
 
-            const extractedMovements = this.textMovementsToRound(extractedText, reps)
-            if (!extractedMovements) return null
+            const extractedRound = this.textMovementsToRound(extractedText, reps)
+            if (!extractedRound) return null
 
             const type =
-                extractedMovements.type === 'complex'
+                extractedRound.type === 'complex'
                     ? 'complex'
                     : this.tranformType(match.groups.type as TRoundTypeTransform)
 
@@ -58,39 +58,39 @@ export class RoundTransformer extends BaseTransformer {
                     const [work, rest] = this.extractTimeByType(type, match.groups.time)
 
                     return {
-                        type,
                         numberOfRounds,
                         work,
                         rest,
-                        movements: extractedMovements.movements,
+                        ...extractedRound,
+                        type,
                     }
                 }
                 case 'emom': {
                     const time = this.extractTimeByType(type, match.groups.time)
 
                     return {
-                        type,
                         numberOfRounds,
                         each: time,
-                        movements: extractedMovements.movements,
+                        ...extractedRound,
+                        type,
                     }
                 }
                 case 'not_timed':
                 case 'complex': {
                     return {
-                        type,
                         numberOfRounds,
-                        movements: extractedMovements.movements,
+                        ...extractedRound,
+                        type,
                     }
                 }
                 default: {
                     const time = this.extractTimeByType(type, match.groups.time)
 
                     return {
-                        type,
                         numberOfRounds,
                         timecap: time,
-                        movements: extractedMovements.movements,
+                        ...extractedRound,
+                        type,
                     }
                 }
             }
@@ -126,7 +126,7 @@ export class RoundTransformer extends BaseTransformer {
 
         const round = cloneDeep(obj)
 
-        const matchingReps = this.matchSequenceReps(obj.movements)
+        const matchingReps = this.findSequenceReps(obj.movements)
 
         if (matchingReps) {
             round.movements.forEach((movement) => {
@@ -145,9 +145,7 @@ export class RoundTransformer extends BaseTransformer {
         return text
     }
 
-    matchSequenceReps(movements: IEventMovement[]): string[] | null {
-        if (movements.length > 1) return null
-
+    findSequenceReps(movements: IEventMovement[]): string[] | null {
         const compareReps = movements[0]?.reps
         if (!compareReps) return null
 
@@ -155,6 +153,9 @@ export class RoundTransformer extends BaseTransformer {
 
         const match = compareReps.match(numberHelper.sequenceRegex)
         if (!match) return null
+
+        if (movements.length === 1) return compareReps.split('-')
+
         if (!movements.every((movement) => movement.reps === compareReps)) return null
 
         return compareReps.split('-')
@@ -205,10 +206,19 @@ export class RoundTransformer extends BaseTransformer {
             }
         }
 
-        return {
+        const movements = textMovements.map((movement) => this.movementTransformer.toObject(movement, roundReps))
+
+        const round: IRound = {
             type: 'not_timed',
-            movements: textMovements.map((movement) => this.movementTransformer.toObject(movement, roundReps)),
+            movements,
         }
+
+        if (roundReps) return round
+
+        const sequenceReps = this.findSequenceReps(movements)
+        if (sequenceReps) round.numberOfRounds = sequenceReps.length
+
+        return round
     }
 
     private tranformType(type?: TRoundTypeTransform): TTimerTypes {
