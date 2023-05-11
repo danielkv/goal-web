@@ -142,7 +142,7 @@ export class EventBlockTransformer extends BaseTransformer {
         const type = block.event_type && block.event_type != 'not_timed' ? eventTypes[block.event_type] : ''
 
         if (!numberOfRounds && !type) return ''
-        return `${numberOfRounds} ${type}${time}`.trim()
+        return this.displayArray([numberOfRounds, type, time])
     }
 
     private eventTimerToString(obj: IEventBlock): string | null {
