@@ -14,6 +14,7 @@ export interface SectionEditorProps {
 
 const SectionEditor: Component<SectionEditorProps> = (props) => {
     const [text, setText] = createSignal(sectionTransformer.toString(props.current.blocks))
+    const editorId = props.thisPath.replaceAll('.', '-')
 
     createEffect(() => {
         setText(sectionTransformer.toString(props.current.blocks))
@@ -21,7 +22,7 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
 
     const updateForm = () => {
         try {
-            const text: string = (document.querySelector('#textarea') as any).value
+            const text: string = (document.querySelector(`#${editorId} .section-editor`) as any).value
             if (!text) return
 
             const blocks = sectionTransformer.toObject(text)
@@ -45,7 +46,7 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
         updateForm()
     }
     onMount(() => {
-        const element = document.querySelector('#textarea') as HTMLInputElement
+        const element = document.querySelector(`#${editorId} .section-editor`) as HTMLInputElement
         element.focus()
     })
 
@@ -64,11 +65,10 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
     }
 
     return (
-        <form onSubmit={handleUpdate} class="flex w-full flex-col">
+        <form onSubmit={handleUpdate} class="flex w-full flex-col" id={editorId}>
             <textarea
-                id="textarea"
                 onKeyDown={handleKeyDown}
-                class="w-full bg-[transparent] text-center border-white border rounded-md"
+                class="section-editor w-full bg-[transparent] text-center border-white border rounded-md"
                 rows={15}
             >
                 {text()}
