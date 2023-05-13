@@ -8,6 +8,7 @@ import CreateNewDay from '@view/CreateNewDay'
 import Home from '@view/Home'
 import LoginPage from '@view/Login'
 import Preview from '@view/Preview'
+import PrivacyPolicy from '@view/PrivacyPolicy'
 import TimersHome from '@view/TimersHome'
 import WorksheetList from '@view/WorksheetList'
 
@@ -39,6 +40,8 @@ const AppRouter: Component = () => {
                         <Route path="/timer/regressive" element={<TimersHome timer="regressive" />} />
                         <Route path="/timer/emom" element={<TimersHome timer="emom" />} />
                         <Route path="/timer/tabata" element={<TimersHome timer="tabata" />} />
+
+                        <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
                     </Routes>
                 </div>
             )}
