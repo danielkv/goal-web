@@ -16,7 +16,7 @@ export const createNewUser = https.onCall(async (data: UserData) => {
     const auth = getAuth()
 
     try {
-        const newUser = await auth.createUser({ ...data, disabled: true })
+        const newUser = await auth.createUser({ ...data, disabled: false })
 
         return {
             uid: newUser.uid,
