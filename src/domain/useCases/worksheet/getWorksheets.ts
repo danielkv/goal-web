@@ -1,10 +1,14 @@
-import { FUNCTION_CALL } from '@common/providers/firebase'
+import { firebaseProvider } from '@common/providers/firebase'
 import { IWorksheetModel } from '@models/day'
 
-const getWorksheetsFn = FUNCTION_CALL<never, IWorksheetModel[]>('getWorksheets')
+type TGetWorksheetsFilter = {
+    includeNotPublished?: boolean
+}
+
+const getWorksheetsFn = firebaseProvider.FUNCTION_CALL<TGetWorksheetsFilter, IWorksheetModel[]>('getWorksheets')
 
 export async function getWorksheetsUseCase(): Promise<IWorksheetModel[]> {
-    const response = await getWorksheetsFn()
+    const response = await getWorksheetsFn({ includeNotPublished: true })
 
     return response.data
 }

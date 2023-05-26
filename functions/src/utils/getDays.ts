@@ -6,5 +6,5 @@ export async function getDays(worksheetDocRef: firestore.DocumentReference) {
     return daysDocs.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-    }))
+    })) as Record<string, any>[]
 }

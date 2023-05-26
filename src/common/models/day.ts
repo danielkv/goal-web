@@ -22,6 +22,8 @@ export type IWorksheet = {
     info?: string
     startDate: string // YYYY-MM-DD
     days: IDay[]
+    published?: boolean
+    isCurrent?: boolean
 }
 
 export type TPeaces = IDay | IPeriod | ISection | IBlock | IRound

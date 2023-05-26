@@ -1,8 +1,13 @@
+import * as dayjs from 'dayjs'
+import * as isBetween from 'dayjs/plugin/isBetween'
 import * as admin from 'firebase-admin'
 import { https } from 'firebase-functions'
+import { map } from 'radash'
 
 import { init } from '../../helpers'
 import { getDays } from '../../utils/getDays'
+
+dayjs.extend(isBetween)
 
 init()
 
@@ -38,15 +43,42 @@ export const getWorksheetDayById = https.onCall(async ({ dayId, worksheetId }: G
     }
 })
 
-export const getWorksheets = https.onCall(async (none: any, context: https.CallableContext) => {
+type TGetWorksheetsFilter = {
+    includeNotPublished?: boolean
+}
+
+export const getWorksheets = https.onCall(async (filter?: TGetWorksheetsFilter) => {
     const db = admin.firestore()
 
-    const snapshot = await db.collection('worksheets').orderBy('startDate', 'desc').get()
+    const collection = db.collection('worksheets')
 
-    return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-    }))
+    const query = collection.orderBy('startDate', 'desc')
+
+    if (!filter?.includeNotPublished) query.where('published', '==', true)
+
+    const snapshot = await query.get()
+
+    const results = await map(snapshot.docs, async (doc) => {
+        const days = await getDays(doc.ref)
+
+        let firstDate: string = ''
+        let lastDate: string = ''
+
+        days.forEach((day, index) => {
+            if (index === 0) firstDate = day.date
+            lastDate = day.date
+        })
+
+        const isCurrent = dayjs().isBetween(dayjs(firstDate), dayjs(lastDate), 'day', '[]')
+
+        return {
+            id: doc.id,
+            isCurrent,
+            ...doc.data(),
+        }
+    })
+
+    return results
 })
 
 // export const remapWorksheets = https.onRequest(async (req, res) => {

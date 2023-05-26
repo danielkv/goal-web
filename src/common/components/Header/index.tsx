@@ -4,14 +4,14 @@ import { FiLogIn, FiLogOut } from 'solid-icons/fi'
 import { Component } from 'solid-js'
 
 import LogoSvg from '@assets/logo.svg?component-solid'
-import { FIREBASE_AUTH } from '@common/providers/firebase'
+import { firebaseProvider } from '@common/providers/firebase'
 import { loggedUser, setLoggedUser } from '@contexts/user/user.context'
 import { A } from '@solidjs/router'
 
 const Header: Component = () => {
     const handleSignOut = () => {
         setLoggedUser(null)
-        FIREBASE_AUTH.signOut()
+        firebaseProvider.getAuth().signOut()
     }
 
     return (

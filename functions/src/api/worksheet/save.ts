@@ -15,6 +15,7 @@ export const duplicateWorksheet = https.onCall(async (worksheetId: string) => {
     const worksheet: Record<string, any> = {
         days: await getDays(doc.ref),
         ...doc.data(),
+        published: false,
     }
 
     delete worksheet.id
@@ -86,3 +87,18 @@ async function saveDaysUseCase(
 
     return days
 }
+
+export const toggleWorksheetPublished = https.onCall(async (worksheetId: string) => {
+    const db = admin.firestore()
+    const doc = db.collection('worksheets').doc(worksheetId)
+
+    const ref = await doc.get()
+
+    const data = ref.data()
+    if (!data) throw new Error('Erro ao buscar planilha')
+
+    await doc.update({
+        ...data,
+        published: !data.published,
+    })
+})

@@ -1,4 +1,6 @@
-import { Component, For, Show, Suspense, createEffect, createResource, createSignal } from 'solid-js'
+import cloneDeep from 'clone-deep'
+
+import { Component, For, Show, createEffect, createSignal } from 'solid-js'
 
 import WorksheetItem from '@components/WorksheetItem'
 import { loggedUser } from '@contexts/user/user.context'
@@ -6,10 +8,13 @@ import { useNavigate } from '@solidjs/router'
 import { duplicateWorksheetUseCase } from '@useCases/worksheet/duplicateWorksheet'
 import { getWorksheetsUseCase } from '@useCases/worksheet/getWorksheets'
 import { removeWorksheetUseCase } from '@useCases/worksheet/removeWorksheet'
+import { toggleWorksheetPublishedUseCase } from '@useCases/worksheet/toggleWorksheetPublished'
+import { createStoreResource } from '@utils/createMutableResource'
 
 const WorksheetList: Component = () => {
-    const [list, { refetch }] = createResource(getWorksheetsUseCase)
+    const [list, { refetch, mutate }] = createStoreResource(null, getWorksheetsUseCase)
     const [loading, setLoading] = createSignal(false)
+    const [loadingWorksheet, setLoadingWorksheet] = createSignal<string | null>(null)
 
     const navigate = useNavigate()
 
@@ -30,9 +35,9 @@ const WorksheetList: Component = () => {
 
         await duplicateWorksheetUseCase(worksheetId)
 
-        setLoading(false)
+        await refetch()
 
-        refetch()
+        setLoading(false)
     }
 
     const handleRemoveWorksheet = async (worksheetId: string) => {
@@ -43,29 +48,60 @@ const WorksheetList: Component = () => {
 
         await removeWorksheetUseCase(worksheetId)
 
-        setLoading(false)
+        await refetch()
 
-        refetch()
+        setLoading(false)
+    }
+
+    const handleToggleWorksheetPublished = (published: boolean) => async (worksheetId: string) => {
+        if (published) {
+            const confirmation = confirm(
+                'Tem certeza que deseja despublicar essa planilha? Os usuários não irão mais ve-la no aplicativo mobile.'
+            )
+            if (!confirmation) return
+        } else {
+            const confirmation = confirm(
+                'Tem certeza que deseja publicar essa planilha? Os usuários irão ve-la no aplicativo mobile.'
+            )
+            if (!confirmation) return
+        }
+
+        setLoadingWorksheet(worksheetId)
+
+        await toggleWorksheetPublishedUseCase(worksheetId)
+
+        mutate((data) => {
+            if (!data) return list.resource
+
+            const foundIndex = data?.findIndex((worksheet) => worksheet.id === worksheetId)
+            const newData = cloneDeep(data)
+
+            newData[foundIndex].published = !published
+
+            return newData
+        })
+
+        setLoadingWorksheet(null)
     }
 
     return (
         <div class="p-10">
             <Show when={!loading()}>
-                <Suspense fallback={<div>Carregando...</div>}>
-                    <div class="flex">
-                        <For each={list()}>
-                            {(worksheet) => (
-                                <WorksheetItem
-                                    worksheet={worksheet}
-                                    onClick={handleClickWorksheetItem(worksheet.id)}
-                                    onClickDuplicate={handleDuplicateWorksheet}
-                                    onClickRemove={handleRemoveWorksheet}
-                                />
-                            )}
-                        </For>
-                        <WorksheetItem onClick={handleClickWorksheetNew} />
-                    </div>
-                </Suspense>
+                <div class="flex">
+                    <For each={list.resource}>
+                        {(worksheet) => (
+                            <WorksheetItem
+                                worksheet={worksheet}
+                                onClick={handleClickWorksheetItem(worksheet.id)}
+                                onClickDuplicate={handleDuplicateWorksheet}
+                                onClickRemove={handleRemoveWorksheet}
+                                onClickTooglePublish={handleToggleWorksheetPublished(!!worksheet.published)}
+                                loading={loadingWorksheet() === worksheet.id}
+                            />
+                        )}
+                    </For>
+                    <WorksheetItem onClick={handleClickWorksheetNew} />
+                </div>
             </Show>
             <Show when={loading()}>
                 <div>Carregando...</div>

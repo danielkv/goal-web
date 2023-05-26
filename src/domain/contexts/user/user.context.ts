@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js'
 
-import { FIREBASE_AUTH } from '@common/providers/firebase'
+import { firebaseProvider } from '@common/providers/firebase'
 import { UserCredential } from '@interfaces/user'
 import { extractUserCredential } from '@utils/users'
 
@@ -11,7 +11,7 @@ export const [loggedUser, setLoggedUser] = createSignal<UserCredential | null>(n
 export function setupFbAuthListener() {
     if (isSet) return
 
-    FIREBASE_AUTH.onAuthStateChanged((user) => {
+    firebaseProvider.getAuth().onAuthStateChanged((user) => {
         if (!user) setLoggedUser(null)
         else setLoggedUser(extractUserCredential(user))
     })

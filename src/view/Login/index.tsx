@@ -3,11 +3,11 @@ import 'firebaseui/dist/firebaseui.css'
 
 import { Component, createEffect } from 'solid-js'
 
-import { FIREBASE_AUTH, signInOptions } from '@common/providers/firebase'
+import { firebaseProvider } from '@common/providers/firebase'
 import { setupFbAuthListener } from '@contexts/user/user.context'
 import { useNavigate } from '@solidjs/router'
 
-const ui = authUI.AuthUI.getInstance() || new authUI.AuthUI(FIREBASE_AUTH)
+const ui = authUI.AuthUI.getInstance() || new authUI.AuthUI(firebaseProvider.getAuth())
 
 const LoginPage: Component = () => {
     const navigate = useNavigate()
@@ -15,7 +15,7 @@ const LoginPage: Component = () => {
 
     createEffect(() => {
         ui.start('#loginForm', {
-            signInOptions,
+            signInOptions: firebaseProvider.signInOptions,
 
             callbacks: {
                 signInSuccessWithAuthResult: () => {
