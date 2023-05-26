@@ -6,11 +6,6 @@ import { createHttpsError } from '../../utils/createHttpsError'
 
 init()
 
-interface ValidationResponse {
-    uid: string
-    email?: string
-}
-
 export const createSessionCookie = https.onCall(async (data: string) => {
     try {
         await getAuth().verifyIdToken(data)
@@ -32,12 +27,11 @@ export const validateSessionCookie = https.onCall(async (data: string) => {
     try {
         const decoded = await getAuth().verifySessionCookie(data, true)
 
-        const result: ValidationResponse = {
-            uid: decoded.uid,
-            email: decoded.email,
-        }
+        if (!decoded.email) throw new Error('No email decoded')
 
-        return result
+        const user = await getAuth().getUserByEmail(decoded.email)
+
+        return user
     } catch (err) {
         throw createHttpsError(err)
     }

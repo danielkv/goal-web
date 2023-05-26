@@ -16,13 +16,19 @@ export const createNewUser = https.onCall(async (data: UserData) => {
     const auth = getAuth()
 
     try {
-        const newUser = await auth.createUser({ ...data, disabled: false })
+        const newUser = await auth.createUser({ ...data, disabled: false, emailVerified: false })
 
-        return {
-            uid: newUser.uid,
-            displayName: newUser.displayName,
-            email: newUser.email,
-        }
+        return newUser
+    } catch (err) {
+        throw createHttpsError(err)
+    }
+})
+
+export const removeUser = https.onCall(async (uuid: string) => {
+    const auth = getAuth()
+
+    try {
+        await auth.deleteUser(uuid)
     } catch (err) {
         throw createHttpsError(err)
     }
