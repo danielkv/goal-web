@@ -52,9 +52,9 @@ export const getWorksheets = https.onCall(async (filter?: TGetWorksheetsFilter) 
 
     const collection = db.collection('worksheets')
 
-    const query = collection.orderBy('startDate', 'desc')
+    let query = collection.orderBy('startDate', 'desc')
 
-    if (!filter?.includeNotPublished) query.where('published', '==', true)
+    if (!filter?.includeNotPublished) query = query.where('published', '==', true)
 
     const snapshot = await query.get()
 

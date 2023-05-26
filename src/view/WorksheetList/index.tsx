@@ -86,7 +86,10 @@ const WorksheetList: Component = () => {
 
     return (
         <div class="p-10">
-            <Show when={!loading()}>
+            <Show when={loading() || list.loading}>
+                <div>Carregando...</div>
+            </Show>
+            <Show when={!list.loading && !!list.resource}>
                 <div class="flex">
                     <For each={list.resource}>
                         {(worksheet) => (
@@ -102,9 +105,6 @@ const WorksheetList: Component = () => {
                     </For>
                     <WorksheetItem onClick={handleClickWorksheetNew} />
                 </div>
-            </Show>
-            <Show when={loading()}>
-                <div>Carregando...</div>
             </Show>
         </div>
     )
