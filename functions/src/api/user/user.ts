@@ -33,3 +33,23 @@ export const removeUser = https.onCall(async (uuid: string) => {
         throw createHttpsError(err)
     }
 })
+
+export const verifyEmail = https.onRequest(async (request, response) => {
+    const email = request.query.email
+    if (!email || typeof email !== 'string') {
+        response.sendStatus(500)
+        return
+    }
+
+    if (!['google.com', 'apple.com'].includes(email.split('@')[1])) {
+        response.sendStatus(500)
+        return
+    }
+
+    const user = await getAuth().getUserByEmail(email)
+    await getAuth().updateUser(user.uid, {
+        emailVerified: true,
+    })
+
+    response.sendStatus(200)
+})
