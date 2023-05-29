@@ -7,16 +7,14 @@ import { firebaseProvider } from '@common/providers/firebase'
 import { setupFbAuthListener } from '@contexts/user/user.context'
 import { useNavigate } from '@solidjs/router'
 
-const ui = authUI.AuthUI.getInstance() || new authUI.AuthUI(firebaseProvider.getAuth())
-
 const LoginPage: Component = () => {
     const navigate = useNavigate()
     setupFbAuthListener()
 
     createEffect(() => {
+        const ui = authUI.AuthUI.getInstance() || new authUI.AuthUI(firebaseProvider.getAuth())
         ui.start('#loginForm', {
             signInOptions: firebaseProvider.signInOptions,
-
             callbacks: {
                 signInSuccessWithAuthResult: () => {
                     navigate('/')

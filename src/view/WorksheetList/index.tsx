@@ -68,7 +68,7 @@ const WorksheetList: Component = () => {
 
         setLoadingWorksheet(worksheetId)
 
-        await toggleWorksheetPublishedUseCase(worksheetId)
+        await toggleWorksheetPublishedUseCase(worksheetId, published)
 
         mutate((data) => {
             if (!data) return list.resource

@@ -2,6 +2,7 @@
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
 import duration from 'dayjs/plugin/duration'
+import isBetween from 'dayjs/plugin/isBetween'
 
 import { render } from 'solid-js/web'
 
@@ -10,6 +11,7 @@ import { Router } from '@solidjs/router'
 import App from './App'
 import './index.css'
 
+dayjs.extend(isBetween)
 dayjs.extend(duration)
 dayjs.locale('pt-br')
 

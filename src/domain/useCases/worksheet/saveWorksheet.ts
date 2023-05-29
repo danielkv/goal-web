@@ -1,10 +1,46 @@
+import { omit } from 'radash'
+
 import { firebaseProvider } from '@common/providers/firebase'
-import { IWorksheet } from '@models/day'
+import { IDayModel, IWorksheet, IWorksheetModel } from '@models/day'
+import { dayConverter, worksheetConverter } from '@utils/converters'
+import { newId } from '@utils/newId'
 
-const saveWorksheetFn = firebaseProvider.FUNCTION_CALL<IWorksheet, IWorksheet>('saveWorksheet')
+export async function saveWorksheetUseCase(worksheet: IWorksheet): Promise<IWorksheetModel> {
+    const worksheetId = worksheet.id || newId()
+    const docRef = firebaseProvider.firestore().doc('worksheets', worksheetId).withConverter(worksheetConverter)
 
-export async function saveWorksheetUseCase(worksheet: IWorksheet): Promise<IWorksheet> {
-    const response = await saveWorksheetFn(worksheet)
+    const worksheetResult: IWorksheetModel = await firebaseProvider
+        .firestore()
+        .runTransaction(firebaseProvider.getFirestore(), async (transaction) => {
+            const startEndDate = {
+                start: worksheet.days.at(0)?.date || '',
+                end: worksheet.days.at(-1)?.date || '',
+            }
 
-    return response.data
+            transaction.set(docRef, { ...worksheet, startEndDate, id: '' })
+
+            let startDate: string = ''
+            let endDate: string = ''
+
+            const daysResult = worksheet.days.map<IDayModel>((day, index) => {
+                if (index === 0) startDate = day.date
+                endDate = day.date
+
+                const dayId = day.id || newId()
+                const dayDocRef = firebaseProvider
+                    .firestore()
+                    .doc('worksheets', docRef.id, 'days', dayId)
+                    .withConverter(dayConverter)
+                transaction.set(dayDocRef, day)
+
+                return {
+                    ...omit(day, ['id']),
+                    id: dayId,
+                }
+            })
+
+            return { ...worksheet, days: daysResult, id: worksheetId, startEndDate }
+        })
+
+    return worksheetResult
 }

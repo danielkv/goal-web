@@ -24,6 +24,17 @@ export const createNewUser = https.onCall(async (data: UserData) => {
     }
 })
 
+export const getUsers = https.onCall(async (data: { limit?: number; pageToken?: string }) => {
+    try {
+        const auth = getAuth()
+        const users = await auth.listUsers(data.limit || 20, data.pageToken)
+
+        return users
+    } catch (err) {
+        throw createHttpsError(err)
+    }
+})
+
 export const removeUser = https.onCall(async (uuid: string) => {
     const auth = getAuth()
 

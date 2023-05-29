@@ -11,9 +11,15 @@ export type IPeriod = {
 }
 
 export type IDay = {
+    id?: string
     name: string
     date: string // YYYY-MM-DD
     periods: IPeriod[]
+}
+
+type IStartEndDate = {
+    start: string
+    end: string
 }
 
 export type IWorksheet = {
@@ -24,8 +30,15 @@ export type IWorksheet = {
     days: IDay[]
     published?: boolean
     isCurrent?: boolean
+    startEndDate?: IStartEndDate
 }
+
+export type IDayModel = IDay & { id: string }
 
 export type TPeaces = IDay | IPeriod | ISection | IBlock | IRound
 
-export type IWorksheetModel = Omit<IWorksheet, 'id'> & { id: string }
+export type IWorksheetModel = Omit<IWorksheet, 'id'> & {
+    id: string
+    days: IDayModel[]
+    startEndDate: IStartEndDate
+}

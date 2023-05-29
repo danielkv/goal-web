@@ -1,10 +1,24 @@
-import { firebaseProvider } from '@common/providers/firebase'
-import { IWorksheet } from '@models/day'
+import { omit } from 'radash'
 
-const duplicateWorksheetFn = firebaseProvider.FUNCTION_CALL<string, IWorksheet>('duplicateWorksheet')
+import { IDay, IWorksheet, IWorksheetModel } from '@models/day'
 
-export async function duplicateWorksheetUseCase(worksheetId: string): Promise<IWorksheet> {
-    const response = await duplicateWorksheetFn(worksheetId)
+import { getWorksheetByIdUseCase } from './getWorksheetById'
+import { saveWorksheetUseCase } from './saveWorksheet'
 
-    return response.data
+export async function duplicateWorksheetUseCase(worksheetId: string): Promise<IWorksheetModel> {
+    const worksheet = await getWorksheetByIdUseCase(worksheetId)
+
+    const duplicatedWorksheet: IWorksheet = omit(worksheet, ['id'])
+    duplicatedWorksheet.published = false
+    duplicatedWorksheet.name = `Cópia de ${worksheet.name}`
+
+    if (duplicatedWorksheet.days) {
+        duplicatedWorksheet.days = worksheet.days.map<IDay>((day) => omit(day, ['id']))
+    } else {
+        duplicatedWorksheet.days = []
+    }
+
+    const result = await saveWorksheetUseCase(duplicatedWorksheet)
+
+    return result
 }

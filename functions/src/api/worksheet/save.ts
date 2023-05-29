@@ -102,3 +102,16 @@ export const toggleWorksheetPublished = https.onCall(async (worksheetId: string)
         published: !data.published,
     })
 })
+
+export const createInitialLoad = https.onRequest(async (req, res) => {
+    if (!process.env.FUNCTIONS_EMULATOR) {
+        res.sendStatus(404)
+        return
+    }
+
+    const promises = req.body.map((worksheet: Record<string, any>) => createWorksheetUseCase(worksheet))
+
+    await Promise.all(promises)
+
+    res.sendStatus(201)
+})
