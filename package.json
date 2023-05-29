@@ -4,6 +4,8 @@
 	"description": "",
 	"scripts": {
 		"start": "vite",
+		"fb:serve": "firebase emulators:start",
+		"dbseed": "node ./scripts/dbseed.js",
 		"dev": "vite --open",
 		"build": "vite build",
 		"serve": "vite preview"
@@ -14,6 +16,7 @@
 		"@types/clone-deep": "^4.0.1",
 		"@types/events": "^3.0.0",
 		"autoprefixer": "^10.4.14",
+		"firebase-admin": "^11.8.0",
 		"postcss": "^8.4.21",
 		"sass": "^1.62.0",
 		"tailwindcss": "^3.3.0",
@@ -28,7 +31,7 @@
 		"clone-deep": "^4.0.1",
 		"dayjs": "^1.11.7",
 		"events": "^3.3.0",
-		"firebase": "^9.19.1",
+		"firebase": "^9.22.1",
 		"firebaseui": "^6.0.2",
 		"html2canvas": "^1.4.1",
 		"html2pdf.js": "^0.10.1",
