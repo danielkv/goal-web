@@ -10,6 +10,7 @@ import LoginPage from '@view/Login'
 import Preview from '@view/Preview'
 import PrivacyPolicy from '@view/PrivacyPolicy'
 import TimersHome from '@view/TimersHome'
+import UsersList from '@view/UsersList'
 import WorksheetList from '@view/WorksheetList'
 
 const AppRouter: Component = () => {
@@ -42,6 +43,7 @@ const AppRouter: Component = () => {
                         <Route path="/timer/tabata" element={<TimersHome timer="tabata" />} />
 
                         <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
+                        <Route path="/users" element={<UsersList />} />
                     </Routes>
                 </div>
             )}

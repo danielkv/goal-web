@@ -1,5 +1,5 @@
 import { FaSolidClipboardList } from 'solid-icons/fa'
-import { FiLogIn, FiLogOut } from 'solid-icons/fi'
+import { FiLogIn, FiLogOut, FiUsers } from 'solid-icons/fi'
 
 import { Component } from 'solid-js'
 
@@ -23,6 +23,9 @@ const Header: Component = () => {
                 <div class="flex gap-3">
                     {loggedUser() ? (
                         <>
+                            <A href="/users" title="Usuários" class="bg-gray-900 p-3 rounded-full hover:bg-gray-700">
+                                <FiUsers size={20} />
+                            </A>
                             <A
                                 href="/worksheet"
                                 title="Planilhas"

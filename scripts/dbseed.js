@@ -1,6 +1,7 @@
 const admin = require('firebase-admin')
 const data = require('./data.json')
 const { omit } = require('radash')
+const { faker } = require('@faker-js/faker')
 
 // initialization
 const projectId = 'goal-app-e4880'
@@ -35,8 +36,17 @@ async function createSeedData() {
             email: 'danielkv@gmail.com',
             password: '123456',
         })
-
         admin.auth().setCustomUserClaims(user.uid, { admin: true })
+
+        const promises = Array.from({ length: 8 }).map(() => {
+            return admin.auth().createUser({
+                displayName: faker.person.fullName(),
+                email: faker.internet.email(),
+                password: faker.internet.password(),
+            })
+        })
+
+        await Promise.all(promises)
 
         console.log('database seed was successful')
     } catch (error) {

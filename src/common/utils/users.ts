@@ -1,12 +1,16 @@
 import { User } from 'firebase/auth'
+import { pick } from 'radash'
 
-import { UserCredential } from '@interfaces/user'
+import { IUserCredential } from '@models/user'
 
-export function extractUserCredential(user: User): UserCredential | null {
+export function extractUserCredential(user: User): IUserCredential | null {
+    const credential = pick(user, ['uid', 'email', 'displayName', 'photoURL', 'phoneNumber'])
+
     return {
-        id: user.uid,
-        email: user.email || '',
-        displayName: user.displayName,
-        lastSignInTime: user.metadata.lastSignInTime,
+        ...credential,
+        displayName: credential.displayName || '',
+        photoURL: credential.photoURL || '',
+        phoneNumber: credential.phoneNumber || '',
+        email: credential.email || '',
     }
 }

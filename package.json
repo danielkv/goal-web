@@ -12,6 +12,7 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
+		"@faker-js/faker": "^8.0.2",
 		"@trivago/prettier-plugin-sort-imports": "^4.1.1",
 		"@types/clone-deep": "^4.0.1",
 		"@types/events": "^3.0.0",
@@ -28,6 +29,9 @@
 	"dependencies": {
 		"@modular-forms/solid": "^0.11.0",
 		"@solidjs/router": "^0.8.2",
+		"@suid/icons-material": "^0.6.3",
+		"@suid/material": "^0.12.3",
+		"@suid/vite-plugin": "^0.1.4",
 		"clone-deep": "^4.0.1",
 		"dayjs": "^1.11.7",
 		"events": "^3.3.0",

@@ -1,7 +1,7 @@
 import { FirebaseApp, initializeApp } from 'firebase/app'
 import { ProviderId, connectAuthEmulator, getAuth } from 'firebase/auth'
 import * as firestoreFns from 'firebase/firestore'
-import { connectFunctionsEmulator, getFunctions } from 'firebase/functions'
+import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions'
 
 type TEmulatorConfig = {
     host: string
@@ -94,12 +94,11 @@ class FirebaseProvider {
         }
     }
 
-    // FUNCTION_CALL<RequestData = unknown, ResponseData = unknown>(fnName: string) {
-    //     const functions = this.getFunctions()
+    FUNCTION_CALL<RequestData = unknown, ResponseData = unknown>(fnName: string) {
+        const functions = this.getFunctions()
 
-    //     return httpsCallable<RequestData, ResponseData>(functions, fnName)
-    // }
-    //
+        return httpsCallable<RequestData, ResponseData>(functions, fnName)
+    }
 }
 
 const useEmulator = import.meta.env.DEV

@@ -1,5 +1,6 @@
 import { getAuth } from 'firebase-admin/auth'
 import { https } from 'firebase-functions'
+import { pick } from 'radash'
 
 import { init } from '../../helpers'
 import { createHttpsError } from '../../utils/createHttpsError'
@@ -27,10 +28,25 @@ export const createNewUser = https.onCall(async (data: UserData) => {
 export const getUsers = https.onCall(async (data: { limit?: number; pageToken?: string }) => {
     try {
         const auth = getAuth()
-        const users = await auth.listUsers(data.limit || 20, data.pageToken)
+        const list = await auth.listUsers(data.limit || 20, data.pageToken || undefined)
 
-        return users
+        return {
+            pageToken: list.pageToken,
+            users: list.users.map((user) =>
+                pick(user, [
+                    'uid',
+                    'email',
+                    'emailVerified',
+                    'displayName',
+                    'photoURL',
+                    'phoneNumber',
+                    'disabled',
+                    'customClaims',
+                ])
+            ),
+        }
     } catch (err) {
+        console.log(err)
         throw createHttpsError(err)
     }
 })

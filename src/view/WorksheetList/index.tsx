@@ -1,17 +1,19 @@
 import cloneDeep from 'clone-deep'
 
-import { Component, For, Show, createEffect, createSignal } from 'solid-js'
+import { Component, For, Show, createSignal } from 'solid-js'
 
 import WorksheetItem from '@components/WorksheetItem'
-import { loggedUser } from '@contexts/user/user.context'
 import { useNavigate } from '@solidjs/router'
 import { duplicateWorksheetUseCase } from '@useCases/worksheet/duplicateWorksheet'
 import { getWorksheetsUseCase } from '@useCases/worksheet/getWorksheets'
 import { removeWorksheetUseCase } from '@useCases/worksheet/removeWorksheet'
 import { toggleWorksheetPublishedUseCase } from '@useCases/worksheet/toggleWorksheetPublished'
 import { createStoreResource } from '@utils/createMutableResource'
+import { redirectToLogin } from '@utils/redirectToLogin'
 
 const WorksheetList: Component = () => {
+    redirectToLogin()
+
     const [list, { refetch, mutate }] = createStoreResource(null, getWorksheetsUseCase)
     const [loading, setLoading] = createSignal(false)
     const [loadingWorksheet, setLoadingWorksheet] = createSignal<string | null>(null)
@@ -25,10 +27,6 @@ const WorksheetList: Component = () => {
     const handleClickWorksheetNew = () => {
         navigate(`/worksheet/new`)
     }
-
-    createEffect(() => {
-        if (!loggedUser()) navigate('/login', { replace: true })
-    })
 
     const handleDuplicateWorksheet = async (worksheetId: string) => {
         setLoading(true)

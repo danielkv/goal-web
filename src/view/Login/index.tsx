@@ -15,8 +15,6 @@ const LoginPage: Component = () => {
             signInOptions: firebaseProvider.signInOptions,
             callbacks: {
                 signInSuccessWithAuthResult: (auth) => {
-                    console.log(auth)
-
                     navigate('/')
                     return false
                 },
