@@ -1,3 +1,4 @@
+import cloneDeep from 'clone-deep'
 import { FirestoreDataConverter } from 'firebase/firestore'
 import { pick } from 'radash'
 
@@ -11,7 +12,10 @@ export const dayConverter: FirestoreDataConverter<IDayModel> = {
         }
     },
     toFirestore(model) {
-        return pick(model, ['date', 'name', 'periods'])
+        const day = pick(model, ['date', 'name', 'periods'])
+        day.periods = cloneDeep(day.periods)
+
+        return day
     },
 }
 
@@ -23,6 +27,8 @@ export const worksheetConverter: FirestoreDataConverter<Omit<IWorksheetModel, 'd
         }
     },
     toFirestore(model) {
-        return pick(model, ['info', 'name', 'published', 'startDate', 'startEndDate'])
+        const result = pick(model, ['info', 'name', 'published', 'startDate', 'startEndDate'])
+
+        return result
     },
 }

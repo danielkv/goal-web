@@ -1,3 +1,5 @@
+import { omit } from 'radash'
+
 import { Component, For, JSX, Show, createEffect, createMemo, on } from 'solid-js'
 
 import TextInput from '@components/TextInput'
@@ -46,7 +48,7 @@ const RoundForm: Component<BlockFormProps> = (props) => {
             numberOfRounds: Number.isNaN(values.numberOfRounds) ? 1 : values.numberOfRounds || 1,
             movements:
                 values.movements?.map((mov) => {
-                    if (mov.weight?.type === 'none') delete mov.weight
+                    if (!mov.weight || mov.weight?.type === 'none') return omit(mov, ['weight'])
                     return mov
                 }) || [],
         }

@@ -19,13 +19,7 @@ export async function saveWorksheetUseCase(worksheet: IWorksheet): Promise<IWork
 
             transaction.set(docRef, { ...worksheet, startEndDate, id: '' })
 
-            let startDate: string = ''
-            let endDate: string = ''
-
             const daysResult = worksheet.days.map<IDayModel>((day, index) => {
-                if (index === 0) startDate = day.date
-                endDate = day.date
-
                 const dayId = day.id || newId()
                 const dayDocRef = firebaseProvider
                     .firestore()

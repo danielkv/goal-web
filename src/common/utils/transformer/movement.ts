@@ -28,13 +28,16 @@ export class MovementTransformer extends BaseTransformer {
         if (!match?.groups) return { name: text.trim(), reps: '' }
 
         const reps = this.extractReps(match.groups.reps, roundReps)
-        const weight = this.extractWeight(match.groups.weight)
 
-        return {
+        const result: IEventMovement = {
             name: match.groups.name.trim(),
             reps,
-            weight,
         }
+
+        const weight = this.extractWeight(match.groups.weight)
+        if (weight) result.weight = weight
+
+        return result
     }
 
     protected extractWeight(text?: string): IMovementWeight | undefined {
