@@ -2,20 +2,21 @@ import { https } from 'firebase-functions/v1'
 
 export function createHttpsError(err: any): https.HttpsError {
     if (typeof err === 'object') {
-        const _code = err.code
+        const message = getErrorMessage(err)
 
-        if (!_code) throw new Error('Error Type does not match')
-
-        return new https.HttpsError('internal', getErrorMessage(_code))
+        return new https.HttpsError('internal', message)
     }
 
     if (typeof err === 'string') return new https.HttpsError('aborted', err)
     return new https.HttpsError('internal', 'Erro inexperado')
 }
 
-function getErrorMessage(code: string): string {
-    const message = errorMessages[code]
-    if (message) return message
+function getErrorMessage(err: any): string {
+    if (typeof err === 'string') return err
+
+    if (err.code) return errorMessages[err.code] || 'Erro inesperado'
+
+    if (err.message) return err.message
 
     return 'Erro inesperado'
 }
