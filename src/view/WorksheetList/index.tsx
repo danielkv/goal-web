@@ -4,6 +4,7 @@ import { Component, For, Show, createSignal } from 'solid-js'
 
 import WorksheetItem from '@components/WorksheetItem'
 import { useNavigate } from '@solidjs/router'
+import { Grid } from '@suid/material'
 import { duplicateWorksheetUseCase } from '@useCases/worksheet/duplicateWorksheet'
 import { getWorksheetsUseCase } from '@useCases/worksheet/getWorksheets'
 import { removeWorksheetUseCase } from '@useCases/worksheet/removeWorksheet'
@@ -88,21 +89,23 @@ const WorksheetList: Component = () => {
                 <div>Carregando...</div>
             </Show>
             <Show when={!list.loading && !!list.resource}>
-                <div class="flex">
+                <Grid container>
+                    <WorksheetItem onClick={handleClickWorksheetNew} />
                     <For each={list.resource}>
                         {(worksheet) => (
-                            <WorksheetItem
-                                worksheet={worksheet}
-                                onClick={handleClickWorksheetItem(worksheet.id)}
-                                onClickDuplicate={handleDuplicateWorksheet}
-                                onClickRemove={handleRemoveWorksheet}
-                                onClickTooglePublish={handleToggleWorksheetPublished(!!worksheet.published)}
-                                loading={loadingWorksheet() === worksheet.id}
-                            />
+                            <Grid item>
+                                <WorksheetItem
+                                    worksheet={worksheet}
+                                    onClick={handleClickWorksheetItem(worksheet.id)}
+                                    onClickDuplicate={handleDuplicateWorksheet}
+                                    onClickRemove={handleRemoveWorksheet}
+                                    onClickTooglePublish={handleToggleWorksheetPublished(!!worksheet.published)}
+                                    loading={loadingWorksheet() === worksheet.id}
+                                />
+                            </Grid>
                         )}
                     </For>
-                    <WorksheetItem onClick={handleClickWorksheetNew} />
-                </div>
+                </Grid>
             </Show>
         </div>
     )
