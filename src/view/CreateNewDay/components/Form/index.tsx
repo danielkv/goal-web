@@ -6,6 +6,7 @@ import { IBreadcrumbItem } from '@components/Breadcrumb/types'
 import { Path } from '@interfaces/app'
 import { IBlock, IEventBlock } from '@models/block'
 import { IDay, IPeriod, ISection, IWorksheet } from '@models/day'
+import { removeTempWorksheetUseCase } from '@useCases/temp-worksheet/removeTempWorksheet'
 import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
 import { getErrorMessage } from '@utils/errors'
 import {
@@ -62,6 +63,7 @@ const Form: Component<FormProps> = (props) => {
         try {
             setSaving(true)
             const result = await saveWorksheetUseCase(props.worksheet)
+            if (props.worksheet.id) await removeTempWorksheetUseCase(props.worksheet.id)
 
             props.handleSetWorksheet(result)
         } catch (err) {

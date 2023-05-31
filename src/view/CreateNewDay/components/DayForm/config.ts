@@ -1,7 +1,6 @@
 import { omit } from 'radash'
 import { z } from 'zod'
 
-import { ZodShape } from '@interfaces/app'
 import { IDay } from '@models/day'
 import { createDayValues } from '@utils/worksheetInitials'
 
@@ -9,7 +8,7 @@ export type TDayForm = Omit<IDay, 'periods'>
 
 export const dayForemInitialValues: TDayForm = omit(createDayValues(), ['periods'])
 
-export const dayFormSchema = z.object<ZodShape<TDayForm>>({
+export const dayFormSchema = z.object({
     name: z.string({ required_error: 'Nome é obrigatório' }).nonempty('Nome é obrigatório'),
     date: z
         .string({ required_error: 'Data é obrigatória' })
