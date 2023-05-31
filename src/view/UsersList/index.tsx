@@ -3,6 +3,7 @@ import { Component, For, Show, createEffect, createResource, createSignal } from
 import { loggedUser } from '@contexts/user/user.context'
 import { AdminPanelSettings, Delete, Person, PersonAdd, PersonOff, PersonRemove } from '@suid/icons-material'
 import {
+    Avatar,
     Box,
     CircularProgress,
     Container,
@@ -21,6 +22,26 @@ import { toggleAdminAccessUseCase } from '@useCases/user/toggleAdminAccess'
 import { toggleEnableUserUseCase } from '@useCases/user/toggleEnableUser'
 import { getErrorMessage } from '@utils/errors'
 import { redirectToLogin } from '@utils/redirectToLogin'
+
+function stringToColor(string: string) {
+    let hash = 0
+    let i
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash)
+    }
+
+    let color = '#'
+
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff
+        color += `00${value.toString(16)}`.slice(-2)
+    }
+    /* eslint-enable no-bitwise */
+
+    return color
+}
 
 const UsersList: Component = () => {
     redirectToLogin()
@@ -97,6 +118,7 @@ const UsersList: Component = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell></TableCell>
                                 <TableCell>Nome</TableCell>
                                 <TableCell>Email</TableCell>
                                 <TableCell>Telefone</TableCell>
@@ -106,20 +128,41 @@ const UsersList: Component = () => {
                         <TableBody>
                             <For each={listResult()?.users}>
                                 {(user) => (
-                                    <TableRow>
+                                    <TableRow class={user.disabled ? 'bg-gray-700' : undefined}>
+                                        <TableCell>
+                                            <Avatar
+                                                imgProps={{
+                                                    style: user.disabled ? { filter: 'saturate(0)' } : undefined,
+                                                }}
+                                                sx={{ bgcolor: stringToColor(user.displayName || '') }}
+                                                src={user.photoURL}
+                                            >{`${user.displayName?.split(' ')[0][0]}${
+                                                user.displayName?.split(' ')[1][0]
+                                            }`}</Avatar>
+                                        </TableCell>
                                         <TableCell>
                                             <Stack direction="row" spacing={1}>
-                                                <Box>{user.displayName}</Box>
+                                                <Typography color={user.disabled ? 'gray' : undefined}>
+                                                    {user.displayName}
+                                                </Typography>
                                                 <Show when={user.uid === loggedUser()?.uid}>
-                                                    <Box>(você)</Box>
+                                                    <Typography>(você)</Typography>
                                                 </Show>
                                                 <Show when={user.customClaims?.admin}>
                                                     <AdminPanelSettings fontSize="small" />
                                                 </Show>
                                             </Stack>
                                         </TableCell>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>{user.phoneNumber}</TableCell>
+                                        <TableCell>
+                                            <Typography color={user.disabled ? 'gray' : undefined}>
+                                                {user.email}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color={user.disabled ? 'gray' : undefined}>
+                                                {user.phoneNumber}
+                                            </Typography>
+                                        </TableCell>
                                         <TableCell>
                                             <Show when={loadinAction() === user.uid}>
                                                 <CircularProgress size={20} color="warning" />
@@ -137,7 +180,7 @@ const UsersList: Component = () => {
                                                     onClick={() =>
                                                         handleToggleAdminAccess(user.uid, !!user.customClaims?.admin)
                                                     }
-                                                    disabled={user.uid === loggedUser()?.uid}
+                                                    disabled={user.uid === loggedUser()?.uid || user.disabled}
                                                 >
                                                     {user.customClaims?.admin ? <PersonRemove /> : <PersonAdd />}
                                                 </IconButton>
