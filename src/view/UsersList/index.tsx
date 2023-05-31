@@ -43,6 +43,14 @@ function stringToColor(string: string) {
     return color
 }
 
+function userInitials(name?: string): string {
+    if (!name) return ''
+
+    const splittedName = name.split(' ')
+
+    return `${splittedName[0][0]}${splittedName[1][0]}`
+}
+
 const UsersList: Component = () => {
     redirectToLogin()
 
@@ -136,9 +144,9 @@ const UsersList: Component = () => {
                                                 }}
                                                 sx={{ bgcolor: stringToColor(user.displayName || '') }}
                                                 src={user.photoURL}
-                                            >{`${user.displayName?.split(' ')[0][0]}${
-                                                user.displayName?.split(' ')[1][0]
-                                            }`}</Avatar>
+                                            >
+                                                {userInitials(user.displayName)}
+                                            </Avatar>
                                         </TableCell>
                                         <TableCell>
                                             <Stack direction="row" spacing={1}>
