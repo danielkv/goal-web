@@ -6,6 +6,7 @@ import { firebaseProvider } from '@common/providers/firebase'
 import { setLoggedUser } from '@contexts/user/user.context'
 import { useLocation, useNavigate } from '@solidjs/router'
 import { ThemeProvider, createTheme } from '@suid/material'
+import { getErrorMessage } from '@utils/errors'
 import { extractUserCredential } from '@utils/users'
 
 import AppRouter from './router'
@@ -21,11 +22,24 @@ const App: Component = () => {
     })
 
     function handleAuthStateChanged(user: User | null) {
-        if (!user || !user?.displayName || !user?.email) return setLoggedUser(null)
+        if (!user || !user?.email) return setLoggedUser(null)
 
-        setLoggedUser(extractUserCredential(user))
+        user.getIdTokenResult()
+            .then(({ claims }) => {
+                if (!claims.admin) {
+                    alert('Você não tem permissão para acessar essa página')
+                    navigate('/')
+                    return firebaseProvider.getAuth().signOut()
+                }
 
-        if (location.pathname === '/login') navigate('worksheet')
+                setLoggedUser(extractUserCredential(user))
+
+                if (location.pathname === '/login') navigate('worksheet')
+            })
+            .catch((err) => {
+                alert(getErrorMessage(err))
+                return firebaseProvider.getAuth().signOut()
+            })
     }
 
     const unsubscribe = firebaseProvider.getAuth().onAuthStateChanged(handleAuthStateChanged)

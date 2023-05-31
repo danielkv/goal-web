@@ -1,4 +1,4 @@
-import { getAuth } from 'firebase-admin/auth'
+import { UserInfo, getAuth } from 'firebase-admin/auth'
 import { https } from 'firebase-functions'
 import { pick } from 'radash'
 
@@ -56,6 +56,24 @@ export const removeUser = https.onCall(async (uuid: string) => {
 
     try {
         await auth.deleteUser(uuid)
+    } catch (err) {
+        throw createHttpsError(err)
+    }
+})
+
+type TUpdateUserPayload = {
+    uid: string
+    data: Partial<UserInfo>
+}
+export const updateUser = https.onCall(async (payload: TUpdateUserPayload, context) => {
+    try {
+        if (!payload.uid || !payload.data) throw new Error('Faltam dados para requisição')
+        if (!context.auth?.token.admin && payload.uid !== context.auth?.uid) throw new Error('Ação proibida')
+        const validData = pick(payload.data, ['displayName', 'email', 'photoURL', 'providerId', 'phoneNumber'])
+
+        const auth = getAuth()
+
+        await auth.updateUser(payload.uid, validData)
     } catch (err) {
         throw createHttpsError(err)
     }

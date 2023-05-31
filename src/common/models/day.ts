@@ -37,7 +37,7 @@ export type IDayModel = IDay & { id: string }
 
 export type TPeaces = IDay | IPeriod | ISection | IBlock | IRound
 
-export type IWorksheetModel = Omit<IWorksheet, 'id'> & {
+export type IWorksheetModel = Omit<IWorksheet, 'id' | 'days'> & {
     id: string
     days: IDayModel[]
     startEndDate: IStartEndDate

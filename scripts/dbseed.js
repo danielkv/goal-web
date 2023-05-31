@@ -39,11 +39,16 @@ async function createSeedData() {
         admin.auth().setCustomUserClaims(user.uid, { admin: true })
 
         const promises = Array.from({ length: 8 }).map(() => {
-            return admin.auth().createUser({
-                displayName: faker.person.fullName(),
-                email: faker.internet.email(),
-                password: faker.internet.password(),
-            })
+            return admin
+                .auth()
+                .createUser({
+                    displayName: faker.person.fullName(),
+                    email: faker.internet.email(),
+                    password: faker.internet.password(),
+                    phoneNumber: faker.phone.number('+55 ## ##### ####'),
+                    photoURL: faker.image.urlLoremFlickr({ category: 'people' }),
+                })
+                .then((user) => admin.auth().setCustomUserClaims(user.uid, { admin: faker.datatype.boolean(0.1) }))
         })
 
         await Promise.all(promises)

@@ -1,14 +1,21 @@
+import cloneDeep from 'clone-deep'
+import deepEqual from 'deep-equal'
+import { debounce } from 'radash'
 import { FiEye } from 'solid-icons/fi'
 
-import { Component, createEffect, createSignal } from 'solid-js'
-import { createStore, produce } from 'solid-js/store'
+import { Component, Show, createEffect, createSignal } from 'solid-js'
+import { SetStoreFunction, StoreSetter, createStore, produce } from 'solid-js/store'
 
 import WorksheetPreview from '@components/WorksheetPreview'
 import { Path } from '@interfaces/app'
-import { IWorksheet } from '@models/day'
-import { useNavigate, useParams } from '@solidjs/router'
+import { IWorksheet, IWorksheetModel } from '@models/day'
+import { useParams } from '@solidjs/router'
+import { Box, Chip, Stack, Toolbar } from '@suid/material'
+import { getTempWorksheetByIdUseCase } from '@useCases/temp-worksheet/getTempWorksheetById'
+import { saveTempWorksheetUseCase } from '@useCases/temp-worksheet/saveTempWorksheet'
 import { getWorksheetByIdUseCase } from '@useCases/worksheet/getWorksheetById'
 import { getErrorMessage } from '@utils/errors'
+import { isWorksheetModel } from '@utils/models'
 import {
     findNextIndexPath,
     findPreviousIndexPath,
@@ -25,14 +32,47 @@ import Form from './components/Form'
 const CreateNewDay: Component = () => {
     redirectToLogin()
 
+    let displayTempSavedTimout: number
+    const [lastTempSaved, setLastTempSaved] = createSignal<IWorksheetModel>()
+    const [displayTempSaved, setDisplayTempSaved] = createSignal(false)
+    const [loadingTemp, setLoadingTemp] = createSignal(false)
     const [loading, setLoading] = createSignal(false)
     const [error, setError] = createSignal<string | null>(null)
 
     const [currentPath, setCurrentPath] = createSignal<Path>('' as Path)
 
-    const navigate = useNavigate()
+    const [worksheetStore, doSetWorksheetStore] = createStore<IWorksheet>(createWorksheetValues())
 
-    const [worksheetStore, setWorksheetStore] = createStore<IWorksheet>(createWorksheetValues())
+    const debouncedSaveTempWorksheet = debounce({ delay: 5000 }, async (worksheet: IWorksheetModel) => {
+        try {
+            if (deepEqual(worksheet, lastTempSaved())) return
+
+            setDisplayTempSaved(false)
+            if (displayTempSavedTimout) clearTimeout(displayTempSavedTimout)
+
+            setLoadingTemp(true)
+            await saveTempWorksheetUseCase(worksheet)
+
+            setLastTempSaved(cloneDeep(worksheet))
+
+            setDisplayTempSaved(true)
+
+            displayTempSavedTimout = setTimeout(() => {
+                setDisplayTempSaved(false)
+            }, 3000)
+        } catch (err) {
+            alert(getErrorMessage(err))
+        } finally {
+            setLoadingTemp(false)
+        }
+    })
+
+    //@ts-expect-error
+    const setWorksheetStore: SetStoreFunction<IWorksheet> = (storeFn: StoreSetter<IWorksheet, []>) => {
+        doSetWorksheetStore(storeFn)
+
+        if (isWorksheetModel(worksheetStore)) debouncedSaveTempWorksheet(worksheetStore)
+    }
 
     createEffect(() => {
         const params = useParams()
@@ -47,7 +87,7 @@ const CreateNewDay: Component = () => {
     const handleViewWorksheet = () => {
         if (!worksheetStore.id) return
 
-        navigate(`/worksheet/view/${worksheetStore.id}`)
+        window.open(`/worksheet/view/${worksheetStore.id}`)
     }
 
     const handleRemovePeace = <Values,>(path: Path) => {
@@ -128,9 +168,18 @@ const CreateNewDay: Component = () => {
             setError(null)
             setLoading(true)
 
+            const tempWorksheet = await getTempWorksheetByIdUseCase(worksheetId)
+            if (tempWorksheet) {
+                const tempConfirmation = confirm('Existem um rascunho salvo, deseja abri-lo?')
+                if (tempConfirmation) {
+                    setLastTempSaved(cloneDeep(tempWorksheet))
+                    return doSetWorksheetStore(tempWorksheet)
+                }
+            }
             const worksheet = await getWorksheetByIdUseCase(worksheetId)
 
-            setWorksheetStore(worksheet)
+            setLastTempSaved(cloneDeep(worksheet))
+            doSetWorksheetStore(worksheet)
         } catch (err) {
             const error = getErrorMessage(err)
             alert(error)
@@ -139,6 +188,7 @@ const CreateNewDay: Component = () => {
             setLoading(false)
         }
     }
+
     return (
         <div
             class="grid w-full"
@@ -148,17 +198,32 @@ const CreateNewDay: Component = () => {
                 height: 'calc(100% - 80px)',
             }}
         >
-            <div class="flex flex-1 flex-col basis-auto overflow-auto">
-                <div class="h-[80px] bg-gray-700 flex gap-6 items-center px-6 justify-end p-3">
-                    <button
-                        disabled={!worksheetStore.id}
-                        class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
-                        onClick={handleViewWorksheet}
-                        title="Abrir visualização"
-                    >
-                        <FiEye size={22} />
-                    </button>
-                </div>
+            <div class="flex flex-1 flex-col basis-auto overflow-auto relative">
+                <Box class="fixed bottom-3 left-3">
+                    <Show when={loadingTemp()}>
+                        <Chip class="animate-pulse" color="info" label="Salvando rascunho..." />
+                    </Show>
+                    <Show when={displayTempSaved()}>
+                        <Chip color="success" label="Rascunho salvo!" />
+                    </Show>
+                </Box>
+                <Box class=" bg-gray-700">
+                    <Toolbar>
+                        <Stack flex={1} direction="row" alignItems="center" justifyContent="flex-end">
+                            <Box>
+                                <button
+                                    disabled={!worksheetStore.id}
+                                    class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
+                                    onClick={handleViewWorksheet}
+                                    title="Abrir visualização"
+                                >
+                                    <FiEye size={22} />
+                                </button>
+                            </Box>
+                        </Stack>
+                    </Toolbar>
+                </Box>
+
                 {error() ? (
                     <div class="flex-1 text-center m-10">{error()}</div>
                 ) : loading() ? (

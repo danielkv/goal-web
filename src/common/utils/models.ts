@@ -1,5 +1,5 @@
 import { IBlock, IEventBlock, IRestBlock, IRound, ITextBlock } from '@models/block'
-import { IDay, IPeriod, ISection } from '@models/day'
+import { IDay, IDayModel, IPeriod, ISection, IWorksheet, IWorksheetModel } from '@models/day'
 
 export function isDay(obj: Record<string, any>): obj is IDay {
     if (obj?.hasOwnProperty('name') && obj.hasOwnProperty('date') && obj.hasOwnProperty('periods')) return true
@@ -35,5 +35,17 @@ export function isTextBlock(obj: Record<string, any>): obj is ITextBlock {
 }
 export function isRestBlock(obj: Record<string, any>): obj is IRestBlock {
     if (obj?.hasOwnProperty('type') && obj.type === 'rest') return true
+    return false
+}
+
+export function isWorksheetModel(obj: IWorksheet): obj is IWorksheetModel {
+    if (!obj.id) return false
+    if (!obj.days.every(isDayModel)) return false
+
+    return true
+}
+
+export function isDayModel(obj: IDay): obj is IDayModel {
+    if (obj.id) return true
     return false
 }
