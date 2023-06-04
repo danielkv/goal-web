@@ -2,12 +2,15 @@ import { omit } from 'radash'
 
 import { firebaseProvider } from '@common/providers/firebase'
 import { IDayModel, IWorksheet, IWorksheetModel } from '@models/day'
+import { getWorksheetDaysUseCase } from '@useCases/days/getWorksheetDays'
 import { dayConverter, worksheetConverter } from '@utils/converters'
 import { newId } from '@utils/newId'
 
 export async function saveWorksheetUseCase(worksheet: IWorksheet): Promise<IWorksheetModel> {
     const worksheetId = worksheet.id || newId()
     const docRef = firebaseProvider.firestore().doc('worksheets', worksheetId).withConverter(worksheetConverter)
+
+    const existingDays = worksheet.id ? await getWorksheetDaysUseCase(worksheet.id) : []
 
     const worksheetResult: IWorksheetModel = await firebaseProvider
         .firestore()
@@ -32,6 +35,14 @@ export async function saveWorksheetUseCase(worksheet: IWorksheet): Promise<IWork
                     id: dayId,
                 }
             })
+
+            const validIds = daysResult.map((day) => day.id)
+            existingDays
+                .filter((day) => !validIds.includes(day.id))
+                .forEach((day) => {
+                    const dayToRemoveRef = firebaseProvider.firestore().doc('worksheets', docRef.id, 'days', day.id)
+                    transaction.delete(dayToRemoveRef)
+                })
 
             return { ...worksheet, days: daysResult, id: worksheetId, startEndDate }
         })
