@@ -3,9 +3,10 @@ import { User } from 'firebase/auth'
 import { Component, onCleanup } from 'solid-js'
 
 import { firebaseProvider } from '@common/providers/firebase'
+import { theme } from '@common/theme'
 import { setLoggedUser } from '@contexts/user/user.context'
 import { useLocation, useNavigate } from '@solidjs/router'
-import { ThemeProvider, createTheme } from '@suid/material'
+import { ThemeProvider } from '@suid/material'
 import { getErrorMessage } from '@utils/errors'
 import { extractUserCredential } from '@utils/users'
 
@@ -14,12 +15,6 @@ import AppRouter from './router'
 const App: Component = () => {
     const navigate = useNavigate()
     const location = useLocation()
-
-    const darkTheme = createTheme({
-        palette: {
-            mode: 'dark',
-        },
-    })
 
     function handleAuthStateChanged(user: User | null) {
         if (!user || !user?.email) return setLoggedUser(null)
@@ -49,7 +44,7 @@ const App: Component = () => {
     })
 
     return (
-        <ThemeProvider theme={darkTheme}>
+        <ThemeProvider theme={theme}>
             <AppRouter />
         </ThemeProvider>
     )

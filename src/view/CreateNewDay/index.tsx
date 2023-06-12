@@ -248,6 +248,7 @@ const CreateNewDay: Component = () => {
                     handleSetWorksheet={setWorksheetStore}
                     currentPath={currentPath()}
                     handleSetPath={setCurrentPath}
+                    handleSetLastTempSaved={setLastTempSaved}
                 />
             </div>
         </div>

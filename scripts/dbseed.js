@@ -35,6 +35,7 @@ async function createSeedData() {
             displayName: 'Daniel Guolo',
             email: 'danielkv@gmail.com',
             password: '123456',
+            emailVerified: true,
         })
         admin.auth().setCustomUserClaims(user.uid, { admin: true })
 

@@ -1,3 +1,6 @@
+import cloneDeep from 'clone-deep'
+import { omit } from 'radash'
+
 import { Component, Match, Setter, Switch, createMemo, createSignal } from 'solid-js'
 import { SetStoreFunction, produce } from 'solid-js/store'
 
@@ -6,6 +9,8 @@ import { IBreadcrumbItem } from '@components/Breadcrumb/types'
 import { Path } from '@interfaces/app'
 import { IBlock, IEventBlock } from '@models/block'
 import { IDay, IPeriod, ISection, IWorksheet } from '@models/day'
+import { useNavigate } from '@solidjs/router'
+import { Button } from '@suid/material'
 import { removeTempWorksheetUseCase } from '@useCases/temp-worksheet/removeTempWorksheet'
 import { saveWorksheetUseCase } from '@useCases/worksheet/saveWorksheet'
 import { getErrorMessage } from '@utils/errors'
@@ -39,11 +44,14 @@ export interface FormProps {
     currentPath: Path
     handleSetPath: Setter<Path>
     handleSetWorksheet: SetStoreFunction<IWorksheet>
+    handleSetLastTempSaved: Setter<IWorksheet>
 }
 
 const Form: Component<FormProps> = (props) => {
     const [saving, setSaving] = createSignal(false)
+    const [duplicating, setDuplicating] = createSignal(false)
     const currentForm = createMemo(() => getCurrentPeace(props.currentPath))
+    const navigate = useNavigate()
 
     const breadcrumbItems = createMemo<IBreadcrumbItem[]>(() => {
         const sequence = buildPathSequence(props.currentPath)
@@ -59,17 +67,46 @@ const Form: Component<FormProps> = (props) => {
         })
     })
 
-    const handleClickFinishButton = async () => {
+    const handleClickSaveButton = async () => {
+        if (props.worksheet.published) {
+            if (
+                !confirm(
+                    'Essa planilha está publicada, caso salvar todas as modificações serão visíveis imediatamente para os usuários. Deseja continuar?'
+                )
+            )
+                return
+        }
+
         try {
             setSaving(true)
             const result = await saveWorksheetUseCase(props.worksheet)
             if (props.worksheet.id) await removeTempWorksheetUseCase(props.worksheet.id)
 
+            props.handleSetLastTempSaved(result)
             props.handleSetWorksheet(result)
         } catch (err) {
             alert(getErrorMessage(err))
         } finally {
             setSaving(false)
+        }
+    }
+
+    const handleClickDuplicateButton = async () => {
+        if (!confirm('Deseja duplicar essa planilha?')) return
+
+        try {
+            setDuplicating(true)
+            const duplicated = omit(cloneDeep(props.worksheet), ['id', 'published'])
+            duplicated.days = duplicated.days.map((day) => omit(day, ['id']))
+            duplicated.name = `Cópia de ${duplicated.name}`
+
+            const result = await saveWorksheetUseCase(duplicated)
+
+            navigate(`/worksheet/${result.id}`)
+        } catch (err) {
+            alert(getErrorMessage(err))
+        } finally {
+            setDuplicating(false)
         }
     }
 
@@ -243,10 +280,24 @@ const Form: Component<FormProps> = (props) => {
                     </Switch>
                 </div>
             </div>
-            <div class="paper flex flex-col gap-6 rounded-none">
-                <button class="btn btn-main" disabled={saving()} onClick={handleClickFinishButton}>
+            <div class="paper flex flex-row gap-6 rounded-none">
+                <Button
+                    class="flex-1"
+                    variant="contained"
+                    onClick={handleClickSaveButton}
+                    disabled={duplicating() || saving()}
+                >
                     {saving() ? 'Salvando...' : 'Salvar'}
-                </button>
+                </Button>
+                <Button
+                    class="w-[200px]"
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleClickDuplicateButton}
+                    disabled={duplicating() || saving()}
+                >
+                    {duplicating() ? 'Duplicando...' : 'Duplicar'}
+                </Button>
             </div>
         </>
     )
