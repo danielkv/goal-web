@@ -5,6 +5,7 @@ import { Component, For, createMemo, splitProps } from 'solid-js'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { IDay } from '@models/day'
+import { Stack } from '@suid/material'
 import { addToPath } from '@utils/paths'
 import { createDayValues } from '@utils/worksheetInitials'
 
@@ -20,8 +21,8 @@ const DayPreview: Component<DayProps> = (props) => {
     )
 
     return (
-        <div
-            class="day"
+        <Stack
+            class="day p-8 rounded-xl"
             classList={{
                 selected: props.currentPath === props.thisPath,
                 empty: !props.item.periods.length,
@@ -47,19 +48,20 @@ const DayPreview: Component<DayProps> = (props) => {
                 />
             )}
 
-            <div class="title">
-                <span>{dayjs(props.item.date, 'YYYY-MM-DD').format('dddd').toLocaleUpperCase()}</span> -{' '}
-                {dayjs(props.item.date, 'YYYY-MM-DD').format('DD/MM/YYYY')}
+            <div class="title text-center mb-6">
+                {dayjs(props.item.date, 'YYYY-MM-DD').format('ddd [-] DD/MM/YYYY').toLocaleUpperCase()}
             </div>
 
-            <For each={props.item.periods}>
-                {(period, periodIndex) => {
-                    const periodPath = createMemo(() => addToPath<IDay>(props.thisPath, `periods.${periodIndex()}`))
+            <Stack class="gap-4">
+                <For each={props.item.periods}>
+                    {(period, periodIndex) => {
+                        const periodPath = createMemo(() => addToPath<IDay>(props.thisPath, `periods.${periodIndex()}`))
 
-                    return <PeriodPreview day={props.item} item={period} thisPath={periodPath()} {...parentProps} />
-                }}
-            </For>
-        </div>
+                        return <PeriodPreview day={props.item} item={period} thisPath={periodPath()} {...parentProps} />
+                    }}
+                </For>
+            </Stack>
+        </Stack>
     )
 }
 

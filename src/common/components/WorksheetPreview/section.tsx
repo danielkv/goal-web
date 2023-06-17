@@ -9,7 +9,10 @@ import { createSectionValues } from '@utils/worksheetInitials'
 
 import BlockPreview from './block'
 
-export interface SectionProps extends WorksheetPeace<ISection> {}
+export interface SectionProps extends WorksheetPeace<ISection> {
+    periodNumber: number
+    sectionNumber: number
+}
 
 const SectionPreview: Component<SectionProps> = (props) => {
     const [editorOpen, setEditorOpen] = createSignal(false)
@@ -22,7 +25,7 @@ const SectionPreview: Component<SectionProps> = (props) => {
 
     return (
         <div
-            class="section"
+            class="section rounded-xl p-2"
             classList={{
                 selected: props.currentPath === props.thisPath,
                 empty: !props.item.name,
@@ -41,7 +44,9 @@ const SectionPreview: Component<SectionProps> = (props) => {
                 />
             )}
 
-            <div class="title">{props.item.name}</div>
+            <div class="font-bold text-center text-sm mb-2 uppercase">
+                {props.periodNumber}.{props.sectionNumber} {props.item.name}
+            </div>
 
             <Show when={props.onUpdate && editorOpen()}>
                 <SectionEditor
@@ -60,10 +65,13 @@ const SectionPreview: Component<SectionProps> = (props) => {
                         )
 
                         return (
-                            <>
-                                {blockIndex() > 0 && <div class="block-separator"></div>}
-                                <BlockPreview item={block} thisPath={blockPath()} {...parentProps} />
-                            </>
+                            <BlockPreview
+                                item={block}
+                                sectionNumber={props.sectionNumber}
+                                blockNumber={blockIndex() + 1}
+                                thisPath={blockPath()}
+                                {...parentProps}
+                            />
                         )
                     }}
                 </For>

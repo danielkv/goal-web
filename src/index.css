@@ -37,14 +37,14 @@
         font-size: 16px;
     }
 
-    .day {
+    /* .day {
         @apply flex flex-col em:gap-12 items-center em:p-6 em:mb-6;
         min-width: var(--page-width);
     }
 
     .day.empty {
         @apply bg-gray-900 drop-shadow-2xl;
-    }
+    } */
 
     .pdf-page {
         font-size: 19px;
@@ -56,14 +56,11 @@
         height: 279.4mm;
     }
 
-    .period {
+    /* .period {
         @apply bg-gray-900 drop-shadow-2xl box-border;
+    } */
 
-        width: var(--page-width);
-        height: var(--page-height);
-    }
-
-    .period > .header {
+    /* .period > .header {
         @apply flex items-center em:gap-6 em:mb-1;
     }
     .period > .header > .title {
@@ -74,9 +71,9 @@
 
     .period > .header > .period-square {
         @apply em:w-14 em:h-14 em:text-lg font-bold flex items-center justify-center bg-red-500;
-    }
+    } */
 
-    .section {
+    /* .section {
         @apply em:mb-2 flex flex-col items-center;
     }
 
@@ -85,9 +82,9 @@
     }
     .section .block-separator {
         @apply border-t-[1px] border-gray-700 em:w-20;
-    }
+    } */
 
-    .block {
+    /* .block {
         @apply em:text-sm em:m-2 em:p-2 flex items-center relative;
     }
 
@@ -115,7 +112,7 @@
         left: 100%;
         top: 50%;
         margin-top: -20px;
-    }
+    } */
 
     .movement {
     }
@@ -186,12 +183,12 @@
     }
 
     .hoverable:hover {
-        outline: 2px solid theme('colors.red.500');
+        outline: 2px solid theme('colors.red.700');
         outline-offset: -2px;
         cursor: pointer;
     }
     .hoverable.selected {
-        outline: 2px solid theme('colors.red.500');
+        outline: 2px solid theme('colors.red.700');
         outline-offset: -2px;
         cursor: pointer;
     }

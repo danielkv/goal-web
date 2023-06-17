@@ -3,13 +3,17 @@ import { Component, Match, Switch, createMemo, splitProps } from 'solid-js'
 import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { IBlock, IEventBlock, IRestBlock, ITextBlock } from '@models/block'
+import { Stack } from '@suid/material'
 import { createBlockValues } from '@utils/worksheetInitials'
 
 import EventBlockPreview from './blocks/eventBlock'
 import RestBlockPreview from './blocks/restBlock'
 import TextBlockPreview from './blocks/textBlock'
 
-export interface BlockProps extends WorksheetPeace<IBlock> {}
+export interface BlockProps extends WorksheetPeace<IBlock> {
+    sectionNumber: number
+    blockNumber: number
+}
 
 const BlockPreview: Component<BlockProps> = (props) => {
     const [parentProps, controlProps] = splitProps(
@@ -28,8 +32,8 @@ const BlockPreview: Component<BlockProps> = (props) => {
     })
 
     return (
-        <div
-            class="block"
+        <Stack
+            class="block rounded-xl p-2"
             classList={{
                 selected: props.currentPath === props.thisPath,
                 empty: isEmpty(),
@@ -55,7 +59,7 @@ const BlockPreview: Component<BlockProps> = (props) => {
                     <EventBlockPreview item={props.item as IEventBlock} thisPath={props.thisPath} {...parentProps} />
                 </Match>
             </Switch>
-        </div>
+        </Stack>
     )
 }
 
