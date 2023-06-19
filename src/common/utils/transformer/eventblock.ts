@@ -25,7 +25,7 @@ export class EventBlockTransformer extends BaseTransformer {
 
             const rounds = textRounds.map((t) => this.roundTransformer.toObject(t)).filter((r) => r) as IRound[]
 
-            const event_type = this.tranformEventType(match.groups.type as TEventTypeTransform)
+            const event_type = this.tranformEventType(match.groups.type.toLocaleLowerCase() as TEventTypeTransform)
 
             const numberOfRounds = Number(match.groups.rounds || 1)
 

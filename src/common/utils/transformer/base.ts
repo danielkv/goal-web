@@ -14,7 +14,7 @@ export abstract class BaseTransformer extends RegexHelper {
     protected weightTypeRegex = /kg|%|lb/i
 
     protected weightRegex = this.mergeRegex([
-        '(?:\\s\\-\\s((?<weight>',
+        '(?:((?<weight>',
         this.numberRegex,
         ')?)',
         '(?<weight_type>',

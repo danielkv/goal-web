@@ -16,7 +16,13 @@ export class RoundTransformer extends BaseTransformer {
 
     private movementRegex = this.mergeRegex(['^(?:(?:', this.numberRegex, ')?)+(?<name>', this.movementNameRegex, ')+'])
 
-    private complexRegex = this.mergeRegex(['^(?<movements>', this.movementRegex, ')(?<weight>', this.weightRegex, ')'])
+    private complexRegex = this.mergeRegex([
+        '^(?<movements>',
+        this.movementRegex,
+        ')\\s(\\-\\s)?(?<weight>',
+        this.weightRegex,
+        ')',
+    ])
     private titleRegex = this.mergeRegex(
         [
             '^round:',

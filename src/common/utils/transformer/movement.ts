@@ -12,18 +12,19 @@ export class MovementTransformer extends BaseTransformer {
         ')?)+)|max)\\s',
     ])
 
-    private movementRegex = this.mergeRegex([
-        '^(?<reps>',
-        this.repsRegex,
-        ')?(?<name>',
-        this.movementNameRegex,
-        ')+(?<weight>',
-        this.weightRegex,
-        ')?',
-    ])
+    private movementRegex = this.mergeRegex(['^(?<reps>', this.repsRegex, ')?(?<name>', this.movementNameRegex, ')$'])
+
+    private weightBaseRegex = this.mergeRegex(['^(?<movement>.+)\\s(?<weight>', this.weightRegex, ')$'])
+
+    constructor() {
+        super()
+    }
 
     toObject(text: string, roundReps?: string[]): IEventMovement {
-        const match = text.match(this.movementRegex)
+        const matchWeightBase = text.match(this.weightBaseRegex)
+
+        const movementText = matchWeightBase?.groups?.movement || text
+        const match = movementText.match(this.movementRegex)
 
         if (!match?.groups) return { name: text.trim(), reps: '' }
 
@@ -34,7 +35,7 @@ export class MovementTransformer extends BaseTransformer {
             reps,
         }
 
-        const weight = this.extractWeight(match.groups.weight)
+        const weight = this.extractWeight(matchWeightBase?.groups?.weight)
         if (weight) result.weight = weight
 
         return result
