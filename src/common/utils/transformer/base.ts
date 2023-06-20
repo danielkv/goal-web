@@ -1,17 +1,27 @@
 import dayjs from 'dayjs'
 
-import { TTimerTypes } from '@models/time'
+import { IEMOMTimer, ITabataTimer, ITimecapTimer, TTimerTypes, TTimersForm } from '@models/time'
 import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
 import { RegexHelper } from './RegexHelper'
 
 export abstract class BaseTransformer extends RegexHelper {
-    protected timeRegex = /^((?<t1>\d+)\s?(?<t1_type>m(?:in)?|s(?:ec)?)(?:(?<t2>\d+)\s?s(?:ec)?)?)$/i
+    protected timeRegex = /^((?<t1>\d+)\s?(?<t1_type>m(?:in)?|s(?:ec)?)?(?:(?<t2>\d+)\s?s(?:ec)?)?)$/i
 
-    protected numberRegex = /(\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?/
-    protected movementNameRegex = /[a-zA-Z\u00C0-\u00FF\s\'\d+\(\)]+[A-Z\)]/
-    protected weightTypeRegex = /kg|%|lb/i
+    protected numberRegex = /(?:(\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?|max)/
+    protected weightTypeRegex = /kg|%|lb/is
+
+    protected repsTypeRegex = /x|m|km|s|mi|min|sec|cal/i
+    protected timerTypeRegex = /emom|for time|amrap|tabata/i
+    protected restRegex = this.mergeRegex([
+        '^((?:(?:rest\\s)(?<time1>',
+        this.timeRegex,
+        '))|(?:(?<time2>',
+        this.timeRegex,
+        ')(?:\\s(?:rest))))',
+    ])
+    protected tabataTimeRegex = this.mergeRegex(['(?<work>', this.timeRegex, ')/(?<rest>', this.timeRegex, ')'])
 
     protected weightRegex = this.mergeRegex([
         '(?:((?<weight>',
@@ -22,16 +32,192 @@ export abstract class BaseTransformer extends RegexHelper {
         ')+)?',
     ])
 
-    protected repsTypeRegex = /x|m|km|s|mi|min|sec/i
-    protected timerTypeRegex = /emom|for time|amrap|tabata/i
-    protected restRegex = this.mergeRegex([
-        '^((?:(?:rest\\s)(?<time1>',
-        this.timeRegex,
-        '))|(?:(?<time2>',
-        this.timeRegex,
-        ')(?:\\s(?:rest))))',
+    protected repsRegex = this.mergeRegex([
+        '((?<reps_number>',
+        /(?:\d+\º\s)?/,
+        this.numberRegex,
+        ')((?<reps_type>',
+        this.repsTypeRegex,
+        ')?)+)',
     ])
-    protected tabataTimeRegex = this.mergeRegex(['(?<work>', this.timeRegex, ')/(?<rest>', this.timeRegex, ')'])
+
+    protected movementBaseRegex = this.mergeRegex(['^(?<reps>', this.repsRegex, '\\s+)?(?<name>.+)$'])
+
+    protected weightBaseRegex = this.mergeRegex(['^(?<movement>.+)\\s+(?<weight>', this.weightRegex, ')$'])
+
+    // emom 2 rounds 1min
+    protected timerEmomRegex = this.mergeRegex(
+        ['^emom(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds|x)?)?', '(?:\\s', '(?<time>', this.timeRegex, ')', ')'],
+        'i'
+    )
+
+    // tabata 2 rounds 20s/10s
+    protected timerTabataRegex = this.mergeRegex(
+        [
+            '^tabata(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds|x)?)?',
+            '(?:\\s',
+            '(?<time>',
+            this.tabataTimeRegex,
+            ')',
+            ')?',
+        ],
+        'i'
+    )
+
+    // 2 rounds amrap 3min
+    protected timerAmrapRegex = this.mergeRegex(
+        ['^(?:(?<numberOfRounds>\\d+)(?:\\srounds|x)?)\\samrap', '(?:\\s', '(?<time>', this.timeRegex, ')', ')?'],
+        'i'
+    )
+
+    // 2 rounds for time 3min
+    protected timerFortimeRegex = this.mergeRegex(
+        [
+            '^(?:(?<numberOfRounds>\\d+)(?:\\srounds|x)?)\\sfor(?:\\s|-)?time',
+            '(?:\\s',
+            '(?<time>',
+            this.timeRegex,
+            ')',
+            ')?',
+        ],
+        'i'
+    )
+
+    protected headerRegex = this.mergeRegex([
+        '(?<emom>',
+        this.timerEmomRegex,
+        ')|',
+        '(?<tabata>',
+        this.timerTabataRegex,
+        ')|',
+        '(?<amrap>',
+        this.timerAmrapRegex,
+        ')|',
+        '(?<fortime>',
+        this.timerFortimeRegex,
+        ')',
+    ])
+
+    protected extractTimerFromString(text: string): (Partial<TTimersForm> & { type: TTimerTypes }) | null {
+        const match = text.match(this.headerRegex)
+
+        if (!match?.groups) return null
+
+        if (match.groups.emom) {
+            const result = this.extractEmomTimerFromString(match.groups.emom)
+            if (result) return result
+        } else if (match.groups.tabata) {
+            const result = this.extractTabataTimerFromString(match.groups.tabata)
+            if (result) return result
+        } else if (match.groups.amrap) {
+            const result = this.extractAmrapTimerFromString(match.groups.amrap)
+            if (result) return result
+        } else if (match.groups.fortime) {
+            const result = this.extractFortimeTimerFromString(match.groups.fortime)
+            if (result) return result
+        }
+
+        return {
+            type: 'not_timed',
+            numberOfRounds: 1,
+        }
+    }
+
+    protected extractFortimeTimerFromString(text: string): (ITimecapTimer & { type: 'for_time' }) | null {
+        const matchSpecific = text.match(this.timerFortimeRegex)
+        if (!matchSpecific?.groups) return null
+
+        if (matchSpecific?.groups?.time) {
+            const timecap = this.extractTimeByType('for_time', matchSpecific.groups.time.trim())
+
+            return {
+                type: 'for_time',
+                numberOfRounds: matchSpecific?.groups?.numberOfRounds
+                    ? Number(matchSpecific.groups.numberOfRounds.trim())
+                    : 1,
+                timecap,
+            }
+        } else {
+            return {
+                type: 'for_time',
+                numberOfRounds: matchSpecific?.groups?.numberOfRounds
+                    ? Number(matchSpecific.groups.numberOfRounds.trim())
+                    : 1,
+                timecap: 0,
+            }
+        }
+    }
+
+    protected extractAmrapTimerFromString(text: string): (ITimecapTimer & { type: 'amrap' }) | null {
+        const matchSpecific = text.match(this.timerAmrapRegex)
+        if (!matchSpecific?.groups) return null
+
+        if (matchSpecific?.groups?.time) {
+            const timecap = this.extractTimeByType('amrap', matchSpecific.groups.time.trim())
+
+            return {
+                type: 'amrap',
+                numberOfRounds: matchSpecific?.groups?.numberOfRounds
+                    ? Number(matchSpecific.groups.numberOfRounds.trim())
+                    : 1,
+                timecap,
+            }
+        }
+
+        return null
+    }
+
+    protected extractTabataTimerFromString(text: string): (ITabataTimer & { type: 'tabata' }) | null {
+        const matchSpecific = text.match(this.timerTabataRegex)
+        if (!matchSpecific?.groups) return null
+
+        const numberOfRounds = matchSpecific?.groups?.numberOfRounds
+            ? Number(matchSpecific.groups.numberOfRounds.trim())
+            : 8
+        if (matchSpecific?.groups?.time) {
+            const [work, rest] = this.extractTimeByType('tabata', matchSpecific.groups.time.trim())
+
+            return {
+                type: 'tabata',
+                numberOfRounds,
+                work,
+                rest,
+            }
+        } else {
+            return {
+                type: 'tabata',
+                numberOfRounds,
+                work: 20,
+                rest: 10,
+            }
+        }
+    }
+
+    protected extractEmomTimerFromString(text: string): (IEMOMTimer & { type: 'emom' }) | null {
+        const matchSpecific = text.match(this.timerEmomRegex)
+        if (!matchSpecific?.groups) return null
+
+        if (matchSpecific?.groups?.time) {
+            const time = this.extractTimeByType('emom', matchSpecific.groups.time.trim())
+
+            if (matchSpecific.groups.numberOfRounds) {
+                return {
+                    type: 'emom',
+                    numberOfRounds: Number(matchSpecific.groups.numberOfRounds.trim()),
+                    each: time,
+                }
+            } else {
+                if (time % 60 === 0)
+                    return {
+                        type: 'emom',
+                        numberOfRounds: time / 60,
+                        each: 60,
+                    }
+            }
+        }
+
+        return null
+    }
 
     protected extractTimeByType(type: Extract<TTimerTypes, 'tabata'>, time: string): [number, number]
     protected extractTimeByType(type: Exclude<TTimerTypes, 'tabata'>, time: string): number
@@ -55,10 +241,12 @@ export abstract class BaseTransformer extends RegexHelper {
         const match = time.match(this.timeRegex)
         if (!match?.groups) return 0
 
-        const minutes = ['m', 'min'].includes(match.groups.t1_type) ? Number(match.groups.t1) : undefined
-        const seconds = ['s', 'sec'].includes(match.groups.t1_type)
-            ? Number(match.groups.t1)
-            : Number(match.groups.t2) || undefined
+        const minutes =
+            match.groups.t1_type && ['m', 'min'].includes(match.groups.t1_type) ? Number(match.groups.t1) : undefined
+        const seconds =
+            ['s', 'sec'].includes(match.groups.t1_type) || !match.groups.t1_type
+                ? Number(match.groups.t1)
+                : Number(match.groups.t2) || undefined
 
         return dayjs.duration({ minutes, seconds }).asSeconds()
     }

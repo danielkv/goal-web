@@ -14,7 +14,7 @@ export class RoundTransformer extends BaseTransformer {
     private breakline = '\n'
     private complexSplit = ' + '
 
-    private movementRegex = this.mergeRegex(['^(?:(?:', this.numberRegex, ')?)+(?<name>', this.movementNameRegex, ')+'])
+    private movementRegex = this.mergeRegex(['^(?:(?:', this.numberRegex, ')?)+(?<name>.+)+'])
 
     private complexRegex = this.mergeRegex([
         '^(?<movements>',
@@ -23,89 +23,81 @@ export class RoundTransformer extends BaseTransformer {
         this.weightRegex,
         ')',
     ])
-    private titleRegex = this.mergeRegex(
-        [
-            '^round:',
-            '(?:\\s(?<rounds>(',
-            this.numberRegex,
-            ')+))?',
-            '(?:\\s(?<type>',
-            this.timerTypeRegex,
-            ')(?:\\s(?<time>.*))?)?\n',
-        ],
-        'im'
-    )
 
     constructor(private movementTransformer: MovementTransformer) {
         super()
     }
 
     toObject(text: string): IRound | null {
-        const match = text.match(this.titleRegex)
+        const textMovements = this.breakTextInMovements(text)
+        if (!textMovements) return null
 
-        if (match?.groups) {
-            const extractedText = text.replace(match[0].replaceAll('\n', ''), '').trim()
+        const extractedHeader = this.extractTimerFromString(textMovements[0].trim())
+
+        if (extractedHeader) {
+            textMovements.splice(0, 1)
 
             const restRoundTime = this.findRest(text)
             if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
-            const { numberOfRounds, reps } = this.extractRounds(match.groups.rounds)
+            //const { numberOfRounds, reps } = this.extractRounds(match.groups.rounds)
 
-            const extractedRound = this.textMovementsToRound(extractedText, reps)
+            const extractedRound = this.textMovementsToRound(textMovements)
             if (!extractedRound) return null
 
-            const type =
-                extractedRound.type === 'complex'
-                    ? 'complex'
-                    : this.tranformType(match.groups.type as TRoundTypeTransform)
+            return {
+                ...extractedHeader,
+                ...extractedRound,
+                type: extractedRound.type === 'complex' ? 'complex' : extractedHeader.type,
+            } as IRound
 
-            switch (type) {
-                case 'tabata': {
-                    const [work, rest] = this.extractTimeByType(type, match.groups.time)
+            // switch (type) {
+            //     case 'tabata': {
+            //         const [work, rest] = this.extractTimeByType(type, match.groups.time)
 
-                    return {
-                        numberOfRounds,
-                        work,
-                        rest,
-                        ...extractedRound,
-                        type,
-                    }
-                }
-                case 'emom': {
-                    const time = this.extractTimeByType(type, match.groups.time)
+            //         return {
+            //             numberOfRounds,
+            //             work,
+            //             rest,
+            //             ...extractedRound,
+            //             type,
+            //         }
+            //     }
+            //     case 'emom': {
+            //         const time = this.extractTimeByType(type, match.groups.time)
 
-                    return {
-                        numberOfRounds,
-                        each: time,
-                        ...extractedRound,
-                        type,
-                    }
-                }
-                case 'not_timed':
-                case 'complex': {
-                    return {
-                        numberOfRounds,
-                        ...extractedRound,
-                        type,
-                    }
-                }
-                default: {
-                    const time = this.extractTimeByType(type, match.groups.time)
+            //         return {
+            //             numberOfRounds,
+            //             each: time,
+            //             ...extractedRound,
+            //             type,
+            //         }
+            //     }
+            //     case 'not_timed':
+            //     case 'complex': {
+            //         return {
+            //             numberOfRounds,
+            //             ...extractedRound,
+            //             type,
+            //         }
+            //     }
+            //     default: {
+            //         const time = this.extractTimeByType(type, match.groups.time)
 
-                    return {
-                        numberOfRounds,
-                        timecap: time,
-                        ...extractedRound,
-                        type,
-                    }
-                }
-            }
+            //         return {
+            //             numberOfRounds,
+            //             timecap: time,
+            //             ...extractedRound,
+            //             type,
+            //         }
+            //     }
+            // }
         }
 
         const restRoundTime = this.findRest(text)
         if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
-        return this.textMovementsToRound(text)
+        return this.textMovementsToRound(textMovements)
     }
 
     private extractRounds(roundsText?: string) {
@@ -182,10 +174,14 @@ export class RoundTransformer extends BaseTransformer {
         return this.displayArray([rounds, type, timeString], ' ', 'round: ')
     }
 
-    private textMovementsToRound(text: string, roundReps?: string[]): IRound | null {
+    private breakTextInMovements(text: string): string[] | null {
         const textMovements = text.split(this.breakline)
         if (!textMovements.length) return null
 
+        return textMovements
+    }
+
+    private textMovementsToRound(textMovements: string[], roundReps?: string[]): IRound | null {
         if (textMovements.length === 1) {
             const textToMatch = textMovements[0]
             const match = textToMatch.match(this.complexRegex)

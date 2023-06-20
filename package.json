@@ -4,7 +4,7 @@
 	"description": "",
 	"scripts": {
 		"start": "vite",
-		"test": "vitest",
+		"test": "vitest --reporter verbose",
 		"fb:serve": "firebase emulators:start",
 		"dbseed": "node ./scripts/dbseed.js",
 		"dev": "vite --open",
