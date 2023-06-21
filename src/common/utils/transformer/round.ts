@@ -15,16 +15,6 @@ export class RoundTransformer extends BaseTransformer {
     private breakline = '\n'
     private complexSplit = ' + '
 
-    private movementRegex = this.mergeRegex(['^(?:(?:', this.numberRegex, ')?)+(?<name>.+)+'])
-
-    private complexRegex = this.mergeRegex([
-        '^(?<movements>',
-        this.movementRegex,
-        ')\\s(\\-\\s)?(?<weight>',
-        this.weightRegex,
-        ')',
-    ])
-
     constructor(private movementTransformer: MovementTransformer) {
         super()
     }
@@ -34,7 +24,6 @@ export class RoundTransformer extends BaseTransformer {
         if (!textMovements) return null
 
         const extractedHeader = this.extractTimerFromString(textMovements[0].trim())
-
         if (extractedHeader) {
             textMovements.splice(0, 1)
 
@@ -128,20 +117,21 @@ export class RoundTransformer extends BaseTransformer {
 
     private textMovementsToRound(textMovements: string[], roundReps?: string): IRound | null {
         if (textMovements.length === 1) {
-            const textToMatch = textMovements[0]
-            const match = textToMatch.match(this.complexRegex)
+            const match = textMovements[0].trim().match(this.weightBaseRegex)
+            const complexMovementsText = match?.groups?.movement || textMovements[0].trim()
 
-            if (match?.groups?.movements) {
-                const complexMovements = match?.groups?.movements.split(this.complexSplit)
-                if (complexMovements.length > 1)
-                    return {
-                        type: 'complex',
-                        movements: complexMovements.map((movement) => {
-                            const movementText = `${movement}${match.groups?.weight || ''}`
+            const complexMovements = complexMovementsText.split(this.complexSplit)
+            const weightText = match?.groups?.weight ? ` ${match.groups.weight.trim()}` : ''
 
-                            return this.movementTransformer.toObject(movementText)
-                        }),
-                    }
+            if (complexMovements.length > 1) {
+                return {
+                    type: 'complex',
+                    movements: complexMovements.map((movement) => {
+                        const movementText = `${movement.trim()}${weightText}`
+
+                        return this.movementTransformer.toObject(movementText, roundReps)
+                    }),
+                }
             }
         }
 

@@ -1,3 +1,5 @@
+import { omit } from 'radash'
+
 import { IEventBlock, IEventBlockEMOM, IEventBlockTabata, IEventBlockTimecap, IRound, TEventType } from '@models/block'
 import { eventTypes } from '@utils/worksheetInitials'
 
@@ -8,76 +10,40 @@ type TEventTypeTransform = 'emom' | 'for time' | 'max' | 'amrap' | 'tabata'
 
 export class EventBlockTransformer extends BaseTransformer {
     private breakline = '\n\n'
-    private titleRegex = this.mergeRegex(
-        ['^bloco:', '(?:\\s(?<rounds>\\d+))?(?:\\s(?<type>', this.timerTypeRegex, '|max)(?:\\s(?<time>.*))?)?\n'],
-        'im'
-    )
+    private blockHeaderRegex = this.mergeRegex(['^(bloco:\\s+', '(?<header>', this.headerRegex, ')', ')$'], 'i')
     constructor(private roundTransformer: RoundTransformer) {
         super()
     }
 
-    toObject(text: string): IEventBlock | null {
-        const match = text.match(this.titleRegex)
+    protected override extractTimerFromString(text: string) {
+        const match = text.match(this.blockHeaderRegex)
+        if (!match?.groups?.header) return null
 
-        if (match?.groups) {
-            const textRounds = text.replace(match[0].replaceAll('\n', ''), '').trim().split(this.breakline)
-            if (!textRounds.length) return null
+        return super.extractTimerFromString(match.groups.header)
+    }
+
+    toObject(text: string): IEventBlock | null {
+        const headerBreak = text.split('\n')
+        if (!headerBreak) return null
+
+        const extractedHeader = this.extractTimerFromString(headerBreak[0].trim())
+
+        if (extractedHeader) {
+            headerBreak.splice(0, 1)
+            const textRounds = headerBreak.join('\n').split(this.breakline)
 
             const rounds = textRounds.map((t) => this.roundTransformer.toObject(t)).filter((r) => r) as IRound[]
 
-            const event_type = this.tranformEventType(match.groups.type.toLocaleLowerCase() as TEventTypeTransform)
-
-            const numberOfRounds = Number(match.groups.rounds || 1)
-
-            switch (event_type) {
-                case 'tabata': {
-                    const [work, rest] = this.extractTimeByType(event_type, match.groups.time)
-
-                    return {
-                        type: 'event',
-                        numberOfRounds,
-                        event_type,
-                        rest,
-                        work,
-                        rounds,
-                    }
-                }
-                case 'emom': {
-                    const time = this.extractTimeByType(event_type, match.groups.time)
-
-                    return {
-                        type: 'event',
-                        numberOfRounds,
-                        event_type,
-                        each: time,
-                        rounds,
-                    }
-                }
-                case 'not_timed': {
-                    return {
-                        type: 'event',
-                        numberOfRounds,
-                        event_type,
-                        rounds,
-                    }
-                }
-                default: {
-                    const time = this.extractTimeByType(
-                        event_type === 'max_weight' ? 'for_time' : event_type,
-                        match.groups.time
-                    )
-
-                    return {
-                        type: 'event',
-                        numberOfRounds,
-                        event_type,
-                        timecap: time,
-                        rounds,
-                    }
-                }
-            }
+            return {
+                ...omit(extractedHeader, ['reps', 'type']),
+                event_type: extractedHeader.type,
+                type: 'event',
+                rounds,
+            } as IEventBlock
         }
+
         const textRounds = text.split(this.breakline)
+
         if (!textRounds.length) return null
         const rounds = textRounds.map((t) => this.roundTransformer.toObject(t)).filter((r) => r) as IRound[]
 
@@ -110,14 +76,6 @@ export class EventBlockTransformer extends BaseTransformer {
         if (!rounds && !type) return null
 
         return `bloco:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}`
-    }
-
-    private tranformEventType(type?: TEventTypeTransform): TEventType {
-        if (!type) return 'not_timed'
-        if (type === 'max') return 'max_weight'
-        if (type === 'for time') return 'for_time'
-
-        return type
     }
 
     private typeToString(type: TEventType): TEventTypeTransform | '' {

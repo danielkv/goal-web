@@ -48,14 +48,14 @@ export abstract class BaseTransformer extends RegexHelper {
 
     // emom 2 rounds 1min
     protected timerEmomRegex = this.mergeRegex(
-        ['^emom(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds|x)?)?', '(?:\\s', '(?<time>', this.timeRegex, ')', ')'],
+        ['^emom(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds?|x)?)?', '(?:\\s', '(?<time>', this.timeRegex, ')', ')'],
         'i'
     )
 
     // tabata 2 rounds 20s/10s
     protected timerTabataRegex = this.mergeRegex(
         [
-            '^tabata(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds|x)?)?',
+            '^tabata(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds?|x)?)?',
             '(?:\\s',
             '(?<time>',
             this.tabataTimeRegex,
@@ -67,7 +67,7 @@ export abstract class BaseTransformer extends RegexHelper {
 
     // 2 rounds amrap 3min
     protected timerAmrapRegex = this.mergeRegex(
-        ['^(?:(?<numberOfRounds>\\d+)(?:\\srounds|x)?)\\samrap', '(?:\\s', '(?<time>', this.timeRegex, ')', ')?'],
+        ['^(?:(?<numberOfRounds>\\d+)(?:\\srounds?|x)?)\\samrap', '(?:\\s', '(?<time>', this.timeRegex, ')', ')?'],
         'i'
     )
 
@@ -76,7 +76,7 @@ export abstract class BaseTransformer extends RegexHelper {
         [
             '^(?:(?<numberOfRounds>',
             this.numberRegex,
-            '+)(?:\\srounds|x)?)\\sfor(?:\\s|-)?time',
+            '+)(?:\\srounds?|x)?)\\sfor(?:\\s|-)?time',
             '(?:\\s',
             '(?<time>',
             this.timeRegex,
@@ -87,9 +87,9 @@ export abstract class BaseTransformer extends RegexHelper {
     )
 
     protected headerRegex = this.mergeRegex([
-        '^(?:(?<number>',
+        '^(?:(?:(?<number>',
         this.numberRegex,
-        ')|',
+        ')(?:x|\\s+rounds?)?)|',
         '(?<emom>',
         this.timerEmomRegex,
         ')|',
