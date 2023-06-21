@@ -8,7 +8,7 @@ export class MovementTransformer extends BaseTransformer {
         super()
     }
 
-    toObject(text: string, roundReps?: string[]): IEventMovement {
+    toObject(text: string, roundReps?: string): IEventMovement {
         const matchWeightBase = text.trim().match(this.weightBaseRegex)
 
         const movementText = matchWeightBase?.groups?.movement || text.trim()
@@ -41,8 +41,8 @@ export class MovementTransformer extends BaseTransformer {
         }
     }
 
-    protected extractReps(text?: string, roundReps?: string[]): string {
-        if (roundReps) return roundReps.join('-')
+    protected extractReps(text?: string, roundReps?: string): string {
+        if (roundReps) return roundReps
 
         if (!text) return ''
 

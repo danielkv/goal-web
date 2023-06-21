@@ -304,4 +304,75 @@ describe('Round transformer toObject', () => {
         }
         expect(object).toMatchObject(expected)
     })
+
+    it('header "21-15-9 fortime"', () => {
+        const text = `21-15-9 fortime
+		Deadlift
+		Hang Clean`
+        const object = roundTransformer.toObject(text)
+
+        const expected: IRound = {
+            type: 'for_time',
+            numberOfRounds: 3,
+            timecap: 0,
+            movements: [
+                {
+                    name: 'Deadlift',
+                    reps: '21-15-9',
+                },
+                {
+                    name: 'Hang Clean',
+                    reps: '21-15-9',
+                },
+            ],
+        }
+        expect(object).toMatchObject(expected)
+    })
+
+    it('header "21-15-9 fortime 5min"', () => {
+        const text = `21-15-9 fortime 5min
+		Deadlift
+		Hang Clean`
+        const object = roundTransformer.toObject(text)
+
+        const expected: IRound = {
+            type: 'for_time',
+            numberOfRounds: 3,
+            timecap: 300,
+            movements: [
+                {
+                    name: 'Deadlift',
+                    reps: '21-15-9',
+                },
+                {
+                    name: 'Hang Clean',
+                    reps: '21-15-9',
+                },
+            ],
+        }
+        expect(object).toMatchObject(expected)
+    })
+
+    it('header "21-15-9"', () => {
+        const text = `21-15-9
+		Deadlift
+		Hang Clean`
+        const object = roundTransformer.toObject(text)
+
+        const expected: IRound = {
+            type: 'not_timed',
+            numberOfRounds: 3,
+            movements: [
+                {
+                    name: 'Deadlift',
+                    reps: '21-15-9',
+                },
+                {
+                    name: 'Hang Clean',
+                    reps: '21-15-9',
+                },
+            ],
+        }
+        expect(object).toMatchObject(expected)
+    })
 })

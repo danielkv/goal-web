@@ -1,4 +1,5 @@
 import cloneDeep from 'clone-deep'
+import { omit } from 'radash'
 
 import { IEventMovement, IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
 import { TTimerTypes } from '@models/time'
@@ -40,76 +41,20 @@ export class RoundTransformer extends BaseTransformer {
             const restRoundTime = this.findRest(text)
             if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
-            //const { numberOfRounds, reps } = this.extractRounds(match.groups.rounds)
-
-            const extractedRound = this.textMovementsToRound(textMovements)
+            const extractedRound = this.textMovementsToRound(textMovements, extractedHeader.reps)
             if (!extractedRound) return null
 
             return {
-                ...extractedHeader,
+                ...omit(extractedHeader, ['reps']),
                 ...extractedRound,
                 type: extractedRound.type === 'complex' ? 'complex' : extractedHeader.type,
             } as IRound
-
-            // switch (type) {
-            //     case 'tabata': {
-            //         const [work, rest] = this.extractTimeByType(type, match.groups.time)
-
-            //         return {
-            //             numberOfRounds,
-            //             work,
-            //             rest,
-            //             ...extractedRound,
-            //             type,
-            //         }
-            //     }
-            //     case 'emom': {
-            //         const time = this.extractTimeByType(type, match.groups.time)
-
-            //         return {
-            //             numberOfRounds,
-            //             each: time,
-            //             ...extractedRound,
-            //             type,
-            //         }
-            //     }
-            //     case 'not_timed':
-            //     case 'complex': {
-            //         return {
-            //             numberOfRounds,
-            //             ...extractedRound,
-            //             type,
-            //         }
-            //     }
-            //     default: {
-            //         const time = this.extractTimeByType(type, match.groups.time)
-
-            //         return {
-            //             numberOfRounds,
-            //             timecap: time,
-            //             ...extractedRound,
-            //             type,
-            //         }
-            //     }
-            // }
         }
 
         const restRoundTime = this.findRest(text)
         if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
         return this.textMovementsToRound(textMovements)
-    }
-
-    private extractRounds(roundsText?: string) {
-        if (!roundsText) return { numberOfRounds: 1 }
-        if (!Number.isNaN(Number(roundsText))) return { numberOfRounds: Number(roundsText) }
-
-        const match = roundsText.match(numberHelper.sequenceRegex)
-        if (!match) return { numberOfRounds: 1 }
-
-        const reps = roundsText.split('-')
-
-        return { numberOfRounds: reps.length, reps }
     }
 
     toString(obj: IRound): string {
@@ -181,7 +126,7 @@ export class RoundTransformer extends BaseTransformer {
         return textMovements
     }
 
-    private textMovementsToRound(textMovements: string[], roundReps?: string[]): IRound | null {
+    private textMovementsToRound(textMovements: string[], roundReps?: string): IRound | null {
         if (textMovements.length === 1) {
             const textToMatch = textMovements[0]
             const match = textToMatch.match(this.complexRegex)
@@ -213,13 +158,6 @@ export class RoundTransformer extends BaseTransformer {
         if (sequenceReps) round.numberOfRounds = sequenceReps.length
 
         return round
-    }
-
-    private tranformType(type?: TRoundTypeTransform): TTimerTypes {
-        if (!type) return 'not_timed'
-        if (type === 'for time') return 'for_time'
-
-        return type
     }
 
     private typeToString(type: TTimerTypes): TRoundTypeTransform | null {

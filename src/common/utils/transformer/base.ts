@@ -5,6 +5,7 @@ import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
 import { RegexHelper } from './RegexHelper'
+import { numberHelper } from './numbers'
 
 export abstract class BaseTransformer extends RegexHelper {
     protected timeRegex = /^((?<t1>\d+)\s?(?<t1_type>m(?:in)?|s(?:ec)?)?(?:(?<t2>\d+)\s?s(?:ec)?)?)$/i
@@ -73,7 +74,9 @@ export abstract class BaseTransformer extends RegexHelper {
     // 2 rounds for time 3min
     protected timerFortimeRegex = this.mergeRegex(
         [
-            '^(?:(?<numberOfRounds>\\d+)(?:\\srounds|x)?)\\sfor(?:\\s|-)?time',
+            '^(?:(?<numberOfRounds>',
+            this.numberRegex,
+            '+)(?:\\srounds|x)?)\\sfor(?:\\s|-)?time',
             '(?:\\s',
             '(?<time>',
             this.timeRegex,
@@ -84,6 +87,9 @@ export abstract class BaseTransformer extends RegexHelper {
     )
 
     protected headerRegex = this.mergeRegex([
+        '^(?:(?<number>',
+        this.numberRegex,
+        ')|',
         '(?<emom>',
         this.timerEmomRegex,
         ')|',
@@ -95,10 +101,12 @@ export abstract class BaseTransformer extends RegexHelper {
         ')|',
         '(?<fortime>',
         this.timerFortimeRegex,
-        ')',
+        '))$',
     ])
 
-    protected extractTimerFromString(text: string): (Partial<TTimersForm> & { type: TTimerTypes }) | null {
+    protected extractTimerFromString(
+        text: string
+    ): (Partial<TTimersForm> & { type: TTimerTypes; reps?: string }) | null {
         const match = text.match(this.headerRegex)
 
         if (!match?.groups) return null
@@ -115,6 +123,9 @@ export abstract class BaseTransformer extends RegexHelper {
         } else if (match.groups.fortime) {
             const result = this.extractFortimeTimerFromString(match.groups.fortime)
             if (result) return result
+        } else if (match.groups.number) {
+            const result = this.extractNumberHeaderFromString(match.groups.number)
+            if (result) return result
         }
 
         return {
@@ -123,77 +134,94 @@ export abstract class BaseTransformer extends RegexHelper {
         }
     }
 
-    protected extractFortimeTimerFromString(text: string): (ITimecapTimer & { type: 'for_time' }) | null {
+    private extractRounds(roundsText?: string, defaultValue = 1) {
+        if (!roundsText) return { numberOfRounds: defaultValue }
+        if (!Number.isNaN(Number(roundsText))) return { numberOfRounds: Number(roundsText) }
+
+        const match = roundsText.match(numberHelper.sequenceRegex)
+        if (!match) return { numberOfRounds: defaultValue }
+
+        const reps = roundsText.trim()
+
+        return { numberOfRounds: reps.split('-').length, reps }
+    }
+
+    protected extractNumberHeaderFromString(text: string): { type: 'not_timed'; reps?: string } | null {
+        const numberOfRoundsObj = this.extractRounds(text)
+
+        return {
+            type: 'not_timed',
+            ...numberOfRoundsObj,
+        }
+    }
+    protected extractFortimeTimerFromString(
+        text: string
+    ): (ITimecapTimer & { type: 'for_time'; reps?: string }) | null {
         const matchSpecific = text.match(this.timerFortimeRegex)
         if (!matchSpecific?.groups) return null
+        const numberOfRoundsObj = this.extractRounds(matchSpecific?.groups?.numberOfRounds)
 
         if (matchSpecific?.groups?.time) {
             const timecap = this.extractTimeByType('for_time', matchSpecific.groups.time.trim())
 
             return {
                 type: 'for_time',
-                numberOfRounds: matchSpecific?.groups?.numberOfRounds
-                    ? Number(matchSpecific.groups.numberOfRounds.trim())
-                    : 1,
                 timecap,
+                ...numberOfRoundsObj,
             }
         } else {
             return {
                 type: 'for_time',
-                numberOfRounds: matchSpecific?.groups?.numberOfRounds
-                    ? Number(matchSpecific.groups.numberOfRounds.trim())
-                    : 1,
                 timecap: 0,
+                ...numberOfRoundsObj,
             }
         }
     }
 
-    protected extractAmrapTimerFromString(text: string): (ITimecapTimer & { type: 'amrap' }) | null {
+    protected extractAmrapTimerFromString(text: string): (ITimecapTimer & { type: 'amrap'; reps?: string }) | null {
         const matchSpecific = text.match(this.timerAmrapRegex)
         if (!matchSpecific?.groups) return null
+        const numberOfRoundsObj = this.extractRounds(matchSpecific?.groups?.numberOfRounds)
 
         if (matchSpecific?.groups?.time) {
             const timecap = this.extractTimeByType('amrap', matchSpecific.groups.time.trim())
 
             return {
                 type: 'amrap',
-                numberOfRounds: matchSpecific?.groups?.numberOfRounds
-                    ? Number(matchSpecific.groups.numberOfRounds.trim())
-                    : 1,
                 timecap,
+                ...numberOfRoundsObj,
             }
         }
 
         return null
     }
 
-    protected extractTabataTimerFromString(text: string): (ITabataTimer & { type: 'tabata' }) | null {
+    protected extractTabataTimerFromString(text: string): (ITabataTimer & { type: 'tabata'; reps?: string }) | null {
         const matchSpecific = text.match(this.timerTabataRegex)
         if (!matchSpecific?.groups) return null
 
-        const numberOfRounds = matchSpecific?.groups?.numberOfRounds
-            ? Number(matchSpecific.groups.numberOfRounds.trim())
-            : 8
+        const numberOfRoundsObj = this.extractRounds(matchSpecific?.groups?.numberOfRounds, 8)
+
         if (matchSpecific?.groups?.time) {
             const [work, rest] = this.extractTimeByType('tabata', matchSpecific.groups.time.trim())
 
             return {
                 type: 'tabata',
-                numberOfRounds,
                 work,
                 rest,
+                ...numberOfRoundsObj,
             }
         } else {
             return {
                 type: 'tabata',
-                numberOfRounds,
                 work: 20,
                 rest: 10,
+                ...numberOfRoundsObj,
             }
         }
     }
 
-    protected extractEmomTimerFromString(text: string): (IEMOMTimer & { type: 'emom' }) | null {
+    protected extractEmomTimerFromString(text: string): (IEMOMTimer & { type: 'emom'; reps?: string }) | null {
         const matchSpecific = text.match(this.timerEmomRegex)
         if (!matchSpecific?.groups) return null
 
@@ -201,10 +229,12 @@ export abstract class BaseTransformer extends RegexHelper {
             const time = this.extractTimeByType('emom', matchSpecific.groups.time.trim())
 
             if (matchSpecific.groups.numberOfRounds) {
+                const numberOfRoundsObj = this.extractRounds(matchSpecific.groups.numberOfRounds)
+
                 return {
                     type: 'emom',
-                    numberOfRounds: Number(matchSpecific.groups.numberOfRounds.trim()),
                     each: time,
+                    ...numberOfRoundsObj,
                 }
             } else {
                 if (time % 60 === 0)
