@@ -8,7 +8,7 @@ export class MovementTransformer extends BaseTransformer {
         super()
     }
 
-    private videoUrlRegex = /^(?<movement>.+)(?:\:\s*?(?<video>http.+))$/i
+    private videoUrlRegex = /^(?<movement>.+)(?:\s*?\:\s*?(?<video>http.+))$/i
 
     toObject(text: string, roundReps?: string): IEventMovement {
         const normalizedText = this.normalizeText(text)
@@ -16,7 +16,7 @@ export class MovementTransformer extends BaseTransformer {
         const matchMovementBase = normalizedText.match(this.videoUrlRegex)
         const videoUrl = matchMovementBase?.groups?.video
 
-        const movementBaseText = matchMovementBase?.groups?.movement || normalizedText
+        const movementBaseText = this.normalizeText(matchMovementBase?.groups?.movement || normalizedText)
         const matchWeightBase = movementBaseText.match(this.weightBaseRegex)
 
         const movementText = matchWeightBase?.groups?.movement || movementBaseText
@@ -67,8 +67,9 @@ export class MovementTransformer extends BaseTransformer {
 
     toString(obj: IEventMovement, hideReps?: boolean): string {
         const weight = this.weightToString(obj.weight)
-        const reps = obj.reps && hideReps ? obj.reps.trim() : ''
-        return this.displayArray([this.displayArray([reps, obj.name]), weight], ' - ')
+        const reps = obj.reps && !hideReps ? obj.reps.trim() : ''
+        const videoUrl = obj.videoUrl ? `: ${obj.videoUrl}` : ''
+        return this.displayArray([reps, obj.name, weight, videoUrl])
     }
 
     weightToString(weight?: IMovementWeight): string {

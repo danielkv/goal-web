@@ -4,11 +4,11 @@ import { IEventMovement } from '@models/block'
 
 import { movementTransformer } from './movement'
 
-describe('Movement transformer toObject', () => {
+describe('Movement transformer toObject and back toString', () => {
     it('10   Snatch 50kg', () => {
-        const text = `10   Snatch 50kg`
+        const inputText = `10   Snatch 50kg`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch',
@@ -20,12 +20,19 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const outputText = `10 Snatch 50kg`
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(outputText)
     })
 
     it('10 Snatch - DB Clean Jerk    50kg', () => {
-        const text = `10 Snatch - DB Clean Jerk    50kg`
+        const inputText = `10 Snatch - DB Clean Jerk    50kg`
+        const outputText = `10 Snatch - DB Clean Jerk 50kg`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch - DB Clean Jerk',
@@ -37,12 +44,16 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(outputText)
     })
 
     it('Snatch 50kg', () => {
-        const text = `Snatch 50kg`
+        const inputText = `Snatch 50kg`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch',
@@ -54,6 +65,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(inputText)
     })
 
     it('Snatch', () => {
@@ -67,6 +82,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
     it('3x Snatch 50%', () => {
         const text = `3x Snatch 50%`
@@ -83,6 +102,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
     it('3 Hang Snatch 30lb', () => {
         const text = `3 Hang Snatch 30lb`
@@ -99,6 +122,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
     it('8x Pull-up', () => {
         const text = `8x Pull-up 60lb`
@@ -115,6 +142,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
     it('10/8 Snatch 50kg', () => {
         const text = `10/8 Snatch 50kg`
@@ -131,6 +162,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
 
     it('10 Snatch 50/40%', () => {
@@ -148,6 +183,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
     it('2-5-6 Snatch / Hang Snatch 50kg', () => {
         const text = `2-5-6 Snatch / Hang Snatch 50kg`
@@ -164,6 +203,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
     it('10/8-8/6-6/4 DB Snatch 20/15kg', () => {
         const text = `10/8-8/6-6/4 DB Snatch 20/15kg`
@@ -180,6 +223,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
     it('10cal Assault Bike', () => {
         const text = `10cal Assault Bike`
@@ -192,6 +239,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
 
     it('max Assault Bike', () => {
@@ -205,6 +256,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
 
     it('1º 30s Box step', () => {
@@ -218,6 +273,10 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
 
     it('10cal Assault Bike / 2cal Rino Bike', () => {
@@ -231,12 +290,17 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
 
     it('max Assault Bike:https://www.youtube.com...', () => {
-        const text = `max Assault Bike:https://www.youtube.com/watch?v=ivDB23Kcv-A&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+        const inputText = `max Assault Bike:https://www.youtube.com/watch?v=ivDB23Kcv-A&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+        const outputText = `max Assault Bike : https://www.youtube.com/watch?v=ivDB23Kcv-A&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Assault Bike',
@@ -245,10 +309,37 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(outputText)
     })
 
     it('10/8 Deadlift 70%: https://www.youtube.com...', () => {
-        const text = `10/8 Deadlift 70%: https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+        const inputText = `10/8 Deadlift 70%: https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+        const outputText = `10/8 Deadlift 70% : https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+
+        const object = movementTransformer.toObject(inputText)
+
+        const expected: IEventMovement = {
+            name: 'Deadlift',
+            reps: '10/8',
+            videoUrl: 'https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4',
+            weight: {
+                type: '%',
+                value: '70',
+            },
+        }
+
+        expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(outputText)
+    })
+
+    it('10/8 Deadlift 70% : https://www.youtube.com...', () => {
+        const text = `10/8 Deadlift 70% : https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
 
         const object = movementTransformer.toObject(text)
 
@@ -263,5 +354,9 @@ describe('Movement transformer toObject', () => {
         }
 
         expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(text)
     })
 })
