@@ -67,7 +67,7 @@ export abstract class BaseTransformer extends RegexHelper {
 
     // 2 rounds amrap 3min
     protected timerAmrapRegex = this.mergeRegex(
-        ['^(?:(?<numberOfRounds>\\d+)(?:\\srounds?|x)?)\\samrap', '(?:\\s', '(?<time>', this.timeRegex, ')', ')?'],
+        ['^(?:(?<numberOfRounds>\\d+)(?:\\srounds?|x)?\\s)?amrap', '(?:\\s', '(?<time>', this.timeRegex, ')', ')?'],
         'i'
     )
 
@@ -103,6 +103,10 @@ export abstract class BaseTransformer extends RegexHelper {
         this.timerFortimeRegex,
         '))$',
     ])
+
+    normalizeText(text: string): string {
+        return text.replaceAll(/\t/g, '').trim()
+    }
 
     protected extractTimerFromString(
         text: string

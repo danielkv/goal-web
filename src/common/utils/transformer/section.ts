@@ -1,19 +1,22 @@
 import { IBlock } from '@models/block'
 
+import { BaseTransformer } from './base'
 import { EventBlockTransformer, eventBlockTransformer } from './eventblock'
 import { RestBlockTransformer, restBlockTransformer } from './restBlock'
 import { TextBlockTransformer, textBlockTransformer } from './textBlock'
 
-export class SectionTransformer {
+export class SectionTransformer extends BaseTransformer {
     private breakline = '\n-\n'
     constructor(
         private blockTransformer: EventBlockTransformer,
         private restBlockTransformer: RestBlockTransformer,
         private textBlockTransformer: TextBlockTransformer
-    ) {}
+    ) {
+        super()
+    }
 
     toObject(text: string): IBlock[] {
-        const textBlocks = text.trim().split(this.breakline)
+        const textBlocks = this.normalizeText(text).split(this.breakline)
 
         return textBlocks.map((t) => this.typeToObject(t))
     }

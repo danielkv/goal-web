@@ -23,7 +23,8 @@ export class EventBlockTransformer extends BaseTransformer {
     }
 
     toObject(text: string): IEventBlock | null {
-        const headerBreak = text.split('\n')
+        const normalizedText = this.normalizeText(text)
+        const headerBreak = normalizedText.split('\n')
         if (!headerBreak) return null
 
         const extractedHeader = this.extractTimerFromString(headerBreak[0].trim())
@@ -53,7 +54,7 @@ export class EventBlockTransformer extends BaseTransformer {
             } as IEventBlock
         }
 
-        const textRounds = text.split(this.breakline)
+        const textRounds = normalizedText.split(this.breakline)
 
         if (!textRounds.length) return null
         const rounds = textRounds.map((t) => this.roundTransformer.toObject(t)).filter((r) => r) as IRound[]
