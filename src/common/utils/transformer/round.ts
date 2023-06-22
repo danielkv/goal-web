@@ -19,11 +19,13 @@ export class RoundTransformer extends BaseTransformer {
         super()
     }
 
-    toObject(text: string): IRound | null {
+    toObject(text: string, numberOfRounds?: number): IRound | null {
         const textMovements = this.breakTextInMovements(text)
         if (!textMovements) return null
 
         const extractedHeader = this.extractTimerFromString(textMovements[0].trim())
+        const finalNumberOfRounds = numberOfRounds || extractedHeader?.numberOfRounds || 1
+
         if (extractedHeader) {
             textMovements.splice(0, 1)
 
@@ -32,9 +34,9 @@ export class RoundTransformer extends BaseTransformer {
 
             const extractedRound = this.textMovementsToRound(textMovements, extractedHeader.reps)
             if (!extractedRound) return null
-
             return {
-                ...omit(extractedHeader, ['reps']),
+                ...omit(extractedHeader, ['reps', 'numberOfRounds']),
+                numberOfRounds: finalNumberOfRounds,
                 ...extractedRound,
                 type: extractedRound.type === 'complex' ? 'complex' : extractedHeader.type,
             } as IRound
@@ -43,7 +45,13 @@ export class RoundTransformer extends BaseTransformer {
         const restRoundTime = this.findRest(text)
         if (restRoundTime) return { type: 'rest', time: restRoundTime, movements: [] }
 
-        return this.textMovementsToRound(textMovements)
+        const round = this.textMovementsToRound(textMovements)
+        if (!round) return null
+
+        return {
+            ...round,
+            numberOfRounds: finalNumberOfRounds,
+        }
     }
 
     toString(obj: IRound): string {

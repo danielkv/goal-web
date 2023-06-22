@@ -32,10 +32,21 @@ export class EventBlockTransformer extends BaseTransformer {
             headerBreak.splice(0, 1)
             const textRounds = headerBreak.join('\n').split(this.breakline)
 
-            const rounds = textRounds.map((t) => this.roundTransformer.toObject(t)).filter((r) => r) as IRound[]
+            const roundNumberOfRounds = extractedHeader.reps?.split('-') || null
+            const rounds = textRounds
+                .flatMap((t) => {
+                    if (roundNumberOfRounds)
+                        return roundNumberOfRounds.map((numberOfRounds) =>
+                            this.roundTransformer.toObject(t, Number(numberOfRounds))
+                        )
+
+                    return this.roundTransformer.toObject(t)
+                })
+                .filter((r) => r) as IRound[]
 
             return {
-                ...omit(extractedHeader, ['reps', 'type']),
+                ...omit(extractedHeader, ['reps', 'type', 'numberOfRounds']),
+                numberOfRounds: roundNumberOfRounds ? 1 : extractedHeader.numberOfRounds,
                 event_type: extractedHeader.type,
                 type: 'event',
                 rounds,

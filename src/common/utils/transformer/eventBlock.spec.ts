@@ -256,4 +256,188 @@ describe('Section transform toObject', () => {
 
         expect(object).toMatchObject(expected)
     })
+
+    it('header "bloco: 3-2-1"', () => {
+        const text = `bloco: 3-2-1
+		3 Hang Clean + 2 Squat Clean 55-65-75%`
+
+        const object = eventBlockTransformer.toObject(text)
+
+        const expected: IEventBlock = {
+            event_type: 'not_timed',
+            type: 'event',
+            rounds: [
+                {
+                    type: 'complex',
+                    numberOfRounds: 3,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                        {
+                            name: 'Squat Clean',
+                            reps: '2',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                    ],
+                },
+                {
+                    type: 'complex',
+                    numberOfRounds: 2,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                        {
+                            name: 'Squat Clean',
+                            reps: '2',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                    ],
+                },
+                {
+                    type: 'complex',
+                    numberOfRounds: 1,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                        {
+                            name: 'Squat Clean',
+                            reps: '2',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                    ],
+                },
+            ],
+        }
+
+        expect(object).toMatchObject(expected)
+    })
+
+    it('header "bloco: 2-1 fortime"', () => {
+        const text = `bloco: 2-1 fortime
+		3 Hang Clean + 2 Squat Clean 55-65-75%`
+
+        const object = eventBlockTransformer.toObject(text)
+
+        const expected: IEventBlock = {
+            event_type: 'for_time',
+            timecap: 0,
+            numberOfRounds: 1,
+            type: 'event',
+            rounds: [
+                {
+                    type: 'complex',
+                    numberOfRounds: 2,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                        {
+                            name: 'Squat Clean',
+                            reps: '2',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                    ],
+                },
+                {
+                    type: 'complex',
+                    numberOfRounds: 1,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                        {
+                            name: 'Squat Clean',
+                            reps: '2',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                    ],
+                },
+            ],
+        }
+
+        expect(object).toMatchObject(expected)
+    })
+
+    it('header "bloco: fortime 10min"', () => {
+        const text = `bloco: fortime 10min
+		3 Hang Clean + 2 Squat Clean 55-65-75%`
+
+        const object = eventBlockTransformer.toObject(text)
+
+        const expected: IEventBlock = {
+            event_type: 'for_time',
+            timecap: 600,
+            numberOfRounds: 1,
+            type: 'event',
+            rounds: [
+                {
+                    type: 'complex',
+                    numberOfRounds: 1,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                        {
+                            name: 'Squat Clean',
+                            reps: '2',
+                            weight: {
+                                type: '%',
+                                value: '55-65-75',
+                            },
+                        },
+                    ],
+                },
+            ],
+        }
+
+        expect(object).toMatchObject(expected)
+    })
 })

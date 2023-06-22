@@ -76,7 +76,7 @@ export abstract class BaseTransformer extends RegexHelper {
         [
             '^(?:(?<numberOfRounds>',
             this.numberRegex,
-            '+)(?:\\srounds?|x)?)\\sfor(?:\\s|-)?time',
+            '+)(?:\\srounds?|x)?\\s)?for(?:\\s|-)?time',
             '(?:\\s',
             '(?<time>',
             this.timeRegex,
@@ -110,7 +110,6 @@ export abstract class BaseTransformer extends RegexHelper {
         const match = text.match(this.headerRegex)
 
         if (!match?.groups) return null
-
         if (match.groups.emom) {
             const result = this.extractEmomTimerFromString(match.groups.emom)
             if (result) return result
@@ -158,6 +157,7 @@ export abstract class BaseTransformer extends RegexHelper {
         text: string
     ): (ITimecapTimer & { type: 'for_time'; reps?: string }) | null {
         const matchSpecific = text.match(this.timerFortimeRegex)
+
         if (!matchSpecific?.groups) return null
         const numberOfRoundsObj = this.extractRounds(matchSpecific?.groups?.numberOfRounds)
 
