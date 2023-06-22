@@ -95,7 +95,26 @@ describe('Round transformer toObject', () => {
 
         it('header "2 fortime 3min"', () => {
             const text = `2 fortime 3min
-		10 Pull-Up`
+			10 Pull-Up`
+            const object = roundTransformer.toObject(text)
+
+            const expected: IRound = {
+                type: 'for_time',
+                numberOfRounds: 2,
+                timecap: 180,
+                movements: [
+                    {
+                        name: 'Pull-Up',
+                        reps: '10',
+                    },
+                ],
+            }
+            expect(object).toMatchObject(expected)
+        })
+
+        it('header "2 3min"', () => {
+            const text = `2 3min
+			10 Pull-Up`
             const object = roundTransformer.toObject(text)
 
             const expected: IRound = {

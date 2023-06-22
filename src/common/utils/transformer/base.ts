@@ -76,12 +76,27 @@ export abstract class BaseTransformer extends RegexHelper {
         [
             '^(?:(?<numberOfRounds>',
             this.numberRegex,
-            '+)(?:\\srounds?|x)?\\s)?for(?:\\s|-)?time',
+            '+)(?:\\srounds?|x)?\\s)?',
+            '(?:for(?:\\s|-)?time)',
             '(?:\\s',
             '(?<time>',
             this.timeRegex,
             ')',
-            ')?',
+            ')?$',
+        ],
+        'i'
+    )
+
+    protected timerGenericRegex = this.mergeRegex(
+        [
+            '^(?:(?<numberOfRounds>',
+            this.numberRegex,
+            '+)(?:\\srounds?|x)?)?',
+            '(?:\\s+',
+            '(?<time>',
+            this.timeRegex,
+            ')',
+            ')?$',
         ],
         'i'
     )
@@ -101,6 +116,9 @@ export abstract class BaseTransformer extends RegexHelper {
         ')|',
         '(?<fortime>',
         this.timerFortimeRegex,
+        ')|',
+        '(?<generic>',
+        this.timerGenericRegex,
         '))$',
     ])
 
@@ -125,6 +143,9 @@ export abstract class BaseTransformer extends RegexHelper {
             if (result) return result
         } else if (match.groups.fortime) {
             const result = this.extractFortimeTimerFromString(match.groups.fortime)
+            if (result) return result
+        } else if (match.groups.generic) {
+            const result = this.extractGenericTimerFromString(match.groups.generic)
             if (result) return result
         } else if (match.groups.number) {
             const result = this.extractNumberHeaderFromString(match.groups.number)
@@ -157,10 +178,36 @@ export abstract class BaseTransformer extends RegexHelper {
             ...numberOfRoundsObj,
         }
     }
+
     protected extractFortimeTimerFromString(
         text: string
     ): (ITimecapTimer & { type: 'for_time'; reps?: string }) | null {
         const matchSpecific = text.match(this.timerFortimeRegex)
+
+        if (!matchSpecific?.groups) return null
+        const numberOfRoundsObj = this.extractRounds(matchSpecific?.groups?.numberOfRounds)
+
+        if (matchSpecific?.groups?.time) {
+            const timecap = this.extractTimeByType('for_time', matchSpecific.groups.time.trim())
+
+            return {
+                type: 'for_time',
+                timecap,
+                ...numberOfRoundsObj,
+            }
+        } else {
+            return {
+                type: 'for_time',
+                timecap: 0,
+                ...numberOfRoundsObj,
+            }
+        }
+    }
+
+    protected extractGenericTimerFromString(
+        text: string
+    ): (ITimecapTimer & { type: 'for_time'; reps?: string }) | null {
+        const matchSpecific = text.match(this.timerGenericRegex)
 
         if (!matchSpecific?.groups) return null
         const numberOfRoundsObj = this.extractRounds(matchSpecific?.groups?.numberOfRounds)
