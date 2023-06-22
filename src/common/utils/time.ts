@@ -6,9 +6,9 @@ export function getTimeFromSeconds(seconds: number): string {
 
     if (seconds < 60) return `${seconds}s`
 
-    if (seconds % 60 == 0) return `${t.format('m[m]')}`
+    if (seconds % 60 == 0) return `${t.format('m[min]')}`
 
-    return t.format('m[m]ss[s]')
+    return t.format('m[min]ss[s]')
 }
 
 export function stringTimeToSeconds(string: string): number {

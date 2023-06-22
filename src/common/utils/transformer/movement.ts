@@ -102,7 +102,7 @@ export class MovementTransformer extends BaseTransformer {
 
     private displayReps(obj: IEventMovement) {
         const reps = numberHelper.convertNumbers(obj.reps, { suffix: '' })
-        const repsDisplay = reps && reps !== '0' ? `${reps} ` : ''
+        const repsDisplay = reps || ''
         return repsDisplay
     }
 }

@@ -7,7 +7,7 @@ import { getTimeFromSeconds } from '@utils/time'
 import { RegexHelper } from './RegexHelper'
 import { numberHelper } from './numbers'
 
-export abstract class BaseTransformer extends RegexHelper {
+export class BaseTransformer extends RegexHelper {
     protected timeRegex = /^((?<t1>\d+)\s?(?<t1_type>m(?:in)?|s(?:ec)?)?(?:(?<t2>\d+)\s?s(?:ec)?)?)$/i
 
     protected numberRegex = /(?:(\d|\?)+(?:[\d\-\*\,\/\sa\?]*(?:\d|\?))?|max)/
