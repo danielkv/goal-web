@@ -8,19 +8,28 @@ export class MovementTransformer extends BaseTransformer {
         super()
     }
 
-    toObject(text: string, roundReps?: string): IEventMovement {
-        const matchWeightBase = text.trim().match(this.weightBaseRegex)
+    private videoUrlRegex = /^(?<movement>.+)(?:\:\s*?(?<video>http.+))$/i
 
-        const movementText = matchWeightBase?.groups?.movement || text.trim()
+    toObject(text: string, roundReps?: string): IEventMovement {
+        const normalizedText = this.normalizeText(text)
+
+        const matchMovementBase = normalizedText.match(this.videoUrlRegex)
+        const videoUrl = matchMovementBase?.groups?.video
+
+        const movementBaseText = matchMovementBase?.groups?.movement || normalizedText
+        const matchWeightBase = movementBaseText.match(this.weightBaseRegex)
+
+        const movementText = matchWeightBase?.groups?.movement || movementBaseText
         const match = movementText.match(this.movementBaseRegex)
 
-        if (!match?.groups) return { name: text.trim(), reps: '' }
+        if (!match?.groups) return { name: movementBaseText, reps: '', videoUrl }
 
         const reps = this.extractReps(match.groups.reps, roundReps)
 
         const result: IEventMovement = {
             name: match.groups.name.trim(),
             reps,
+            videoUrl,
         }
 
         const weight = this.extractWeight(matchWeightBase?.groups?.weight)

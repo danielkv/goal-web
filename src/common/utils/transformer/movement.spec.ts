@@ -232,4 +232,36 @@ describe('Movement transformer toObject', () => {
 
         expect(object).toMatchObject(expected)
     })
+
+    it('max Assault Bike:https://www.youtube.com...', () => {
+        const text = `max Assault Bike:https://www.youtube.com/watch?v=ivDB23Kcv-A&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+
+        const object = movementTransformer.toObject(text)
+
+        const expected: IEventMovement = {
+            name: 'Assault Bike',
+            reps: 'max',
+            videoUrl: 'https://www.youtube.com/watch?v=ivDB23Kcv-A&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4',
+        }
+
+        expect(object).toMatchObject(expected)
+    })
+
+    it('10/8 Deadlift 70%: https://www.youtube.com...', () => {
+        const text = `10/8 Deadlift 70%: https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+
+        const object = movementTransformer.toObject(text)
+
+        const expected: IEventMovement = {
+            name: 'Deadlift',
+            reps: '10/8',
+            videoUrl: 'https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4',
+            weight: {
+                type: '%',
+                value: '70',
+            },
+        }
+
+        expect(object).toMatchObject(expected)
+    })
 })
