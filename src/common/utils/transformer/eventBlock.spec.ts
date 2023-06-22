@@ -440,4 +440,60 @@ describe('Section transform toObject', () => {
 
         expect(object).toMatchObject(expected)
     })
+
+    it('header "bloco: fortime 10min:test info"', () => {
+        const text = `bloco: fortime 10min:test info
+		3 Hang Clean`
+
+        const object = eventBlockTransformer.toObject(text)
+
+        const expected: IEventBlock = {
+            event_type: 'for_time',
+            timecap: 600,
+            numberOfRounds: 1,
+            type: 'event',
+            info: 'test info',
+            rounds: [
+                {
+                    type: 'not_timed',
+                    numberOfRounds: 1,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                        },
+                    ],
+                },
+            ],
+        }
+
+        expect(object).toMatchObject(expected)
+    })
+
+    it('header "bloco: test info"', () => {
+        const text = `bloco: test info
+		3 Hang Clean`
+
+        const object = eventBlockTransformer.toObject(text)
+
+        const expected: IEventBlock = {
+            event_type: 'not_timed',
+            type: 'event',
+            info: 'test info',
+            rounds: [
+                {
+                    type: 'not_timed',
+                    numberOfRounds: 1,
+                    movements: [
+                        {
+                            name: 'Hang Clean',
+                            reps: '3',
+                        },
+                    ],
+                },
+            ],
+        }
+
+        expect(object).toMatchObject(expected)
+    })
 })

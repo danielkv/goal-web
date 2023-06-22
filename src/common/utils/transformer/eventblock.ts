@@ -10,16 +10,27 @@ type TEventTypeTransform = 'emom' | 'for time' | 'max' | 'amrap' | 'tabata'
 
 export class EventBlockTransformer extends BaseTransformer {
     private breakline = '\n\n'
-    private blockHeaderRegex = this.mergeRegex(['^(bloco:\\s+', '(?<header>', this.headerRegex, ')', ')$'], 'i')
+    private blockHeaderRegex = this.mergeRegex(
+        ['^bloco', '(?:\\:\\s+', '(?<header>', this.headerRegex, '))?', '(?:\\:\\s*?(?<info>.+))?$'],
+        'i'
+    )
     constructor(private roundTransformer: RoundTransformer) {
         super()
     }
 
-    protected override extractTimerFromString(text: string) {
+    private extractBlockHeader(text: string) {
         const match = text.match(this.blockHeaderRegex)
-        if (!match?.groups?.header) return null
 
-        return super.extractTimerFromString(match.groups.header)
+        if (!match) return null
+
+        const info = match?.groups?.info?.trim()
+
+        const timer = match?.groups?.header ? super.extractTimerFromString(match.groups.header) : null
+
+        return {
+            timer,
+            info,
+        }
     }
 
     toObject(text: string): IEventBlock | null {
@@ -27,13 +38,21 @@ export class EventBlockTransformer extends BaseTransformer {
         const headerBreak = normalizedText.split('\n')
         if (!headerBreak) return null
 
-        const extractedHeader = this.extractTimerFromString(headerBreak[0].trim())
+        const extractedHeader = this.extractBlockHeader(headerBreak[0].trim())
 
         if (extractedHeader) {
             headerBreak.splice(0, 1)
             const textRounds = headerBreak.join('\n').split(this.breakline)
 
-            const roundNumberOfRounds = extractedHeader.reps?.split('-') || null
+            if (!extractedHeader.timer)
+                return {
+                    type: 'event',
+                    info: extractedHeader.info,
+                    event_type: 'not_timed',
+                    rounds: textRounds.map((t) => this.roundTransformer.toObject(t)).filter((r) => r) as IRound[],
+                }
+
+            const roundNumberOfRounds = extractedHeader.timer.reps?.split('-') || null
             const rounds = textRounds
                 .flatMap((t) => {
                     if (roundNumberOfRounds)
@@ -46,9 +65,10 @@ export class EventBlockTransformer extends BaseTransformer {
                 .filter((r) => r) as IRound[]
 
             return {
-                ...omit(extractedHeader, ['reps', 'type', 'numberOfRounds']),
-                numberOfRounds: roundNumberOfRounds ? 1 : extractedHeader.numberOfRounds,
-                event_type: extractedHeader.type,
+                ...omit(extractedHeader.timer, ['reps', 'type', 'numberOfRounds']),
+                numberOfRounds: roundNumberOfRounds ? 1 : extractedHeader.timer.numberOfRounds,
+                event_type: extractedHeader.timer.type,
+                info: extractedHeader.info,
                 type: 'event',
                 rounds,
             } as IEventBlock
