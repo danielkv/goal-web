@@ -1,3 +1,4 @@
+import deepEqual from 'deep-equal'
 import { omit } from 'radash'
 
 import { IEventBlock, IEventBlockEMOM, IEventBlockTabata, IEventBlockTimecap, IRound, TEventType } from '@models/block'
@@ -11,7 +12,7 @@ type TEventTypeTransform = 'emom' | 'for time' | 'max' | 'amrap' | 'tabata'
 export class EventBlockTransformer extends BaseTransformer {
     private breakline = '\n\n'
     private blockHeaderRegex = this.mergeRegex(
-        ['^bloco', '(?:\\:\\s+', '(?<header>', this.headerRegex, '))?', '(?:\\:\\s*?(?<info>.+))?$'],
+        ['^bloco', '(?:\\:\\s+', '(?<header>', this.headerRegex, '))?', '(?:\\s*?\\:\\s*?(?<info>.+))?$'],
         'i'
     )
     constructor(private roundTransformer: RoundTransformer) {
@@ -87,27 +88,41 @@ export class EventBlockTransformer extends BaseTransformer {
     }
 
     toString(obj: IEventBlock): string {
-        const title = this.titleToString(obj)
+        const isSame =
+            obj.rounds.length > 1 &&
+            obj.rounds
+                .map((r) => omit(r, ['numberOfRounds']))
+                .every((round) => deepEqual(round, omit(obj.rounds[0], ['numberOfRounds'])))
 
-        let text = title || ''
-        if (text) text += '\n'
+        const sequence = isSame
+            ? obj.rounds
+                  .reduce<string[]>((acc, round) => {
+                      acc.push(String(round.numberOfRounds))
+                      return acc
+                  }, [])
+                  .join('-')
+            : null
 
-        text += obj.rounds.map((o) => this.roundTransformer.toString(o)).join(this.breakline)
+        const title = this.titleToString(obj, sequence)
 
-        if (!text) return ''
+        const rounds = sequence
+            ? this.roundTransformer.toString(omit(obj.rounds[0], ['numberOfRounds']) as IRound)
+            : obj.rounds.map((o) => this.roundTransformer.toString(o)).join(this.breakline)
 
-        return text
+        return this.displayArray([title, rounds], '\n')
     }
 
-    private titleToString(obj: IEventBlock): string | null {
-        const rounds = obj.numberOfRounds && obj.numberOfRounds > 1 ? ` ${obj.numberOfRounds}` : null
+    private titleToString(obj: IEventBlock, sequence?: string | null): string | null {
+        const rounds = sequence || (obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null)
 
         const type = this.typeToString(obj.event_type)
         const timeString = this.eventTimerToString(obj)
 
-        if (!rounds && !type) return null
+        if (!rounds && !type && !obj.info) return null
 
-        return `bloco:${rounds || ''}${type ? ` ${type}` : ''}${timeString ? ` ${timeString}` : ''}`
+        const timerHeader = this.displayArray([type, rounds, timeString])
+
+        return this.displayArray([this.displayArray(['bloco', timerHeader], ': '), obj.info], ' : ')
     }
 
     private typeToString(type: TEventType): TEventTypeTransform | '' {

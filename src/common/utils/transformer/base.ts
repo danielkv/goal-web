@@ -54,34 +54,26 @@ export class BaseTransformer extends RegexHelper {
 
     // tabata 2 rounds 20s/10s
     protected timerTabataRegex = this.mergeRegex(
-        [
-            '^tabata(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds?|x)?)?',
-            '(?:\\s',
-            '(?<time>',
-            this.tabataTimeRegex,
-            ')',
-            ')?',
-        ],
+        ['^tabata(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds?|x)?)?', '(?:\\s', '(?<time>', this.tabataTimeRegex, '))?'],
         'i'
     )
 
     // 2 rounds amrap 3min
     protected timerAmrapRegex = this.mergeRegex(
-        ['^(?:(?<numberOfRounds>\\d+)(?:\\srounds?|x)?\\s)?amrap', '(?:\\s', '(?<time>', this.timeRegex, ')', ')?'],
+        ['^amrap\\s+', '(?:(?<numberOfRounds>\\d+)(?:\\s*?rounds?|x)?\\s+)?', '(?<time>', this.timeRegex, ')?'],
         'i'
     )
 
     // 2 rounds for time 3min
     protected timerFortimeRegex = this.mergeRegex(
         [
-            '^(?:(?<numberOfRounds>',
-            this.numberRegex,
-            '+)(?:\\srounds?|x)?\\s)?',
-            '(?:for(?:\\s|-)?time)',
+            '^(?:for(?:\\s|-)?time)',
             '(?:\\s',
-            '(?<time>',
+            '(?<numberOfRounds>',
+            this.numberRegex,
+            '+)(?:\\srounds?|x)?)?',
+            '(?<time>\\s',
             this.timeRegex,
-            ')',
             ')?$',
         ],
         'i'

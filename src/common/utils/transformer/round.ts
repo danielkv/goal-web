@@ -120,7 +120,7 @@ export class RoundTransformer extends BaseTransformer {
             default:
             case 'amrap':
             case 'for_time':
-                return this.displayArray([rounds, type, timeString], ' ')
+                return this.displayArray([type, rounds, timeString], ' ')
         }
     }
 

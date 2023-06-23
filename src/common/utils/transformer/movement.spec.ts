@@ -72,9 +72,9 @@ describe('Movement transformer toObject and back toString', () => {
     })
 
     it('Snatch', () => {
-        const text = `Snatch`
+        const inputText = `Snatch`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch',
@@ -85,12 +85,12 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
     it('3x Snatch 50%', () => {
-        const text = `3x Snatch 50%`
+        const inputText = `3x Snatch 50%`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch',
@@ -105,12 +105,12 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
     it('3 Hang Snatch 30lb', () => {
-        const text = `3 Hang Snatch 30lb`
+        const inputText = `3 Hang Snatch 30lb`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Hang Snatch',
@@ -125,12 +125,12 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
     it('8x Pull-up', () => {
-        const text = `8x Pull-up 60lb`
+        const inputText = `8x Pull-up 60lb`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Pull-up',
@@ -145,12 +145,12 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
     it('10/8 Snatch 50kg', () => {
-        const text = `10/8 Snatch 50kg`
+        const inputText = `10/8 Snatch 50kg`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch',
@@ -165,13 +165,13 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
 
     it('10 Snatch 50/40%', () => {
-        const text = `10 Snatch 50/40%`
+        const inputText = `10 Snatch 50/40%`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch',
@@ -186,12 +186,12 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
     it('2-5-6 Snatch / Hang Snatch 50kg', () => {
-        const text = `2-5-6 Snatch / Hang Snatch 50kg`
+        const inputText = `2-5-6 Snatch / Hang Snatch 50kg`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Snatch / Hang Snatch',
@@ -206,12 +206,12 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
     it('10/8-8/6-6/4 DB Snatch 20/15kg', () => {
-        const text = `10/8-8/6-6/4 DB Snatch 20/15kg`
+        const inputText = `10/8-8/6-6/4 DB Snatch 20/15kg`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'DB Snatch',
@@ -226,12 +226,12 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
     it('10cal Assault Bike', () => {
-        const text = `10cal Assault Bike`
+        const inputText = `10cal Assault Bike`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Assault Bike',
@@ -242,13 +242,13 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
 
     it('max Assault Bike', () => {
-        const text = `max Assault Bike`
+        const inputText = `max Assault Bike`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Assault Bike',
@@ -259,13 +259,13 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
 
     it('1º 30s Box step', () => {
-        const text = `1º 30s Box step`
+        const inputText = `1º 30s Box step`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Box step',
@@ -276,13 +276,13 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
 
     it('10cal Assault Bike / 2cal Rino Bike', () => {
-        const text = `10cal Assault Bike / 2cal Rino Bike`
+        const inputText = `10cal Assault Bike / 2cal Rino Bike`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Assault Bike / 2cal Rino Bike',
@@ -293,7 +293,7 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(inputText)
     })
 
     it('max Assault Bike:https://www.youtube.com...', () => {
@@ -315,8 +315,8 @@ describe('Movement transformer toObject and back toString', () => {
         expect(converted).eq(outputText)
     })
 
-    it('10/8 Deadlift 70%: https://www.youtube.com...', () => {
-        const inputText = `10/8 Deadlift 70%: https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+    it('10/8 Deadlift 70%:   https://www.youtube.com...', () => {
+        const inputText = `10/8 Deadlift 70%:   https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
         const outputText = `10/8 Deadlift 70% : https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
 
         const object = movementTransformer.toObject(inputText)
@@ -338,10 +338,11 @@ describe('Movement transformer toObject and back toString', () => {
         expect(converted).eq(outputText)
     })
 
-    it('10/8 Deadlift 70% : https://www.youtube.com...', () => {
-        const text = `10/8 Deadlift 70% : https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+    it('10/8 Deadlift 70%   : https://www.youtube.com...', () => {
+        const inputText = `10/8 Deadlift 70%   : https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+        const outputText = `10/8 Deadlift 70% : https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
 
-        const object = movementTransformer.toObject(text)
+        const object = movementTransformer.toObject(inputText)
 
         const expected: IEventMovement = {
             name: 'Deadlift',
@@ -357,6 +358,29 @@ describe('Movement transformer toObject and back toString', () => {
 
         const converted = movementTransformer.toString(object)
 
-        expect(converted).eq(text)
+        expect(converted).eq(outputText)
+    })
+
+    it('10/8 Deadlift 70% :https://www.youtube.com...', () => {
+        const inputText = `10/8 Deadlift 70% :https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+        const outputText = `10/8 Deadlift 70% : https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4`
+
+        const object = movementTransformer.toObject(inputText)
+
+        const expected: IEventMovement = {
+            name: 'Deadlift',
+            reps: '10/8',
+            videoUrl: 'https://www.youtube.com/watch?v=1ZXobu7JvvE&list=PLdWvFCOAvyr3EWQhtfcEMd3DVM5sJdPL4',
+            weight: {
+                type: '%',
+                value: '70',
+            },
+        }
+
+        expect(object).toMatchObject(expected)
+
+        const converted = movementTransformer.toString(object)
+
+        expect(converted).eq(outputText)
     })
 })

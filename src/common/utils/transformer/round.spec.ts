@@ -82,7 +82,7 @@ describe('Round transformer toObject', () => {
         })
 
         it('2 movements with header "1 for time"', () => {
-            const inputText = `1 for time
+            const inputText = `for time 1
 			5 Muscle Clean 50%
 			10 Pull-Up`
 
@@ -117,10 +117,10 @@ describe('Round transformer toObject', () => {
             expect(converted).eq(baseTransformer.normalizeText(outputText))
         })
 
-        it('header "2 fortime 3min"', () => {
-            const inputText = `2 fortime 3min
+        it('header "fortime 2 3min"', () => {
+            const inputText = `fortime 2 3min
 			10 Pull-Up`
-            const outputText = `2 for time 3min
+            const outputText = `for time 2 3min
 			10 Pull-Up`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -147,7 +147,7 @@ describe('Round transformer toObject', () => {
             const inputText = `2 3min
 			10 Pull-Up`
 
-            const outputText = `2 for time 3min
+            const outputText = `for time 2 3min
 			10 Pull-Up`
             const object = roundTransformer.toObject(inputText) as IRound
 
@@ -169,11 +169,11 @@ describe('Round transformer toObject', () => {
             expect(converted).eq(baseTransformer.normalizeText(outputText))
         })
 
-        it('header "4x amrap 3min"', () => {
-            const inputText = `4x amrap 3min
+        it('header "amrap 4x 3min"', () => {
+            const inputText = `amrap 4x 3min
 			10 Pull-Up`
 
-            const outputText = `4 amrap 3min
+            const outputText = `amrap 4 3min
 			10 Pull-Up`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -196,11 +196,11 @@ describe('Round transformer toObject', () => {
             expect(converted).eq(baseTransformer.normalizeText(outputText))
         })
 
-        it('header "4 rounds amrap 30s"', () => {
-            const inputText = `4 rounds amrap 30s
+        it('header "amrap 4 rounds 30s"', () => {
+            const inputText = `amrap 4 rounds 30s
 			10 Pull-Up`
 
-            const outputText = `4 amrap 30s
+            const outputText = `amrap 4 30s
 			10 Pull-Up`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -461,12 +461,12 @@ describe('Round transformer toObject', () => {
             expect(converted).eq(baseTransformer.normalizeText(inputText))
         })
 
-        it('header "21-15-9 fortime"', () => {
-            const inputText = `21-15-9 fortime
+        it('header "fortime 21-15-9"', () => {
+            const inputText = `fortime 21-15-9
 			Deadlift
 			Hang Clean`
 
-            const outputText = `21-15-9 for time
+            const outputText = `for time 21-15-9
 			Deadlift
 			Hang Clean`
 
@@ -494,12 +494,12 @@ describe('Round transformer toObject', () => {
             expect(converted).eq(baseTransformer.normalizeText(outputText))
         })
 
-        it('header "21-15-9 fortime 5min"', () => {
-            const inputText = `21-15-9 fortime 5min
+        it('header "fortime 21-15-9 5min"', () => {
+            const inputText = `fortime 21-15-9 5min
 			Deadlift
 			Hang Clean`
 
-            const outputText = `21-15-9 for time 5min
+            const outputText = `for time 21-15-9 5min
 			Deadlift
 			Hang Clean`
 
