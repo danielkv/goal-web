@@ -1,9 +1,12 @@
+import { FiEdit } from 'solid-icons/fi'
+
 import { Component, For, Show, createMemo, createSignal, splitProps } from 'solid-js'
 
 import PeaceControl from '@components/PeaceControl'
 import SectionEditor from '@components/SectionEditor'
 import { WorksheetPeace } from '@interfaces/preview'
 import { ISection } from '@models/day'
+import { Stack } from '@suid/material'
 import { addToPath } from '@utils/paths'
 import { createSectionValues } from '@utils/worksheetInitials'
 
@@ -37,16 +40,22 @@ const SectionPreview: Component<SectionProps> = (props) => {
             }}
         >
             {props.onAdd && props.onRemove && props.onMove && (
-                <PeaceControl
-                    {...controlProps}
-                    createInitialValues={createSectionValues}
-                    onOpenEdit={() => setEditorOpen((prev) => !prev)}
-                />
+                <PeaceControl {...controlProps} createInitialValues={createSectionValues} />
             )}
 
-            <div class="font-bold text-center text-sm mb-2 uppercase">
-                {props.periodNumber}.{props.sectionNumber} {props.item.name}
-            </div>
+            <Stack
+                flexDirection="row"
+                class="font-bold justify-center items-center gap-4 text-center text-sm mb-2 uppercase"
+            >
+                <Stack>
+                    {props.periodNumber}.{props.sectionNumber} {props.item.name}
+                </Stack>
+                <Stack>
+                    <button class="icon-btn updateMovement" onClick={() => setEditorOpen((prev) => !prev)}>
+                        <FiEdit />
+                    </button>
+                </Stack>
+            </Stack>
 
             <Show when={props.onUpdate && editorOpen()}>
                 <SectionEditor

@@ -4,7 +4,6 @@ import { Path } from './app'
 
 export interface Controllable {
     onAdd?(path: Path, initialValues: TPeaces): void
-    onOpenEdit?(): void
     onRemove?(path: Path): void
     onMove?(path: Path, to: 'up' | 'down'): void
     onClickPeace?(key: Path): void
