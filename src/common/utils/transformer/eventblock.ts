@@ -103,7 +103,7 @@ export class EventBlockTransformer extends BaseTransformer {
                   .join('-')
             : null
 
-        const title = this.titleToString(obj, sequence)
+        const title = this.headerToString(obj, sequence)
 
         const rounds = sequence
             ? this.roundTransformer.toString(omit(obj.rounds[0], ['numberOfRounds']) as IRound)
@@ -112,8 +112,13 @@ export class EventBlockTransformer extends BaseTransformer {
         return this.displayArray([title, rounds], '\n')
     }
 
-    private titleToString(obj: IEventBlock, sequence?: string | null): string | null {
-        const rounds = sequence || (obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null)
+    private headerToString(obj: IEventBlock, sequence?: string | null): string | null {
+        const rounds = this.displayArray(
+            [sequence || (obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null)],
+            '',
+            '',
+            ' rounds'
+        )
 
         const type = this.typeToString(obj.event_type)
         const timeString = this.eventTimerToString(obj)

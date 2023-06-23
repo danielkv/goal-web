@@ -45,7 +45,7 @@ describe('Section transform toObject', () => {
     it('header "bloco:   emom 4 1m', () => {
         const inputText = `bloco:   emom 4 1m
 		10 snatch 50kg`
-        const outputText = `bloco: emom 4 1min
+        const outputText = `bloco: emom 4 rounds 1min
 		10 snatch 50kg`
 
         const object = sectionTransformer.toObject(inputText)

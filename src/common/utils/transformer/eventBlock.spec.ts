@@ -11,7 +11,7 @@ describe('Event block transform toObject', () => {
     it('header "bloco:   emom 4 1m"', () => {
         const inputText = `bloco:   emom 4 1m
 		10 snatch 50kg`
-        const outputText = `bloco: emom 4 1min
+        const outputText = `bloco: emom 4 rounds 1min
 		10 snatch 50kg`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock
@@ -49,7 +49,7 @@ describe('Event block transform toObject', () => {
         const inputText = `BloCo: eMoM 4 1m
 		10 snatch 50kg`
 
-        const outputText = `bloco: emom 4 1min
+        const outputText = `bloco: emom 4 rounds 1min
 		10 snatch 50kg`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock
@@ -88,7 +88,7 @@ describe('Event block transform toObject', () => {
 		10/8 Snatch 50kg
 		10 Hang Snatch 50/40%`
 
-        const outputText = `bloco: for time 2 1min40s
+        const outputText = `bloco: for time 2 rounds 1min40s
 		10/8 Snatch 50kg
 		10 Hang Snatch 50/40%`
 
@@ -296,6 +296,8 @@ describe('Event block transform toObject', () => {
     it('header "bloco: 3-2-1"', () => {
         const inputText = `bloco: 3-2-1
 		3 Hang Clean + 2 Squat Clean 55-65-75%`
+        const outputText = `bloco: 3-2-1 rounds
+		3 Hang Clean + 2 Squat Clean 55-65-75%`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock
 
@@ -376,14 +378,14 @@ describe('Event block transform toObject', () => {
 
         const converted = eventBlockTransformer.toString(object)
 
-        expect(converted).eq(baseTransformer.normalizeText(inputText))
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 
     it('header "bloco: fortime 2-1"', () => {
         const inputText = `bloco: fortime 2-1
 		3 Hang Clean + 2 Squat Clean 55-65-75%`
 
-        const outputText = `bloco: for time 2-1
+        const outputText = `bloco: for time 2-1 rounds
 		3 Hang Clean + 2 Squat Clean 55-65-75%`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock
