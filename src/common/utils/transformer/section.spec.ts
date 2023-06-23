@@ -512,4 +512,60 @@ describe('Section transform toObject', () => {
 
         expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
+
+    it('2 rounds sequential', () => {
+        const inputText = `1-2-3-4-5-6-7-8-9-10
+		Burpee pull up
+		Snatch
+
+		pay out 500m run
+		`
+        const outputText = `1-2-3-4-5-6-7-8-9-10 rounds
+		Burpee pull up
+		Snatch
+		
+		pay out 500m run
+		`
+
+        const object = sectionTransformer.toObject(inputText)
+
+        const expected: IBlock[] = [
+            {
+                event_type: 'not_timed',
+                type: 'event',
+                rounds: [
+                    {
+                        type: 'not_timed',
+                        numberOfRounds: 10,
+                        movements: [
+                            {
+                                name: 'Burpee pull up',
+                                reps: '1-2-3-4-5-6-7-8-9-10',
+                            },
+                            {
+                                name: 'Snatch',
+                                reps: '1-2-3-4-5-6-7-8-9-10',
+                            },
+                        ],
+                    },
+                    {
+                        type: 'not_timed',
+                        numberOfRounds: 1,
+                        movements: [
+                            {
+                                name: 'pay out 500m run',
+                                reps: '',
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+
+        expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
+    })
 })

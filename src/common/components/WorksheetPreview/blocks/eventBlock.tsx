@@ -39,9 +39,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
 
                         const matchSequenceReps = createMemo(() => roundTransformer.findSequenceReps(round.movements))
 
-                        const roundTitle = createMemo(() =>
-                            roundTransformer.displayTitle(round, matchSequenceReps()?.join('-'))
-                        )
+                        const roundTitle = createMemo(() => roundTransformer.displayTitle(round, matchSequenceReps()))
 
                         const timerType = createMemo(() => roundTimerType(round))
 

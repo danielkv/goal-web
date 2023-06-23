@@ -32,7 +32,7 @@ import Form from './components/Form'
 const CreateNewDay: Component = () => {
     redirectToLogin()
 
-    let displayTempSavedTimout: number
+    let displayTempSavedTimout: NodeJS.Timer
     const [lastTempSaved, setLastTempSaved] = createSignal<IWorksheetModel>()
     const [displayTempSaved, setDisplayTempSaved] = createSignal(false)
     const [loadingTemp, setLoadingTemp] = createSignal(false)
