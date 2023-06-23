@@ -87,7 +87,7 @@ describe('Section transform toObject', () => {
 		10 Clean 50kg
 		`
 
-        const outputText = `2
+        const outputText = `2 rounds
 		10 snatch 50kg
 		10 Clean 50kg`
 
@@ -138,7 +138,7 @@ describe('Section transform toObject', () => {
 		10 Clean 50kg
 		`
 
-        const outputText = `2
+        const outputText = `2 rounds
 		10 snatch 50kg
 		
 		10 Clean 50kg`
@@ -386,7 +386,7 @@ describe('Section transform toObject', () => {
 
         const outputText = `
 		bloco: amrap 30s
-		2
+		2 rounds
 		10 snatch 50kg
 
 		10cal Bike
@@ -469,7 +469,7 @@ describe('Section transform toObject', () => {
 		texto qualquer
 		`
         const outputText = `bloco: amrap 30s
-		2
+		2 rounds
 		10 snatch 50kg
 		-
 		texto qualquer

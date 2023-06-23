@@ -59,7 +59,7 @@ export class RoundTransformer extends BaseTransformer {
 
         const matchingReps = this.findSequenceReps(obj.movements)
 
-        const title = this.titleToString(obj, matchingReps)
+        const title = this.headerToString(obj, matchingReps)
 
         if (obj.type === 'complex') {
             if (title) return `${title}\n${this.complexToString(obj, !!matchingReps)}`
@@ -91,8 +91,13 @@ export class RoundTransformer extends BaseTransformer {
         return compareReps
     }
 
-    private titleToString(obj: IRound, roundReps?: string | null): string | null {
-        const rounds = roundReps ? roundReps : obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null
+    private headerToString(obj: IRound, roundReps?: string | null): string | null {
+        const rounds = this.displayArray(
+            [roundReps ? roundReps : obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null],
+            '',
+            '',
+            ' rounds'
+        )
 
         if (obj.type === 'rest') return null
 

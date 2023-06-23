@@ -120,7 +120,7 @@ describe('Round transformer toObject', () => {
         it('header "fortime 2 3min"', () => {
             const inputText = `fortime 2 3min
 			10 Pull-Up`
-            const outputText = `for time 2 3min
+            const outputText = `for time 2 rounds 3min
 			10 Pull-Up`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -147,7 +147,7 @@ describe('Round transformer toObject', () => {
             const inputText = `2 3min
 			10 Pull-Up`
 
-            const outputText = `for time 2 3min
+            const outputText = `for time 2 rounds 3min
 			10 Pull-Up`
             const object = roundTransformer.toObject(inputText) as IRound
 
@@ -173,7 +173,7 @@ describe('Round transformer toObject', () => {
             const inputText = `amrap 4x 3min
 			10 Pull-Up`
 
-            const outputText = `amrap 4 3min
+            const outputText = `amrap 4 rounds 3min
 			10 Pull-Up`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -200,7 +200,7 @@ describe('Round transformer toObject', () => {
             const inputText = `amrap 4 rounds 30s
 			10 Pull-Up`
 
-            const outputText = `amrap 4 30s
+            const outputText = `amrap 4 rounds 30s
 			10 Pull-Up`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -227,7 +227,7 @@ describe('Round transformer toObject', () => {
             const inputText = `emom 30 1m30s
 			10 Pull-Up`
 
-            const outputText = `emom 30 1min30s
+            const outputText = `emom 30 rounds 1min30s
 			10 Pull-Up`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -254,7 +254,7 @@ describe('Round transformer toObject', () => {
             const inputText = `emom 4 rounds 1min34s
 			10 Hang Clean`
 
-            const outputText = `emom 4 1min34s
+            const outputText = `emom 4 rounds 1min34s
 			10 Hang Clean`
             const object = roundTransformer.toObject(inputText) as IRound
 
@@ -280,7 +280,7 @@ describe('Round transformer toObject', () => {
             const inputText = `emom 4 30
 			10 Hang Clean`
 
-            const outputText = `emom 4 30s
+            const outputText = `emom 4 rounds 30s
 			10 Hang Clean`
             const object = roundTransformer.toObject(inputText) as IRound
 
@@ -357,7 +357,7 @@ describe('Round transformer toObject', () => {
             const inputText = `tabata 4 rounds 20s/10s
 			10 Hang Clean`
 
-            const outputText = `tabata 4 20s/10s
+            const outputText = `tabata 4 rounds 20s/10s
 			10 Hang Clean`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -385,7 +385,7 @@ describe('Round transformer toObject', () => {
             const inputText = `tabata 4 rounds 20/10
 			10 Hang Clean`
 
-            const outputText = `tabata 4 20s/10s
+            const outputText = `tabata 4 rounds 20s/10s
 			10 Hang Clean`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -413,7 +413,7 @@ describe('Round transformer toObject', () => {
             const inputText = `tabata 4 rounds
 			10 Hang Clean`
 
-            const outputText = `tabata 4 20s/10s
+            const outputText = `tabata 4 rounds 20s/10s
 			10 Hang Clean`
 
             const object = roundTransformer.toObject(inputText) as IRound
@@ -466,7 +466,7 @@ describe('Round transformer toObject', () => {
 			Deadlift
 			Hang Clean`
 
-            const outputText = `for time 21-15-9
+            const outputText = `for time 21-15-9 rounds
 			Deadlift
 			Hang Clean`
 
@@ -499,7 +499,7 @@ describe('Round transformer toObject', () => {
 			Deadlift
 			Hang Clean`
 
-            const outputText = `for time 21-15-9 5min
+            const outputText = `for time 21-15-9 rounds 5min
 			Deadlift
 			Hang Clean`
 
@@ -532,6 +532,10 @@ describe('Round transformer toObject', () => {
 			Deadlift
 			Hang Clean`
 
+            const outputText = `21-15-9 rounds
+			Deadlift
+			Hang Clean`
+
             const object = roundTransformer.toObject(inputText) as IRound
 
             const expected: IRound = {
@@ -552,7 +556,7 @@ describe('Round transformer toObject', () => {
 
             const converted = roundTransformer.toString(object)
 
-            expect(converted).eq(baseTransformer.normalizeText(inputText))
+            expect(converted).eq(baseTransformer.normalizeText(outputText))
         })
     })
 
