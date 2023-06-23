@@ -2,13 +2,16 @@ import { describe, expect, it } from 'vitest'
 
 import { IBlock } from '@models/block'
 
+import { BaseTransformer } from './base'
 import { sectionTransformer } from './section'
+
+const baseTransformer = new BaseTransformer()
 
 describe('Section transform toObject', () => {
     it('1 movement', () => {
-        const text = `10 snatch 50kg`
+        const inputText = `10 snatch 50kg`
 
-        const object = sectionTransformer.toObject(text)
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -33,13 +36,19 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(inputText))
     })
 
     it('header "bloco:   emom 4 1m', () => {
-        const text = `bloco:   emom 4 1m
+        const inputText = `bloco:   emom 4 1m
+		10 snatch 50kg`
+        const outputText = `bloco: emom 4 1min
 		10 snatch 50kg`
 
-        const object = sectionTransformer.toObject(text)
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -66,15 +75,23 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 
     it('1 round with header, 2 movements', () => {
-        const text = `2 rounds
+        const inputText = `2 rounds
 		10 snatch 50kg
 		10 Clean 50kg
 		`
 
-        const object = sectionTransformer.toObject(text)
+        const outputText = `2
+		10 snatch 50kg
+		10 Clean 50kg`
+
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -108,16 +125,25 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 
     it('2 rounds header', () => {
-        const text = `2 rounds
+        const inputText = `2 rounds
 		10 snatch 50kg
 		
 		10 Clean 50kg
 		`
 
-        const object = sectionTransformer.toObject(text)
+        const outputText = `2
+		10 snatch 50kg
+		
+		10 Clean 50kg`
+
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -157,17 +183,26 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 
     it('3 rounds', () => {
-        const text = `10 snatch 50kg
+        const inputText = `10 snatch 50kg
 
 		2min rest
 		
-		10 Clean 50kg
-		`
+		10 Clean 50kg`
 
-        const object = sectionTransformer.toObject(text)
+        const outpuText = `10 snatch 50kg
+
+		2min Rest
+		
+		10 Clean 50kg`
+
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -212,15 +247,23 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outpuText))
     })
 
     it('2 blocks', () => {
-        const text = `10 snatch 50kg
+        const inputText = `10 snatch 50kg
 		-
 		2min rest
 		`
 
-        const object = sectionTransformer.toObject(text)
+        const outputText = `10 snatch 50kg
+		-
+		2min Rest`
+
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -250,10 +293,14 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 
     it('2 blocks with header', () => {
-        const text = `
+        const inputText = `
 		bloco: amrap 30
 		10 snatch 50kg
 		-
@@ -261,7 +308,15 @@ describe('Section transform toObject', () => {
 		10 snatch 50kg
 		`
 
-        const object = sectionTransformer.toObject(text)
+        const outputText = `
+		bloco: amrap 30s
+		10 snatch 50kg
+		-
+		bloco: amrap 30s
+		10 snatch 50kg
+		`
+
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -311,10 +366,14 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 
     it('2 blocks with header and rounds with header', () => {
-        const text = `
+        const inputText = `
 		bloco: amrap 30
 		2 rounds
 		10 snatch 50kg
@@ -325,7 +384,18 @@ describe('Section transform toObject', () => {
 		10 snatch 50kg
 		`
 
-        const object = sectionTransformer.toObject(text)
+        const outputText = `
+		bloco: amrap 30s
+		2
+		10 snatch 50kg
+
+		10cal Bike
+		-
+		bloco: amrap 30s
+		10 snatch 50kg
+		`
+
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -385,17 +455,27 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 
-    it('2 blocks with 1 text block', () => {
-        const text = `bloco: amrap 30
+    it('2 blocks with 1 inputText block', () => {
+        const inputText = `bloco: amrap 30
 		2 rounds
 		10 snatch 50kg
 		-
 		texto qualquer
 		`
+        const outputText = `bloco: amrap 30s
+		2
+		10 snatch 50kg
+		-
+		texto qualquer
+		`
 
-        const object = sectionTransformer.toObject(text)
+        const object = sectionTransformer.toObject(inputText)
 
         const expected: IBlock[] = [
             {
@@ -427,5 +507,9 @@ describe('Section transform toObject', () => {
         ]
 
         expect(object).toMatchObject(expected)
+
+        const converted = sectionTransformer.toString(object)
+
+        expect(converted).eq(baseTransformer.normalizeText(outputText))
     })
 })
