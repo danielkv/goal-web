@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { isNumber } from 'radash'
 
 export function getTimeFromSeconds(seconds: number): string {
+    if (!seconds) return ''
     const t = dayjs.duration(seconds, 'seconds')
 
     if (seconds < 60) return `${seconds}s`

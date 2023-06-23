@@ -17,3 +17,5 @@ export type IEMOMTimer = {
 }
 
 export type TTimersForm = ITabataTimer | ITimecapTimer | IEMOMTimer
+
+export type TMergedTimer = Partial<ITabataTimer & ITimecapTimer & IEMOMTimer> & { type: TTimerTypes }

@@ -1,13 +1,12 @@
 import deepEqual from 'deep-equal'
 import { omit } from 'radash'
 
-import { IEventBlock, IEventBlockEMOM, IEventBlockTabata, IEventBlockTimecap, IRound, TEventType } from '@models/block'
+import { IEventBlock, IEventBlockEMOM, IEventBlockTabata, IEventBlockTimecap, IRound } from '@models/block'
+import { TMergedTimer } from '@models/time'
 import { eventTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
 import { RoundTransformer, roundTransformer } from './round'
-
-type TEventTypeTransform = 'emom' | 'for time' | 'max' | 'amrap' | 'tabata'
 
 export class EventBlockTransformer extends BaseTransformer {
     private breakline = '\n\n'
@@ -113,29 +112,11 @@ export class EventBlockTransformer extends BaseTransformer {
     }
 
     private headerToString(obj: IEventBlock, sequence?: string | null): string | null {
-        const rounds = this.displayArray(
-            [sequence || (obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null)],
-            '',
-            '',
-            ' rounds'
-        )
+        if (obj.event_type === 'max_weight') return null
 
-        const type = this.typeToString(obj.event_type)
-        const timeString = this.eventTimerToString(obj)
+        const timerHeader = this.timerToString(obj.event_type, obj as unknown as TMergedTimer, sequence)
 
-        if (!rounds && !type && !obj.info) return null
-
-        const timerHeader = this.displayArray([type, rounds, timeString])
-
-        return this.displayArray([this.displayArray(['bloco', timerHeader], ': '), obj.info], ' : ')
-    }
-
-    private typeToString(type: TEventType): TEventTypeTransform | '' {
-        if (!type || type === 'not_timed') return ''
-        if (type === 'max_weight') return 'max'
-        if (type === 'for_time') return 'for time'
-
-        return type
+        return this.displayArray([timerHeader, obj.info], ' : ', 'bloco: ')
     }
 
     displayTitle(block: IEventBlock): string {
@@ -153,24 +134,6 @@ export class EventBlockTransformer extends BaseTransformer {
 
         if (!numberOfRounds && !type) return ''
         return this.displayArray([numberOfRounds, type, time])
-    }
-
-    private eventTimerToString(obj: IEventBlock): string | null {
-        switch (obj.event_type) {
-            case 'tabata': {
-                return super.timerToString('tabata', obj.work, obj.rest)
-            }
-            case 'emom': {
-                return super.timerToString('emom', obj.each)
-            }
-            case 'for_time':
-            case 'amrap':
-            case 'max_weight': {
-                return super.timerToString('emom', obj.timecap)
-            }
-            default:
-                return super.timerToString('not_timed')
-        }
     }
 
     private displayEventTimer(block: IEventBlockTimecap | IEventBlockEMOM | IEventBlockTabata): string {

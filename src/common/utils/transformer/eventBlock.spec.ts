@@ -11,7 +11,7 @@ describe('Event block transform toObject', () => {
     it('header "bloco:   emom 4 1m"', () => {
         const inputText = `bloco:   emom 4 1m
 		10 snatch 50kg`
-        const outputText = `bloco: emom 4 rounds 1min
+        const outputText = `bloco: emom 4min
 		10 snatch 50kg`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock
@@ -49,7 +49,7 @@ describe('Event block transform toObject', () => {
         const inputText = `BloCo: eMoM 4 1m
 		10 snatch 50kg`
 
-        const outputText = `bloco: emom 4 rounds 1min
+        const outputText = `bloco: emom 4min
 		10 snatch 50kg`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock
@@ -537,7 +537,7 @@ describe('Event block transform toObject', () => {
         const inputText = `bloco: test info
 		3 Hang Clean`
 
-        const outputText = `bloco : test info
+        const outputText = `bloco: test info
 		3 Hang Clean`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock
@@ -571,7 +571,7 @@ describe('Event block transform toObject', () => {
         const inputText = `bloco   :test info
 		3 Hang Clean`
 
-        const outputText = `bloco : test info
+        const outputText = `bloco: test info
 		3 Hang Clean`
 
         const object = eventBlockTransformer.toObject(inputText) as IEventBlock

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { IEMOMTimer, ITabataTimer, ITimecapTimer, TTimerTypes, TTimersForm } from '@models/time'
+import { IEMOMTimer, ITabataTimer, ITimecapTimer, TMergedTimer, TTimerTypes } from '@models/time'
 import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
@@ -49,6 +49,11 @@ export class BaseTransformer extends RegexHelper {
     // emom 2 rounds 1min
     protected timerEmomRegex = this.mergeRegex(
         ['^emom(?:\\s(?<numberOfRounds>\\d+)(?:\\srounds?|x)?)?', '(?:\\s', '(?<time>', this.timeRegex, ')', ')'],
+        'i'
+    )
+    // E3M 15min
+    protected timerEmomEachRegex = this.mergeRegex(
+        ['^e(?<each>\\d+)m', '(?:\\s*?', '(?<time>', this.timeRegex, ')', ')'],
         'i'
     )
 
@@ -100,6 +105,9 @@ export class BaseTransformer extends RegexHelper {
         '(?<emom>',
         this.timerEmomRegex,
         ')|',
+        '(?<emomEach>',
+        this.timerEmomEachRegex,
+        ')|',
         '(?<tabata>',
         this.timerTabataRegex,
         ')|',
@@ -118,14 +126,15 @@ export class BaseTransformer extends RegexHelper {
         return text.replaceAll(/\t/g, '').trim()
     }
 
-    protected extractTimerFromString(
-        text: string
-    ): (Partial<TTimersForm> & { type: TTimerTypes; reps?: string }) | null {
+    protected extractTimerFromString(text: string): (TMergedTimer & { reps?: string }) | null {
         const match = text.match(this.headerRegex)
 
         if (!match?.groups) return null
         if (match.groups.emom) {
             const result = this.extractEmomTimerFromString(match.groups.emom)
+            if (result) return result
+        } else if (match.groups.emomEach) {
+            const result = this.extractEmomEachTimerFromString(match.groups.emomEach)
             if (result) return result
         } else if (match.groups.tabata) {
             const result = this.extractTabataTimerFromString(match.groups.tabata)
@@ -292,6 +301,26 @@ export class BaseTransformer extends RegexHelper {
         return null
     }
 
+    protected extractEmomEachTimerFromString(text: string): (IEMOMTimer & { type: 'emom'; reps?: string }) | null {
+        const matchSpecific = text.match(this.timerEmomEachRegex)
+
+        if (!matchSpecific?.groups?.time || !matchSpecific?.groups?.each)
+            throw new Error(`${text}: O tempo ou o tipo de WOD está errado`)
+
+        const totalTime = this.extractTimeByType('emom', matchSpecific.groups.time.trim())
+
+        const each = Number(matchSpecific.groups.each) * 60
+        if (totalTime % each !== 0) throw new Error(`${text}: O tempo do emom é incompatível`)
+
+        const numberOfRounds = totalTime / each
+
+        return {
+            type: 'emom',
+            each,
+            numberOfRounds,
+        }
+    }
+
     protected extractTimeByType(type: Extract<TTimerTypes, 'tabata'>, time: string): [number, number]
     protected extractTimeByType(type: Exclude<TTimerTypes, 'tabata'>, time: string): number
     protected extractTimeByType(type: TTimerTypes, time: string): number | [number, number] {
@@ -335,27 +364,49 @@ export class BaseTransformer extends RegexHelper {
         return `${getTimeFromSeconds(time)} Rest`
     }
 
-    protected timerToString(type: 'emom', each: number): string
-    protected timerToString(type: 'tabata', work: number, rest: number): string
-    protected timerToString(type: 'for_time' | 'amrap', timecap: number): string
-    protected timerToString(type: 'not_timed'): null
-    protected timerToString(type: TTimerTypes, t1?: number | never, t2?: never | number): string | null {
+    protected timerToString(type: TTimerTypes, obj: TMergedTimer, sequence?: string | null): string | null {
+        const rounds = this.displayArray(
+            [sequence || (obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null)],
+            '',
+            '',
+            ' rounds'
+        )
+
         switch (type) {
             case 'tabata': {
-                if (!t1 || !t2) return null
-                const work = getTimeFromSeconds(t1)
-                const rest = getTimeFromSeconds(t2)
-                return `${work}/${rest}`
+                if (!obj.work || !obj.rest) return null
+                const work = getTimeFromSeconds(obj.work)
+                const rest = getTimeFromSeconds(obj.rest)
+                const timeString = `${work}/${rest}`
+
+                if (obj.numberOfRounds === 8 && obj.work === 20 && obj.rest === 10) return 'tabata'
+
+                return this.displayArray(['tabata', rounds, timeString], ' ')
             }
-            case 'emom':
+            case 'emom': {
+                if (!obj.each || !obj.numberOfRounds) return null
+
+                const timeString = getTimeFromSeconds(obj.each)
+
+                if (obj.each === 60) {
+                    return this.displayArray(['emom', `${obj.numberOfRounds}min`], ' ')
+                } else if (obj.each % 60 === 0 && obj.each < 600) {
+                    const totalTimeMin = (obj.each * obj.numberOfRounds) / 60
+                    return this.displayArray([`E${obj.each / 60}M`, `${totalTimeMin}min`], ' ')
+                } else return this.displayArray(['emom', rounds, timeString], ' ')
+            }
+
             case 'for_time':
             case 'amrap': {
-                if (!t1) return null
-                const time = getTimeFromSeconds(t1)
-                return time
+                if (obj.timecap === undefined) return null
+
+                const timeString = getTimeFromSeconds(obj.timecap)
+                const typeString = type === 'for_time' ? 'for time' : 'amrap'
+
+                return this.displayArray([typeString, rounds, timeString], ' ')
             }
             default:
-                return null
+                return rounds
         }
     }
 

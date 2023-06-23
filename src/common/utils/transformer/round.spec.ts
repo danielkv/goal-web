@@ -250,6 +250,33 @@ describe('Round transformer toObject', () => {
             expect(converted).eq(baseTransformer.normalizeText(outputText))
         })
 
+        it('header "e3m 15min"', () => {
+            const inputText = `e3m 15min
+			10 Pull-Up`
+
+            const outputText = `E3M 15min
+			10 Pull-Up`
+
+            const object = roundTransformer.toObject(inputText) as IRound
+
+            const expected: IRound = {
+                type: 'emom',
+                numberOfRounds: 5,
+                each: 180,
+                movements: [
+                    {
+                        name: 'Pull-Up',
+                        reps: '10',
+                    },
+                ],
+            }
+            expect(object).toMatchObject(expected)
+
+            const converted = roundTransformer.toString(object)
+
+            expect(converted).eq(baseTransformer.normalizeText(outputText))
+        })
+
         it('header "emom 4 rounds 1min34s"', () => {
             const inputText = `emom 4 rounds 1min34s
 			10 Hang Clean`

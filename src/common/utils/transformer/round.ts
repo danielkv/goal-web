@@ -2,14 +2,12 @@ import cloneDeep from 'clone-deep'
 import { omit } from 'radash'
 
 import { IEventMovement, IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
-import { TTimerTypes } from '@models/time'
+import { TMergedTimer } from '@models/time'
 import { roundTypes } from '@utils/worksheetInitials'
 
 import { BaseTransformer } from './base'
 import { MovementTransformer, movementTransformer } from './movement'
 import { numberHelper } from './numbers'
-
-type TRoundTypeTransform = 'emom' | 'for time' | 'amrap' | 'tabata'
 
 export class RoundTransformer extends BaseTransformer {
     private breakline = '\n'
@@ -91,42 +89,18 @@ export class RoundTransformer extends BaseTransformer {
         return compareReps
     }
 
-    private headerToString(obj: IRound, roundReps?: string | null): string | null {
-        const rounds = this.displayArray(
-            [roundReps ? roundReps : obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null],
-            '',
-            '',
-            ' rounds'
-        )
-
+    private headerToString(obj: IRound, sequence?: string | null): string | null {
         if (obj.type === 'rest') return null
 
         if (obj.type === 'complex') {
-            if (roundReps) return roundReps
+            if (sequence) return sequence
 
             const displayRounds = super.displayNumberOfRounds(obj.numberOfRounds)
             if (!displayRounds) return null
             return displayRounds
         }
 
-        const type = this.typeToString(obj.type)
-        const timeString = this.roundTimerToString(obj)
-
-        if (!rounds && !type) return null
-
-        switch (obj.type) {
-            case 'emom':
-                if (obj.each === 60) return this.displayArray([type, `${obj.numberOfRounds}min`], ' ')
-                else return this.displayArray([type, rounds, timeString], ' ')
-            case 'tabata':
-                if (obj.numberOfRounds === 8 && obj.work === 20 && obj.rest === 10)
-                    return this.displayArray([type], ' ')
-                return this.displayArray([type, rounds, timeString], ' ')
-            default:
-            case 'amrap':
-            case 'for_time':
-                return this.displayArray([type, rounds, timeString], ' ')
-        }
+        return this.timerToString(obj.type, obj as TMergedTimer, sequence)
     }
 
     private breakTextInMovements(text: string): string[] | null {
@@ -171,13 +145,6 @@ export class RoundTransformer extends BaseTransformer {
         return round
     }
 
-    private typeToString(type: TTimerTypes): TRoundTypeTransform | null {
-        if (!type || type === 'not_timed') return null
-        if (type === 'for_time') return 'for time'
-
-        return type
-    }
-
     displayRestRound(obj: IRound): string {
         if (obj.type !== 'rest') return ''
 
@@ -217,23 +184,6 @@ export class RoundTransformer extends BaseTransformer {
         const type = round.type && round.type != 'not_timed' ? roundTypes[round.type] : ''
 
         return this.displayArray([numberOfRounds, type, time])
-    }
-
-    private roundTimerToString(obj: IRound): string | null {
-        switch (obj.type) {
-            case 'tabata':
-                return super.timerToString('tabata', obj.work, obj.rest)
-
-            case 'emom':
-                return super.timerToString('emom', obj.each)
-
-            case 'for_time':
-            case 'amrap':
-                return super.timerToString('emom', obj.timecap)
-
-            default:
-                return super.timerToString('not_timed')
-        }
     }
 
     private displayRoundTimer(round: IRoundTimecap | IRoundEMOM | IRoundTabata): string {
