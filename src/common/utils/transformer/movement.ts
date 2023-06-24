@@ -70,41 +70,26 @@ export class MovementTransformer extends BaseTransformer {
         const weight = this.weightToString(obj.weight)
         const reps = obj.reps && !hideReps ? obj.reps.trim() : ''
         const videoUrl = obj.videoUrl ? `: ${obj.videoUrl}` : ''
-        return this.displayArray([reps, obj.name, weight, videoUrl])
+        return this.arrayToString([reps, obj.name, weight, videoUrl])
     }
 
     weightToString(weight?: IMovementWeight): string {
-        const r = this.displayArray([weight?.value, weight?.type], '')
+        const r = this.arrayToString([weight?.value, weight?.type], '')
 
         return r
     }
 
-    displayWeight(weight?: IMovementWeight): string {
-        if (!weight?.value || weight.type === 'none') return ''
+    movementToString(obj: IEventMovement, hideReps?: boolean) {
+        const reps = this.repsToString(obj)
+        const movement = `${!hideReps ? reps : ''}${obj.name}`
 
-        const value = numberHelper.convertNumbers(weight.value, { suffix: '', separator: `${weight.type} ` })
-
-        return this.displayArray([value.trim(), weight.type], '')
+        return movement
     }
 
-    displayMovement(obj: IEventMovement, hideReps?: boolean) {
-        const reps = this.displayReps(obj)
-        const displayMovement = `${!hideReps ? reps : ''}${obj.name}`
-
-        return displayMovement
-    }
-
-    display(obj: IEventMovement, hideReps?: boolean) {
-        const weight = this.displayWeight(obj.weight)
-        const movement = this.displayMovement(obj, hideReps)
-
-        return this.displayArray([movement, weight], ' - ')
-    }
-
-    private displayReps(obj: IEventMovement) {
+    private repsToString(obj: IEventMovement) {
         const reps = numberHelper.convertNumbers(obj.reps, { suffix: '' })
-        const repsDisplay = reps || ''
-        return repsDisplay
+        const repsString = reps || ''
+        return repsString
     }
 }
 

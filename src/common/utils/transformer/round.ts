@@ -1,9 +1,9 @@
 import cloneDeep from 'clone-deep'
 import { omit } from 'radash'
 
-import { IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
+import { IRound } from '@models/block'
 import { TMergedTimer } from '@models/time'
-import { roundTypes } from '@utils/worksheetInitials'
+import { getTimeFromSeconds } from '@utils/time'
 
 import { numberHelper } from '../numbers'
 
@@ -54,7 +54,7 @@ export class RoundTransformer extends BaseTransformer {
     }
 
     toString(obj: IRound): string {
-        if (obj.type === 'rest') return this.displayRest(obj.time)
+        if (obj.type === 'rest') return `${getTimeFromSeconds(obj.time)} Rest`
 
         const matchingReps = numberHelper.findSequenceReps(obj.movements)
 
@@ -71,7 +71,7 @@ export class RoundTransformer extends BaseTransformer {
             .map((o) => this.movementTransformer.toString(o, !!matchingReps))
             .join(this.breakline)
 
-        return this.displayArray([title, movements], '\n')
+        return this.arrayToString([title, movements], '\n')
     }
 
     private headerToString(obj: IRound, sequence?: string | null): string | null {
@@ -80,9 +80,9 @@ export class RoundTransformer extends BaseTransformer {
         if (obj.type === 'complex') {
             if (sequence) return sequence
 
-            const displayRounds = super.displayNumberOfRounds(obj.numberOfRounds)
-            if (!displayRounds) return null
-            return displayRounds
+            const rounds = super.roundsToString(obj.numberOfRounds)
+
+            return rounds
         }
 
         return this.timerToString(obj.type, obj as TMergedTimer, sequence)
@@ -130,56 +130,15 @@ export class RoundTransformer extends BaseTransformer {
         return round
     }
 
-    displayRestRound(obj: IRound): string {
-        if (obj.type !== 'rest') return ''
-
-        return super.displayRest(obj.time)
-    }
-
-    displayComplex(obj: IRound): string {
-        if (obj.type !== 'complex') return ''
-
-        const complex = obj.movements.map((m) => this.movementTransformer.displayMovement(m)).join(this.complexSplit)
-        const weight = this.movementTransformer.displayWeight(obj.movements[0].weight)
-
-        return this.displayArray([complex, weight])
-    }
-
     private complexToString(obj: IRound, hideReps?: boolean): string {
         if (obj.type !== 'complex') return ''
 
         const complex = obj.movements
-            .map((m) => this.movementTransformer.displayMovement(m, hideReps))
+            .map((m) => this.movementTransformer.movementToString(m, hideReps))
             .join(this.complexSplit)
         const weight = this.movementTransformer.weightToString(obj.movements[0].weight)
 
-        return this.displayArray([complex, weight])
-    }
-
-    displayTitle(round: IRound, roundReps?: string | null): string {
-        if (round.type === 'rest') return ''
-        if (round.type === 'complex') return super.displayNumberOfRounds(round.numberOfRounds)
-        const time =
-            round.type === 'amrap' || round.type === 'for_time' || round.type === 'emom' || round.type === 'tabata'
-                ? this.displayRoundTimer(round) || ''
-                : ''
-
-        const numberOfRounds = roundReps ? roundReps : !time ? super.displayNumberOfRounds(round.numberOfRounds) : ''
-
-        const type = round.type && round.type != 'not_timed' ? roundTypes[round.type] : ''
-
-        return this.displayArray([numberOfRounds, type, time])
-    }
-
-    private displayRoundTimer(round: IRoundTimecap | IRoundEMOM | IRoundTabata): string {
-        switch (round.type) {
-            case 'emom':
-                return super.displayTimer('emom', round.numberOfRounds, round.each)
-            case 'tabata':
-                return super.displayTimer('tabata', round.numberOfRounds, round.work, round.rest)
-            default:
-                return super.displayTimer(round.type, round.numberOfRounds, round.timecap)
-        }
+        return this.arrayToString([complex, weight])
     }
 }
 

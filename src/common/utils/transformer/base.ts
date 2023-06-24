@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 
 import { IEMOMTimer, ITabataTimer, ITimecapTimer, TMergedTimer, TTimerTypes } from '@models/time'
-import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
 import { numberHelper } from '../numbers'
@@ -361,12 +360,8 @@ export class BaseTransformer extends RegexHelper {
         return this.extractTime(match?.groups.time1 || match?.groups.time2)
     }
 
-    protected displayRest(time: number): string {
-        return `${getTimeFromSeconds(time)} Rest`
-    }
-
     protected timerToString(type: TTimerTypes, obj: TMergedTimer, sequence?: string | null): string | null {
-        const rounds = this.displayArray(
+        const rounds = this.arrayToString(
             [sequence || (obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null)],
             '',
             '',
@@ -382,7 +377,7 @@ export class BaseTransformer extends RegexHelper {
 
                 if (obj.numberOfRounds === 8 && obj.work === 20 && obj.rest === 10) return 'tabata'
 
-                return this.displayArray(['tabata', rounds, timeString], ' ')
+                return this.arrayToString(['tabata', rounds, timeString], ' ')
             }
             case 'emom': {
                 if (!obj.each || !obj.numberOfRounds) return null
@@ -390,11 +385,11 @@ export class BaseTransformer extends RegexHelper {
                 const timeString = getTimeFromSeconds(obj.each)
 
                 if (obj.each === 60) {
-                    return this.displayArray(['emom', `${obj.numberOfRounds}min`], ' ')
+                    return this.arrayToString(['emom', `${obj.numberOfRounds}min`], ' ')
                 } else if (obj.each % 60 === 0 && obj.each < 600) {
                     const totalTimeMin = (obj.each * obj.numberOfRounds) / 60
-                    return this.displayArray([`E${obj.each / 60}M`, `${totalTimeMin}min`], ' ')
-                } else return this.displayArray(['emom', rounds, timeString], ' ')
+                    return this.arrayToString([`E${obj.each / 60}M`, `${totalTimeMin}min`], ' ')
+                } else return this.arrayToString(['emom', rounds, timeString], ' ')
             }
 
             case 'for_time':
@@ -404,53 +399,20 @@ export class BaseTransformer extends RegexHelper {
                 const timeString = getTimeFromSeconds(obj.timecap)
                 const typeString = type === 'for_time' ? 'for time' : 'amrap'
 
-                return this.displayArray([typeString, rounds, timeString], ' ')
+                return this.arrayToString([typeString, rounds, timeString], ' ')
             }
             default:
                 return rounds
         }
     }
 
-    protected displayTimer(type: 'emom', rounds: number, each: number): string
-    protected displayTimer(type: 'tabata', rounds: number, work: number, rest: number): string
-    protected displayTimer(type: 'for_time' | 'amrap', rounds: number, timecap: number): string
-    protected displayTimer(type: 'not_timed'): null
-    protected displayTimer(
-        type: TTimerTypes,
-        rounds?: number | never,
-        t1?: number | never,
-        t2?: never | number
-    ): string | null {
-        if (!rounds) return null
-
-        if (type === 'emom') {
-            if (!t1) return null
-            const each = getTimeFromSeconds(t1)
-            return `Cada ${each} por ${rounds} ${pluralize(rounds, 'round')}`
-        }
-
-        if (type === 'tabata') {
-            if (!t1 || !t2) return null
-            const work = getTimeFromSeconds(t1)
-            const rest = getTimeFromSeconds(t2)
-            return `${work}/${rest} por ${rounds} ${pluralize(rounds, 'round')}`
-        }
-
-        if (t1 === undefined) return null
-
-        const timecap = t1 === 0 ? '' : getTimeFromSeconds(t1)
-        const roundsDisplay = rounds > 1 ? this.displayNumberOfRounds(rounds) : ''
-
-        return this.displayArray([timecap.trim(), roundsDisplay.trim()], ' - ')
-    }
-
-    protected displayNumberOfRounds(rounds?: number, suffix = 'rounds', prefix?: string): string {
+    protected roundsToString(rounds?: number, suffix = 'rounds', prefix?: string): string {
         if (!rounds) return ''
         if (rounds <= 1) return ''
-        return this.displayArray([prefix, rounds, suffix])
+        return this.arrayToString([prefix, rounds, suffix])
     }
 
-    displayArray(array: any[], separator = ' ', prefix = '', suffix = ''): string {
+    arrayToString(array: any[], separator = ' ', prefix = '', suffix = ''): string {
         const text = array.filter((part) => part).join(separator)
 
         if (!text) return ''

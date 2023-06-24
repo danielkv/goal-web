@@ -21,11 +21,7 @@ export class RestBlockTransformer extends BaseTransformer {
     toString(obj: IRestBlock): string {
         const time = getTimeFromSeconds(obj.time)
 
-        return this.displayArray([`${time} Rest`, obj.text])
-    }
-
-    display(obj: IRestBlock): string {
-        return this.displayRest(obj.time)
+        return this.arrayToString([`${time} Rest`, obj.text])
     }
 }
 
