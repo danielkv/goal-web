@@ -6,17 +6,18 @@ import PeaceControl from '@components/PeaceControl'
 import { WorksheetPeace } from '@interfaces/preview'
 import { IEventBlock } from '@models/block'
 import { Stack } from '@suid/material'
+import { eventBlockDisplay } from '@utils/display/eventBlock'
+import { movementDisplay } from '@utils/display/movement'
+import { roundDisplay } from '@utils/display/round'
+import { numberHelper } from '@utils/numbers'
 import { addToPath } from '@utils/paths'
 import { blockTimerType, checkIsTimedWorkout, roundTimerType } from '@utils/timer-display'
-import { eventBlockTransformer } from '@utils/transformer/eventblock'
-import { movementTransformer } from '@utils/transformer/movement'
-import { roundTransformer } from '@utils/transformer/round'
 import { createEventRoundValues } from '@utils/worksheetInitials'
 
 export interface EventBlockPreviewProps extends WorksheetPeace<IEventBlock> {}
 
 const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
-    const eventTitle = createMemo(() => eventBlockTransformer.displayTitle(props.item))
+    const eventTitle = createMemo(() => eventBlockDisplay.displayTitle(props.item))
 
     const isTimedWorkout = createMemo(() => checkIsTimedWorkout(props.item))
     const timerType = createMemo(() => blockTimerType(props.item))
@@ -37,9 +38,9 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                             addToPath<IEventBlock>(props.thisPath, `rounds.${roundIndex()}`)
                         )
 
-                        const matchSequenceReps = createMemo(() => roundTransformer.findSequenceReps(round.movements))
+                        const matchSequenceReps = createMemo(() => numberHelper.findSequenceReps(round.movements))
 
-                        const roundTitle = createMemo(() => roundTransformer.displayTitle(round, matchSequenceReps()))
+                        const roundTitle = createMemo(() => roundDisplay.displayTitle(round, matchSequenceReps()))
 
                         const timerType = createMemo(() => roundTimerType(round))
 
@@ -74,15 +75,15 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                 </Show>
 
                                 <Show when={round.type == 'rest'}>
-                                    <div class="font-bold text-sm">{roundTransformer.displayRestRound(round)}</div>
+                                    <div class="font-bold text-sm">{roundDisplay.displayRestRound(round)}</div>
                                 </Show>
                                 <Show when={round.type == 'complex'}>
-                                    <div class="movement">{roundTransformer.displayComplex(round)}</div>
+                                    <div class="movement">{roundDisplay.displayComplex(round)}</div>
                                 </Show>
                                 <Show when={!['rest', 'complex'].includes(round.type)}>
                                     <For each={round.movements}>
                                         {(movement) => {
-                                            const displayMovement = movementTransformer.display(
+                                            const displayMovement = movementDisplay.display(
                                                 movement,
                                                 !!matchSequenceReps()
                                             )

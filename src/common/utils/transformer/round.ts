@@ -1,7 +1,7 @@
 import cloneDeep from 'clone-deep'
 import { omit } from 'radash'
 
-import { IEventMovement, IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
+import { IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
 import { TMergedTimer } from '@models/time'
 import { roundTypes } from '@utils/worksheetInitials'
 
@@ -56,7 +56,7 @@ export class RoundTransformer extends BaseTransformer {
     toString(obj: IRound): string {
         if (obj.type === 'rest') return this.displayRest(obj.time)
 
-        const matchingReps = this.findSequenceReps(obj.movements)
+        const matchingReps = numberHelper.findSequenceReps(obj.movements)
 
         const title = this.headerToString(obj, matchingReps)
 
@@ -72,22 +72,6 @@ export class RoundTransformer extends BaseTransformer {
             .join(this.breakline)
 
         return this.displayArray([title, movements], '\n')
-    }
-
-    findSequenceReps(movements: IEventMovement[]): string | null {
-        const compareReps = movements[0]?.reps
-        if (!compareReps) return null
-
-        if (!compareReps.includes('-')) return null
-
-        const match = compareReps.match(numberHelper.sequenceRegex)
-        if (!match) return null
-
-        if (movements.length === 1) return compareReps
-
-        if (!movements.every((movement) => movement.reps === compareReps)) return null
-
-        return compareReps
     }
 
     private headerToString(obj: IRound, sequence?: string | null): string | null {
@@ -140,7 +124,7 @@ export class RoundTransformer extends BaseTransformer {
 
         if (roundReps) return round
 
-        const sequenceReps = this.findSequenceReps(movements)
+        const sequenceReps = numberHelper.findSequenceReps(movements)
         if (sequenceReps) round.numberOfRounds = sequenceReps.length
 
         return round

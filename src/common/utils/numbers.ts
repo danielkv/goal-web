@@ -1,3 +1,5 @@
+import { IEventMovement } from '@models/block'
+
 type TOpts = {
     suffix: string
     separator: string
@@ -91,6 +93,22 @@ class NumberHelper {
 
     private addSuffix(numberResult: string, suffix?: string) {
         return `${numberResult}${suffix}`
+    }
+
+    findSequenceReps(movements: IEventMovement[]): string | null {
+        const compareReps = movements[0]?.reps
+        if (!compareReps) return null
+
+        if (!compareReps.includes('-')) return null
+
+        const match = compareReps.match(this.sequenceRegex)
+        if (!match) return null
+
+        if (movements.length === 1) return compareReps
+
+        if (!movements.every((movement) => movement.reps === compareReps)) return null
+
+        return compareReps
     }
 }
 
