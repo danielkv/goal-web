@@ -5,9 +5,10 @@ import { IEventMovement, IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from 
 import { TMergedTimer } from '@models/time'
 import { roundTypes } from '@utils/worksheetInitials'
 
+import { numberHelper } from '../numbers'
+
 import { BaseTransformer } from './base'
 import { MovementTransformer, movementTransformer } from './movement'
-import { numberHelper } from './numbers'
 
 export class RoundTransformer extends BaseTransformer {
     private breakline = '\n'

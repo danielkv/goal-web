@@ -4,8 +4,9 @@ import { IEMOMTimer, ITabataTimer, ITimecapTimer, TMergedTimer, TTimerTypes } fr
 import { pluralize } from '@utils/strings'
 import { getTimeFromSeconds } from '@utils/time'
 
+import { numberHelper } from '../numbers'
+
 import { RegexHelper } from './RegexHelper'
-import { numberHelper } from './numbers'
 
 export class BaseTransformer extends RegexHelper {
     protected timeRegex = /^((?<t1>\d+)\s?(?<t1_type>m(?:in)?|s(?:ec)?)?(?:(?<t2>\d+)\s?s(?:ec)?)?)$/i

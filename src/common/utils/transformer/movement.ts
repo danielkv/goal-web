@@ -1,7 +1,8 @@
 import { IEventMovement, IMovementWeight, TWeightTypes } from '@models/block'
 
+import { numberHelper } from '../numbers'
+
 import { BaseTransformer } from './base'
-import { numberHelper } from './numbers'
 
 export class MovementTransformer extends BaseTransformer {
     constructor() {
