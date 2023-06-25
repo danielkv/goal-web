@@ -2,6 +2,7 @@ import cloneDeep from 'clone-deep'
 import deepEqual from 'deep-equal'
 import { debounce } from 'radash'
 import { FiEye } from 'solid-icons/fi'
+import { VsHistory } from 'solid-icons/vs'
 
 import { Component, Show, createEffect, createSignal } from 'solid-js'
 import { SetStoreFunction, StoreSetter, createStore, produce } from 'solid-js/store'
@@ -33,6 +34,7 @@ const CreateNewDay: Component = () => {
     redirectToLogin()
 
     let displayTempSavedTimout: NodeJS.Timer
+    const [hasHistorySaved, setHasHistorySaved] = createSignal<IWorksheetModel | null>(null)
     const [lastTempSaved, setLastTempSaved] = createSignal<IWorksheetModel>()
     const [displayTempSaved, setDisplayTempSaved] = createSignal(false)
     const [loadingTemp, setLoadingTemp] = createSignal(false)
@@ -56,6 +58,8 @@ const CreateNewDay: Component = () => {
             setLastTempSaved(cloneDeep(worksheet))
 
             setDisplayTempSaved(true)
+
+            setHasHistorySaved(null)
 
             displayTempSavedTimout = setTimeout(() => {
                 setDisplayTempSaved(false)
@@ -163,23 +167,12 @@ const CreateNewDay: Component = () => {
         }, 1)
     }
 
-    async function loadWorksheet(worksheetId: string) {
+    async function loadTempWorksheet(worksheetId: string) {
         try {
-            setError(null)
-            setLoading(true)
-
             const tempWorksheet = await getTempWorksheetByIdUseCase(worksheetId)
-            if (tempWorksheet) {
-                const tempConfirmation = confirm('Existem um rascunho salvo, deseja abri-lo?')
-                if (tempConfirmation) {
-                    setLastTempSaved(cloneDeep(tempWorksheet))
-                    return doSetWorksheetStore(tempWorksheet)
-                }
-            }
-            const worksheet = await getWorksheetByIdUseCase(worksheetId)
+            if (!tempWorksheet) return
 
-            setLastTempSaved(cloneDeep(worksheet))
-            doSetWorksheetStore(worksheet)
+            setHasHistorySaved(tempWorksheet)
         } catch (err) {
             const error = getErrorMessage(err)
             alert(error)
@@ -187,6 +180,34 @@ const CreateNewDay: Component = () => {
         } finally {
             setLoading(false)
         }
+    }
+
+    async function loadWorksheet(worksheetId: string) {
+        try {
+            setError(null)
+            setLoading(true)
+
+            const worksheet = await getWorksheetByIdUseCase(worksheetId)
+
+            setLastTempSaved(cloneDeep(worksheet))
+            doSetWorksheetStore(worksheet)
+
+            loadTempWorksheet(worksheetId)
+        } catch (err) {
+            const error = getErrorMessage(err)
+            alert(error)
+            setError(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    function handleRecoverWorksheet() {
+        const worksheet = hasHistorySaved()
+        if (!worksheet) return
+        setLastTempSaved(cloneDeep(worksheet))
+        doSetWorksheetStore(cloneDeep(worksheet))
+        setHasHistorySaved(null)
     }
 
     return (
@@ -209,7 +230,19 @@ const CreateNewDay: Component = () => {
                 </Box>
                 <Box class=" bg-gray-700">
                     <Toolbar>
-                        <Stack flex={1} direction="row" alignItems="center" justifyContent="flex-end">
+                        <Stack flex={1} direction="row" alignItems="center" justifyContent="flex-end" gap={2}>
+                            {hasHistorySaved() && (
+                                <Box>
+                                    <button
+                                        disabled={!worksheetStore.id}
+                                        class="bg-gray-900 p-3 rounded-full hover:bg-gray-700"
+                                        onClick={handleRecoverWorksheet}
+                                        title="Abrir visualização"
+                                    >
+                                        <VsHistory size={22} />
+                                    </button>
+                                </Box>
+                            )}
                             <Box>
                                 <button
                                     disabled={!worksheetStore.id}

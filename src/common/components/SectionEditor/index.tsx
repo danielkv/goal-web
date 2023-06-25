@@ -68,12 +68,12 @@ const SectionEditor: Component<SectionEditorProps> = (props) => {
         <form onSubmit={handleUpdate} class="flex w-full flex-col" id={editorId}>
             <textarea
                 onKeyDown={handleKeyDown}
-                class="section-editor w-full bg-[transparent] text-sm border-white border rounded-md p-3"
+                class="section-editor  bg-[transparent] text-sm  border-none outline-none bg-gray-800 rounded-xl p-3 m-2"
                 rows={15}
             >
                 {text()}
             </textarea>
-            <div class="flex  gap-3 justify-end">
+            <div class="flex mx-2 gap-3 justify-end">
                 <button class="btn btn-light" onClick={props.onClose}>
                     Cancelar
                 </button>

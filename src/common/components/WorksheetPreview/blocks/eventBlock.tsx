@@ -1,3 +1,4 @@
+import { FiYoutube } from 'solid-icons/fi'
 import { RiSystemTimerLine } from 'solid-icons/ri'
 
 import { Component, For, Show, createMemo } from 'solid-js'
@@ -89,15 +90,14 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                             )
 
                                             return (
-                                                <div class="movement" classList={{ withUrl: !!movement.videoUrl }}>
-                                                    {movement.videoUrl ? (
-                                                        <a href={movement.videoUrl} target="_new">
-                                                            {displayMovement}
-                                                        </a>
-                                                    ) : (
-                                                        displayMovement
+                                                <Stack flexDirection="row" class="items-center movement gap-2">
+                                                    <div>{displayMovement}</div>
+                                                    {movement.videoUrl && (
+                                                        <div class=" rounded-full bg-gray-900 p-1.5">
+                                                            <FiYoutube size={14} />
+                                                        </div>
                                                     )}
-                                                </div>
+                                                </Stack>
                                             )
                                         }}
                                     </For>
