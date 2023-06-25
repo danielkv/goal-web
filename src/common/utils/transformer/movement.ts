@@ -5,10 +5,6 @@ import { numberHelper } from '../numbers'
 import { BaseTransformer } from './base'
 
 export class MovementTransformer extends BaseTransformer {
-    constructor() {
-        super()
-    }
-
     private videoUrlRegex = /^(?<movement>.+)(?:\s*?\:\s*?(?<video>http.+))$/i
 
     toObject(text: string, roundReps?: string): IEventMovement {
@@ -66,9 +62,9 @@ export class MovementTransformer extends BaseTransformer {
         return reps
     }
 
-    toString(obj: IEventMovement, hideReps?: boolean): string {
+    toString(obj: IEventMovement, sequence?: boolean): string {
         const weight = this.weightToString(obj.weight)
-        const reps = obj.reps && !hideReps ? obj.reps.trim() : ''
+        const reps = obj.reps && !sequence ? obj.reps.trim() : ''
         const videoUrl = obj.videoUrl ? `: ${obj.videoUrl}` : ''
         return this.arrayToString([reps, obj.name, weight, videoUrl])
     }
@@ -79,17 +75,10 @@ export class MovementTransformer extends BaseTransformer {
         return r
     }
 
-    movementToString(obj: IEventMovement, hideReps?: boolean) {
-        const reps = this.repsToString(obj)
-        const movement = `${!hideReps ? reps : ''}${obj.name}`
+    movementToString(obj: IEventMovement, sequence?: boolean) {
+        const reps = sequence ? null : numberHelper.convertNumbers(obj.reps, { suffix: '' })
 
-        return movement
-    }
-
-    private repsToString(obj: IEventMovement) {
-        const reps = numberHelper.convertNumbers(obj.reps, { suffix: '' })
-        const repsString = reps || ''
-        return repsString
+        return this.arrayToString([reps, obj.name])
     }
 }
 

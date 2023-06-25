@@ -1,5 +1,6 @@
-import { IRound, IRoundEMOM, IRoundTabata, IRoundTimecap } from '@models/block'
-import { roundTypes } from '@utils/worksheetInitials'
+import { IRound } from '@models/block'
+import { TMergedTimer } from '@models/time'
+import { numberHelper } from '@utils/numbers'
 
 import { BaseDisplay } from './base'
 import { MovementDisplay, movementDisplay } from './movement'
@@ -11,13 +12,18 @@ export class RoundDisplay extends BaseDisplay {
         super()
     }
 
-    displayRestRound(obj: IRound): string {
-        if (obj.type !== 'rest') return ''
+    display(round: IRound): string {
+        switch (round.type) {
+            case 'rest':
+                return this.displayRest(round.time)
+            case 'complex':
+                return this.displayComplex(round)
+        }
 
-        return super.displayRest(obj.time)
+        return ''
     }
 
-    displayComplex(obj: IRound): string {
+    private displayComplex(obj: IRound): string {
         if (obj.type !== 'complex') return ''
 
         const complex = obj.movements.map((m) => this.movementDisplay.displayMovement(m)).join(this.complexSplit)
@@ -26,30 +32,13 @@ export class RoundDisplay extends BaseDisplay {
         return this.displayArray([complex, weight])
     }
 
-    displayTitle(round: IRound, roundReps?: string | null): string {
+    displayHeader(round: IRound, sequence?: string | null): string {
         if (round.type === 'rest') return ''
         if (round.type === 'complex') return super.displayNumberOfRounds(round.numberOfRounds)
-        const time =
-            round.type === 'amrap' || round.type === 'for_time' || round.type === 'emom' || round.type === 'tabata'
-                ? this.displayRoundTimer(round) || ''
-                : ''
 
-        const numberOfRounds = roundReps ? roundReps : !time ? super.displayNumberOfRounds(round.numberOfRounds) : ''
+        const _sequence = sequence || numberHelper.findSequenceReps(round.movements)
 
-        const type = round.type && round.type != 'not_timed' ? roundTypes[round.type] : ''
-
-        return this.displayArray([numberOfRounds, type, time])
-    }
-
-    private displayRoundTimer(round: IRoundTimecap | IRoundEMOM | IRoundTabata): string {
-        switch (round.type) {
-            case 'emom':
-                return super.displayTimer('emom', round.numberOfRounds, round.each)
-            case 'tabata':
-                return super.displayTimer('tabata', round.numberOfRounds, round.work, round.rest)
-            default:
-                return super.displayTimer(round.type, round.numberOfRounds, round.timecap)
-        }
+        return this.displayTimer(round.type, round as TMergedTimer, _sequence) || ''
     }
 }
 

@@ -1,5 +1,4 @@
-import { TTimerTypes } from '@models/time'
-import { pluralize } from '@utils/strings'
+import { TMergedTimer, TTimerTypes } from '@models/time'
 import { getTimeFromSeconds } from '@utils/time'
 
 export class BaseDisplay {
@@ -7,37 +6,50 @@ export class BaseDisplay {
         return `${getTimeFromSeconds(time)} Rest`
     }
 
-    protected displayTimer(type: 'emom', rounds: number, each: number): string
-    protected displayTimer(type: 'tabata', rounds: number, work: number, rest: number): string
-    protected displayTimer(type: 'for_time' | 'amrap', rounds: number, timecap: number): string
-    protected displayTimer(type: 'not_timed'): null
-    protected displayTimer(
-        type: TTimerTypes,
-        rounds?: number | never,
-        t1?: number | never,
-        t2?: never | number
-    ): string | null {
-        if (!rounds) return null
+    protected displayTimer(type: TTimerTypes, obj: TMergedTimer, sequence?: string | null): string | null {
+        const rounds = this.displayArray(
+            [sequence || (obj.numberOfRounds && obj.numberOfRounds > 1 ? obj.numberOfRounds : null)],
+            '',
+            '',
+            ' rounds'
+        )
 
-        if (type === 'emom') {
-            if (!t1) return null
-            const each = getTimeFromSeconds(t1)
-            return `Cada ${each} por ${rounds} ${pluralize(rounds, 'round')}`
+        switch (type) {
+            case 'tabata': {
+                if (!obj.work || !obj.rest) return null
+                const work = getTimeFromSeconds(obj.work)
+                const rest = getTimeFromSeconds(obj.rest)
+                const timeString = `${work}/${rest}`
+
+                if (obj.numberOfRounds === 8 && obj.work === 20 && obj.rest === 10) return 'Tabata'
+
+                return this.displayArray(['Tabata', rounds, timeString], ' ')
+            }
+            case 'emom': {
+                if (!obj.each || !obj.numberOfRounds) return null
+
+                const timeString = getTimeFromSeconds(obj.each)
+
+                if (obj.each === 60) {
+                    return this.displayArray(['EMOM', `${obj.numberOfRounds}min`], ' ')
+                } else if (obj.each % 60 === 0 && obj.each < 600) {
+                    const totalTimeMin = (obj.each * obj.numberOfRounds) / 60
+                    return this.displayArray([`E${obj.each / 60}M`, `${totalTimeMin}min`], ' ')
+                } else return this.displayArray(['EMOM', rounds, timeString], ' ')
+            }
+
+            case 'for_time':
+            case 'amrap': {
+                if (obj.timecap === undefined) return null
+
+                const timeString = getTimeFromSeconds(obj.timecap)
+                const typeString = type === 'for_time' ? 'For Time' : 'AMRAP'
+
+                return this.displayArray([typeString, rounds, timeString], ' ')
+            }
+            default:
+                return rounds
         }
-
-        if (type === 'tabata') {
-            if (!t1 || !t2) return null
-            const work = getTimeFromSeconds(t1)
-            const rest = getTimeFromSeconds(t2)
-            return `${work}/${rest} por ${rounds} ${pluralize(rounds, 'round')}`
-        }
-
-        if (t1 === undefined) return null
-
-        const timecap = t1 === 0 ? '' : getTimeFromSeconds(t1)
-        const roundsDisplay = rounds > 1 ? this.displayNumberOfRounds(rounds) : ''
-
-        return this.displayArray([timecap.trim(), roundsDisplay.trim()], ' - ')
     }
 
     protected displayNumberOfRounds(rounds?: number, suffix = 'rounds', prefix?: string): string {

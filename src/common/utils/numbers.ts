@@ -7,7 +7,7 @@ type TOpts = {
 
 class NumberHelper {
     public readonly calcRegexRegex = /^([\d\,]+)(\-|\+)([\d\,]+)\*([\d]+)$/
-    public readonly endingRegex = /(?<ending>x|m|km|s|mi|min|sec|kg|%|lb)$/
+    public readonly endingRegex = /(?<ending>x|m|km|s|mi|min|sec|kg|%|lb|cal)$/
     public readonly rangeRegex = /^([\d\,]+) a ([\d\,]+)$/
     public readonly sequenceRegex = /(?:\d+(\,\d+)?)(?:\/\d+(\,\d+)?)?/g
 
@@ -77,7 +77,7 @@ class NumberHelper {
         const ending = this.getEnding(number)
         const _number = this.clearNumber(number, ending)
 
-        if (!Number.isNaN(Number(_number))) return `${_number}${ending || ''} ${calculatedOpts.suffix}`
+        if (!Number.isNaN(Number(_number))) return `${_number}${ending || ''}${calculatedOpts.suffix}`
 
         const calcMatch = this.convertCalcMatch(_number, opts)
         if (calcMatch) return this.addSuffix(calcMatch, ending || calculatedOpts.suffix)

@@ -1,37 +1,37 @@
-import { IEventBlock, IEventBlockEMOM, IEventBlockTabata, IEventBlockTimecap } from '@models/block'
-import { eventTypes } from '@utils/worksheetInitials'
+import deepEqual from 'deep-equal'
+import { omit } from 'radash'
+
+import { IEventBlock } from '@models/block'
+import { TMergedTimer } from '@models/time'
 
 import { BaseDisplay } from './base'
 
 export class EventBlockDisplay extends BaseDisplay {
-    displayTitle(block: IEventBlock): string {
-        const time =
-            block.event_type === 'amrap' ||
-            block.event_type === 'for_time' ||
-            block.event_type === 'emom' ||
-            block.event_type === 'max_weight' ||
-            block.event_type === 'tabata'
-                ? this.displayEventTimer(block) || ''
-                : ''
+    displayHeader(block: IEventBlock, sequence?: string | null): string {
+        if (block.event_type === 'max_weight') return ''
 
-        const numberOfRounds = !time ? super.displayNumberOfRounds(block.numberOfRounds, 'x', 'Repetir') : ''
-        const type = block.event_type && block.event_type != 'not_timed' ? eventTypes[block.event_type] : ''
+        const isSame = sequence
+            ? true
+            : block.rounds.length > 1 &&
+              block.rounds
+                  .map((r) => omit(r, ['numberOfRounds']))
+                  .every((round) => deepEqual(round, omit(block.rounds[0], ['numberOfRounds'])))
 
-        if (!numberOfRounds && !type) return ''
-        return this.displayArray([numberOfRounds, type, time])
-    }
+        const _sequence =
+            sequence ||
+            (isSame
+                ? block.rounds
+                      .reduce<string[]>((acc, round) => {
+                          acc.push(String(round.numberOfRounds))
+                          return acc
+                      }, [])
+                      .join('-')
+                : null)
 
-    private displayEventTimer(block: IEventBlockTimecap | IEventBlockEMOM | IEventBlockTabata): string {
-        switch (block.event_type) {
-            case 'emom':
-                return super.displayTimer('emom', block.numberOfRounds, block.each)
-            case 'tabata':
-                return super.displayTimer('tabata', block.numberOfRounds, block.work, block.rest)
-            case 'max_weight':
-                return super.displayTimer('for_time', block.numberOfRounds, block.timecap)
-            default:
-                return super.displayTimer(block.event_type, block.numberOfRounds, block.timecap)
-        }
+        const timer = this.displayTimer(block.event_type, block as unknown as TMergedTimer, _sequence) || ''
+        const info = block.info && `(${block.info})`
+
+        return this.displayArray([timer, info])
     }
 }
 

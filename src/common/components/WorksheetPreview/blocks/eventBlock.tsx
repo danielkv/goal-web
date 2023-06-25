@@ -17,7 +17,7 @@ import { createEventRoundValues } from '@utils/worksheetInitials'
 export interface EventBlockPreviewProps extends WorksheetPeace<IEventBlock> {}
 
 const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
-    const eventTitle = createMemo(() => eventBlockDisplay.displayTitle(props.item))
+    const eventTitle = createMemo(() => eventBlockDisplay.displayHeader(props.item))
 
     const isTimedWorkout = createMemo(() => checkIsTimedWorkout(props.item))
     const timerType = createMemo(() => blockTimerType(props.item))
@@ -40,7 +40,7 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
 
                         const matchSequenceReps = createMemo(() => numberHelper.findSequenceReps(round.movements))
 
-                        const roundTitle = createMemo(() => roundDisplay.displayTitle(round, matchSequenceReps()))
+                        const roundTitle = createMemo(() => roundDisplay.displayHeader(round, matchSequenceReps()))
 
                         const timerType = createMemo(() => roundTimerType(round))
 
@@ -75,10 +75,10 @@ const EventBlockPreview: Component<EventBlockPreviewProps> = (props) => {
                                 </Show>
 
                                 <Show when={round.type == 'rest'}>
-                                    <div class="font-bold text-sm">{roundDisplay.displayRestRound(round)}</div>
+                                    <div class="font-bold text-sm">{roundDisplay.display(round)}</div>
                                 </Show>
                                 <Show when={round.type == 'complex'}>
-                                    <div class="movement">{roundDisplay.displayComplex(round)}</div>
+                                    <div class="movement">{roundDisplay.display(round)}</div>
                                 </Show>
                                 <Show when={!['rest', 'complex'].includes(round.type)}>
                                     <For each={round.movements}>

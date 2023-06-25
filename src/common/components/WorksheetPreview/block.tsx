@@ -47,7 +47,7 @@ const BlockPreview: Component<BlockProps> = (props) => {
             {props.onAdd && props.onRemove && props.onMove && (
                 <PeaceControl {...controlProps} createInitialValues={createBlockValues} />
             )}
-            {props.item.info && <div class="info">{props.item.info}</div>}
+
             <Switch>
                 <Match when={props.item.type === 'rest'}>
                     <RestBlockPreview item={props.item as IRestBlock} thisPath={props.thisPath} />

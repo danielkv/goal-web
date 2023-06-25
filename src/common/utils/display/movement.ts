@@ -4,12 +4,6 @@ import { numberHelper } from '@utils/numbers'
 import { BaseDisplay } from './base'
 
 export class MovementDisplay extends BaseDisplay {
-    weightToString(weight?: IMovementWeight): string {
-        const r = this.displayArray([weight?.value, weight?.type], '')
-
-        return r
-    }
-
     displayWeight(weight?: IMovementWeight): string {
         if (!weight?.value || weight.type === 'none') return ''
 
@@ -19,23 +13,16 @@ export class MovementDisplay extends BaseDisplay {
     }
 
     displayMovement(obj: IEventMovement, hideReps?: boolean) {
-        const reps = this.displayReps(obj)
-        const displayMovement = `${!hideReps ? reps : ''}${obj.name}`
+        const reps = hideReps ? null : obj.reps
 
-        return displayMovement
+        return this.displayArray([reps, obj.name])
     }
 
     display(obj: IEventMovement, hideReps?: boolean) {
         const weight = this.displayWeight(obj.weight)
         const movement = this.displayMovement(obj, hideReps)
 
-        return this.displayArray([movement, weight], ' - ')
-    }
-
-    private displayReps(obj: IEventMovement) {
-        const reps = numberHelper.convertNumbers(obj.reps, { suffix: '' })
-        const repsDisplay = reps || ''
-        return repsDisplay
+        return this.displayArray([movement, weight])
     }
 }
 
